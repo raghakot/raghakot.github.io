@@ -1,0 +1,5 @@
+= SimNeuron - A simplified neural computational model.
+
+== Overview
+
+Its 2017, I assume everyone is familiar with deep learning and the waves conv-nets have been making with image, text and speech applications. Despite different variations of neural networks such as LSTMs, ConvNets, Standard neural nets, endcoder-decoder architectures and so on, the computational model of a neuron hasn't changed since inception.
