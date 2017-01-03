@@ -10,3 +10,7 @@ Despite different variations of neural networks architectures such as LSTMs, Con
 
 So far so good. What is the purpose of activation function? To understand the motivation, we need to consider the computation from the _layer_ perspective. A _layer_ has \(X\) as the input an \(Y\) as the output. Using linear algebra, the entire computation can be represented as \(Y = Act(W \cross X + b)\), where \(Act(...)\) is the activation function. \(W \cross X\) can be interpreted as performing a linear transformation on X. The bias \(b\) adds addtional representational power by shifting the origin. Without \(Act\) multiple linear transformations within each layer \(W_{L}\) can be condensed into a single layer with \(W = \prod_{L}W_{L}\). A single layered linear neural network is pretty limited.
 
+Putting all of this together, we can interpret a conv-net as follows.
+* Lets say we input a \(100 \cross 100\) image to the conv net. The input tensor \(X\) can be thought of as a vector with 10000 basis. Each basis is representing some positional component in an image.
+* We know that the very first conv layer learns edge detection templates. We can think of that layer as transforming positional basis vector to edge basis vector. In this space, the image is represented in a more meaningful way as a linear combination of edge like features. In this manner, ever layer _transforms_ the data into a more meaningful basis vector space, eventually leading to a basis consisting of output categories.
+
