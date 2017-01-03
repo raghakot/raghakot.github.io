@@ -12,6 +12,6 @@ So far so good. What is the purpose of activation function? To understand the mo
 
 Putting all of this together, we can interpret a conv-net as follows.
 * Lets say we input a \(100 \cross 100\) image to the conv net. The input tensor \(X\) can be thought of as a vector with 10000 basis. Each basis is representing some positional component in an image.
-* We know that the very first conv layer learns edge detection templates. We can think of that layer as transforming positional basis vector to edge basis vector. In this space, the image is represented in a more meaningful way as a linear combination of edge like features. In this manner, ever layer _transforms_ the data into a more meaningful basis vector space, eventually leading to a basis consisting of output categories.
+* We know that the very first conv layer learns edge detection templates. We can think of that layer as transforming positional basis vector to edge basis vector. In this space, the image is represented in a more meaningful way as a linear combination of edge like features. In this manner, ever layer _transforms_ the data into a more meaningful basis vector space, eventually leading to a basis vectors consisting of output categories.
 
 
