@@ -29,7 +29,13 @@ Lets put all this togther to interpret what a multi-layered neural network might
 
 == Motivation
 
-In the current computational model, the output of a neuron is different even though \(X\) and \(W\) vectors perfectly align with each other but differ in magnitudes. 
-If we consider a neuron as a fundamental template matching unit, then various magnitudes of \(X\) and \(W\) should yield the same output. It also _feels_ like a simplification because we are now effectively searching for a unit vector \(W\) confined to various rotations around the origin. If \(W\) can be represented in parametric form, we are searching for \(\theta \in [0, 360]\) as opposed to \(\w_{i}\) which can range from \([-\inf, +\inf]\). Even though both spaces are infinite, with a small enough discretization, the search space of \(\theta\) seems a lot smaller.
+In the current computational model, the output of a neuron is different even though \(X\) and \(W\) vectors perfectly align with each other but differ in magnitudes.
+
+[.text-center]
+.Similarity between vectors X and W
+image::sim_neuron/vector_similarity.png[vector_similarity]
+{empty} +
+
+If we consider a neuron as a fundamental template matching unit, then various magnitude (length) of \(X\) and \(W\) should yield the same output. It also _feels_ like a simplification because we are now effectively searching for a unit vector \(W\) confined to various rotations around the origin. If \(W\) can be represented in parametric form, we are searching for \(\theta \in [0, 360]\) as opposed to \(\w_{i}\) which can range from \([-\inf, +\inf]\). Even though both spaces are infinite, with a small enough discretization, the search space of \(\theta\) seems a lot smaller.
 
 The proposal is simple. Each neuron should compute: \(Y = \frac{W.X}{|W||X|}\). From a layer perspective, instead of computing \(W \times X\) we are now computing \(\frac{W \times X}{|X|}\).
