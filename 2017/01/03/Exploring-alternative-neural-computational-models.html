@@ -38,9 +38,9 @@
     <link href="//fonts.googleapis.com/" rel="dns-prefetch">
     <link href="//fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic|Open+Sans:700,400&subset=latin,latin-ext" rel="stylesheet">
 
-    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/main.min.css?v=1483519920541"/>
-    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/custom.css?v=1483519920541"/>
-    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/asciidoctor-foundation.css?v=1483519920541"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/main.min.css?v=1483520086711"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/custom.css?v=1483520086711"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/asciidoctor-foundation.css?v=1483520086711"/>
 
 
 
@@ -70,7 +70,7 @@
       GHOSTIUM.enablePjax = typeof enable_pjax !== 'undefined' ? enable_pjax : true;
     </script>
 
-    <script src="//raghakot.github.io/themes/ghostium/assets/js/head-scripts.min.js?v=1483519920541"></script>
+    <script src="//raghakot.github.io/themes/ghostium/assets/js/head-scripts.min.js?v=1483520086711"></script>
 
     <link rel="canonical" href="https://raghakot.github.io/2017/01/03/Exploring-alternative-neural-computational-models.html" />
     <meta name="referrer" content="origin" />
@@ -182,67 +182,8 @@ null
 <h2 id="_overview">Overview</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Despite different variations of neural networks architectures such as LSTMs, ConvNets, endcoder-decoder architectures and so on, the computational model of a neuron hasn&#8217;t changed since inception. Every neuron has \(n\) incomming inputs \(X = (x_{1}, x_{2}, &#8230;&#8203;, x_{n})\) with weights \(W = (w_{1}, w_{2}, &#8230;&#8203;, w_{n})\). A neuron then computes \(W.X = \sum_{i=0}^{n}w_{i}.x_{i}\) and then uses some nonlinearity like sigmoid or ReLU to generate the output<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnote_1" title="View footnote.">1</a>]</sup>.</p>
+<p>Despite different variations of neural networks architectures such as LSTMs, ConvNets, endcoder-decoder architectures and so on, the computational model of a neuron hasn&#8217;t changed since inception. Every neuron has \(n\) incomming inputs \(X = (x_{1}, x_{2}, &#8230;&#8203;, x_{n})\) with weights \(W = (w_{1}, w_{2}, &#8230;&#8203;, w_{n})\). A neuron then computes \(W.X = \sum_{i=0}^{n}w_{i}.x_{i}\) and then uses some nonlinearity like sigmoid or ReLU to generate the output</p>
 </div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="https://raghakot.github.io/images/sim_neuron/neuron_model.jpeg" alt="neuron_model">
-</div>
-<div class="title">Figure 1. Computation model of a neuron</div>
-</div>
-<div class="paragraph">
-<p><br></p>
-</div>
-<div class="paragraph">
-<p>All architectures build on this fundamental computational model. Let us examine what the computation is conceptually doing in a step by step fashion.</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Each input component \(x_{i}\) is being magnified or diminished when multiplied with a scaling factor \(w_{i}\). This can be interpreted as enhancing or diminishing the contribution of some pattern component \(x_{i}\) to the output decision. Think of these weights as <em>knobs</em> that range from \([-\inf, +\inf]\). The task of learning is to <em>tune</em> these knobs to the correct value.</p>
-</li>
-<li>
-<p>The computation \(W.X\) is then enhancing/diminishing various input components of vector \(X\). In terms of linear algebra, the dot product of \(W\) and \(X\) can be interpeted as computing similarity. Consider \(X = (x_{1}, x_{2})\) and \(W = (w_{1}, w_{2})\). If you imagine plotting these vectors on a 2D graph paper, \(\frac{W.X}{|W||X|}\) is the cosine of angle between these two vectors. When these two vectors align (point in the same direction), the value of \(W.X\) is maximized indicating high degree of similarity. From this point of view, neuron is fundametally a pattern matching unit which outputs a large value when it matches a specific pattern (encoded by weights) in the input<sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnote_2" title="View footnote.">2</a>]</sup>.</p>
-</li>
-<li>
-<p>In a complex neural network, every neuron is matching the input against some template encoded via weights and forwarding that result to the subsequent layers. In case of image recognition, the first layer neurons might match whether the input contains vertical edge, horizontal edge and so on. The circle detection neuron might use various edge matching computation results from previous layers to detect the shape patterns.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>So far so good. What is the purpose of activation function? To understand the motivation, consider the geometric perspective of the computation in terms of linear algebra.</p>
-</div>
-<div class="paragraph">
-<p>\( W.X = \begin{bmatrix} w_{1} \\ w_{2} \\ \vdots \\ w_{n} \end{bmatrix} \begin{bmatrix} x_{1} &amp; x_{2} &amp; \cdots &amp; x_{n} \end{bmatrix} \)</p>
-</div>
-<div class="paragraph">
-<p>Geometrically, this can be interpreted as a linear transformation of \(X\). Additionally, there is a bias term to shift the origin. So, the computation \(W.X + b\) can be interpreted as an affine transformation. Without an activation function, multiple linear transformations within each layer \(W_{L}\) can be condensed into a single layer with \(W = \prod_{L}W_{L}\). A single layered linear neural network is pretty limited.</p>
-</div>
-<div class="paragraph">
-<p>Lets put all this togther to interpret what a multi-layered neural network might be doing<sup class="footnote">[<a id="_footnoteref_3" class="footnote" href="#_footnote_3" title="View footnote.">3</a>]</sup>:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Lets say we input a \(100 \times 100\) image to a vggnet. The input tensor \(X\) can be thought of as a vector with 10000 basis. Each basis is representing some positional component in an image.</p>
-</li>
-<li>
-<p>We know that the very first conv layer learns gabor filter like edge detection weight templates. Lets assume that a single conv-filter generates \(100 \times 100\) output (with the appropriate padding). This can be seen as <em>transforming</em> input from positional basis vector space to edge-like basis vector space. Insead of measuring the pixel intensity, the new vector space measures the similarity of the positional input patch with respect to a template (\(3 \times 3\) filter weights). In this manner, every layer <em>transforms</em> the data into a more meaningful basis vector space, eventually leading to basis vectors consisting of output categories.</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div id="footnotes">
-<hr>
-<div class="footnote" id="_footnote_1">
-<a href="#_footnoteref_1">1</a>. Technically, bias is involved, but i am excluding it to keep the discussion focused.
-</div>
-<div class="footnote" id="_footnote_2">
-<a href="#_footnoteref_2">2</a>. The correct weight vectors are learned using backpropogation.
-</div>
-<div class="footnote" id="_footnote_3">
-<a href="#_footnoteref_3">3</a>. This is my own interpretation and might as well be incorrect.
 </div>
 </div>
           </div>
@@ -321,7 +262,7 @@ null
         hljs.initHighlightingOnLoad();
       </script>
 
-    <script src="//raghakot.github.io/themes/ghostium/assets/js/foot-scripts.min.js?v=1483519920541"></script>
+    <script src="//raghakot.github.io/themes/ghostium/assets/js/foot-scripts.min.js?v=1483520086711"></script>
 
     <script>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
