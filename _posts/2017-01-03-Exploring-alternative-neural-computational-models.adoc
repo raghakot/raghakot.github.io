@@ -2,4 +2,99 @@
 
 == Overview
 
-Despite different variations of neural networks architectures such as LSTMs, ConvNets, endcoder-decoder architectures and so on, the computational model of a neuron hasn't changed since inception. Every neuron has \(n\) incomming inputs \(X = (x_{1}, x_{2}, ..., x_{n})\) with weights \(W = (w_{1}, w_{2}, ..., w_{n})\). A neuron then computes \(W.X = \sum_{i=0}^{n}w_{i}.x_{i}\) and then uses some nonlinearity like sigmoid or ReLU to generate the output
+Despite different variations of neural networks architectures such as LSTMs, ConvNets, endcoder-decoder architectures and so on, the computational model of a neuron hasn't changed since inception. Every neuron has \(n\) incomming inputs \(X = (x_{1}, x_{2}, ..., x_{n})\) with weights \(W = (w_{1}, w_{2}, ..., w_{n})\). A neuron then computes \(W.X = \sum_{i=0}^{n}w_{i}.x_{i}\) and then uses some nonlinearity like sigmoid or ReLU to generate the outputfootnote:[Technically, bias is involved, but i am excluding it to keep the discussion focused.].
+
+[.text-center]
+.Computation model of a neuron
+image::sim_neuron/neuron_model.jpeg[neuron_model]
+{empty} +
+
+All architectures build on this fundamental computational model. Let us examine what the computation is conceptually doing in a step by step fashion.
+
+* Each input component \(x_{i}\) is being magnified or diminished when multiplied with a scaling factor \(w_{i}\). This can be interpreted as enhancing or diminishing the contribution of some pattern component \(x_{i}\) to the output decision. Think of these weights as _knobs_ that range from \([-\inf, +\inf]\). The task of learning is to _tune_ these knobs to the correct value.
+
+* The computation \(W.X\) is then enhancing/diminishing various input components of vector \(X\). In terms of linear algebra, the dot product of \(W\) and \(X\) can be interpeted as computing similarity. Consider \(X = (x_{1}, x_{2})\) and \(W = (w_{1}, w_{2})\). If you imagine plotting these vectors on a 2D graph paper, \(\frac{W.X}{|W||X|}\) is the cosine of angle between these two vectors. When these two vectors align (point in the same direction), the value of \(W.X\) is maximized indicating high degree of similarity. From this point of view, neuron is fundametally a pattern matching unit which outputs a large value when it matches a specific pattern (encoded by weights) in the inputfootnote:[The correct weight vectors are learned using backpropogation.].
+
+* In a complex neural network, every neuron is matching the input against some template encoded via weights and forwarding that result to the subsequent layers. In case of image recognition, the first layer neurons might match whether the input contains vertical edge, horizontal edge and so on. The circle detection neuron might use various edge matching computation results from previous layers to detect the shape patterns.
+
+So far so good. What is the purpose of activation function? To understand the motivation, consider the geometric perspective of the computation in terms of linear algebra.
+
+\( W.X = \begin{bmatrix} w_{1} \\ w_{2} \\ \vdots \\ w_{n} \end{bmatrix} \begin{bmatrix} x_{1} & x_{2} & \cdots & x_{n} \end{bmatrix} \)
+
+Geometrically, this can be interpreted as a linear transformation of \(X\). Additionally, there is a bias term to shift the origin. So, the computation \(W.X + b\) can be interpreted as an affine transformation. Without an activation function, multiple linear transformations within each layer \(W_{L}\) can be condensed into a single layer with \(W = \prod_{L}W_{L}\). A single layered linear neural network is pretty limited.
+
+Lets put all this togther to interpret what a multi-layered neural network might be doingfootnote:[This is my own interpretation and might as well be incorrect.]:
+
+* Lets say we input a \(100 \times 100\) image to a vggnet. The input tensor \(X\) can be thought of as a vector with 10000 basis. Each basis is representing some positional component in an image.
+* We know that the very first conv layer learns gabor filter like edge detection weight templates. Lets assume that a single conv-filter generates \(100 \times 100\) output (with the appropriate padding). This can be seen as _transforming_ input from positional basis vector space to edge-like basis vector space. Insead of measuring the pixel intensity, the new vector space measures the similarity of the positional input patch with respect to a template (\(3 \times 3\) filter weights). In this manner, every layer _transforms_ the data into a more meaningful basis vector space, eventually leading to basis vectors consisting of output categories.
+
+== Motivation
+
+In the current computational model, the output of a neuron is different even though \(X\) and \(W\) perfectly align with each other but differ in magnitudes. As each \(w_{i}\) has range \([-\inf, \inf]\), backprop is essentially searching for this weight vector spanning all of the weight vector space.
+
+[.text-center]
+.Similarity between vectors X and W
+image::sim_neuron/vector_similarity.png[vector_similarity]
+{empty} +
+
+If we view a neuron as fundamental template matching unit, then various magnitude (length) of \(X\) and \(W\) should yield the same output. If we constrain \(W\) to be a unit vector (\(|W| = 1\)), then backprop would only need to search along points on a hypersphere of unit radius. Although the hypersphere contains infinitely many points, with sufficient discretization, the search space intuitively _feels_ a lot smaller than the entire weight vector space.
+
+Considering that weight sharing (a form on constraint) in conv-nets led to huge improvements, constraining seems like a resonable approach. Weight regularization - a form of constraint - penalizes large \(|W|\) and vaguely fits the idea of encouraging weight updates to explore points along the hypersphere. 
+
+I think that in general, constraining as a research direction is largely unexplored. For example, it might be interesting to try and constrain conv filters to be as _distinct_ and _diverse_ and possible. I will follow up on these investigations in a future blog.
+
+Getting back to the topic at hand, there are several options for constraining \(|W| = 1\). 
+
+1. Penalize when \(|W|\) deviates from 1 as a regularization loss.
+2. Represent \(W\) in parametric form. Each \(w_{i}\) can be calculated using n-dim link:https://en.wikipedia.org/wiki/N-sphere#Spherical_coordinates[spherical coordinates].
+3. Instead of computing \(W.X\), compute \(\frac{W}{|W|} \times X\). Normalizing \(W\) ensures that the output does not change due to scaling. Consequently, the gradient of output with respect to \(W\) can only exist if \(W\) changes along the unit hypersphere.
+
+== Experiments
+
+I explored option 3 as it was the simplest to implement. The architecture is very basic. All conv are \(3 \times 3\) with `border_mode='same'`. I used cifar10 dataset with augmented with 10% random shifts along width/height and horizontal flips. I also used `random_seed = 1337` to get consistent and reproducable results.
+
+The model only has 1,250,858 parameters and trained for 50 epochs with a batch size of 32 using categorical crossentropy loss with Adam optimizer.
+
+\(W_{norm}\) is calculated as:
+[source,python]
+----
+# 1e-8 is used to prevent division by 0
+W_norm = W / (tf.sqrt(tf.reduce_sum(tf.square(W), axis=[0, 1, 2], keepdims=True)) + 1e-8)
+----
+
+[.text-center]
+.Test model
+image::sim_neuron/model.png[test_model]
+{empty} +
+
+== Results
+
+Final loss and accuracy values on validation set are summarized in the table. 
+
+.Convergence results after 50 epochs
+|===
+| |Old Model |New Model
+
+|val_loss
+|0.8257
+|0.6156
+
+|val_accuracy
+|0.7165
+|0.7935
+|===
+
+As hypothesized, constraining weight vector to a unit hypersphere speeds up training (see convergence graphs).
+
+[.text-center]
+.Training convergence graphs of loss and accuracy on validation set
+image::sim_neuron/convergence.png[convergence_graphs]
+{empty} +
+
+TODO: Compare learned conv filters between old/new model.
+
+== Conclusion
+
+We saw pretty good improvements by making a relatively simple change to the neuron computation model. To make the neuron truly compute cosine similarity, we also need to normalize \(X\). i.e., the neuron computes \(W_{norm}.X_{norm}\). The convergence graphs, however, tracked almost exactly with the computational model that just normalizes \(W\).
+
+In these experiments we used ReLU which effectively attenuates negative values. This limits the neuron to only communicate information about the degree of similarity in matching with the weight template. We effectively squish all the _dissimilarity_ or the _lack of_ weight template information to zero indicating no similarity. Perhaps it is useful if a neuron can communicate dissimilarity information instead. This is tricky because we need to use a non-linear activation function to maintain the representational power. Perhaps something like \(y = x^{2}\) might work.
