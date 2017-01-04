@@ -23,9 +23,9 @@ So far so good. What is the purpose of activation function? To understand the mo
 
 Geometrically, this can be interpreted as a linear transformation of \(X\). Additionally, there is a bias term to shift the origin. So, the computation \(W.X + b\) can be interpreted as an affine transformation. Without an activation function, multiple linear transformations within each layer \(W_{L}\) can be condensed into a single layer with \(W = \prod_{L}W_{L}\). A single layered linear neural network is pretty limited.
 
-Lets put all this togther to interpret what a deep convolutional neural network might be computing: footnote:[This is my own interpretation and might as well be incorrect.]
-* Lets say we input a \(100 \times 100\) image to the conv net. The input tensor \(X\) can be thought of as a vector with 10000 basis. Each basis is representing some positional component in an image.
-* We know that the very first conv layer learns edge detection templates. We can think of that layer as transforming positional basis vector to edge basis vector. In this space, the image is represented in a more meaningful way as a linear combination of edge like features. In this manner, ever layer _transforms_ the data into a more meaningful basis vector space, eventually leading to a basis vectors consisting of output categories.
+Lets put all this togther to interpret what a multi-layered neural network might be doing: footnote:[This is my own interpretation and might as well be incorrect.]
+* Lets say we input a \(100 \times 100\) image to a vggnet. The input tensor \(X\) can be thought of as a vector with 10000 basis. Each basis is representing some positional component in an image.
+* We know that the very first conv layer learns gabor filter like edge detection weight templates. Lets assume that a single conv-filter generates \(100 \times 100\) output (with the appropriate padding). This can be seen as _transforming_ input from positional basis vector space to edge-like basis vector space. Insead of measuring the pixel intensity, the new vector space measures the similarity of the positional input patch with respect to a template (\(3 \times 3\) filter weights). In this manner, every layer _transforms_ the data into a more meaningful basis vector space, eventually leading to basis vectors consisting of output categories.
 
 == Motivation
 
