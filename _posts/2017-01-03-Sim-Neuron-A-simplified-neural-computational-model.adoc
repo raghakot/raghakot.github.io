@@ -17,11 +17,11 @@ All architectures build on this fundamental computational model. Let us examine 
 
 * In a complex neural network, every neuron is matching the input against some template encoded via weights and forwarding that result to the subsequent layers. In case of image recognition, the first layer neurons might match whether the input contains vertical edge, horizontal edge and so on. The circle detection neuron might use various edge matching computation results from previous layers to detect the shape patterns.
 
-So far so good. What is the purpose of activation function? To understand the motivation, consider the geometric perspective of the computation in terms of linear algebra. The computation can be represented as:
+So far so good. What is the purpose of activation function? To understand the motivation, consider the geometric perspective of the computation in terms of linear algebra.
 
+\( W.X = \begin{bmatrix} w_{1} \\ w_{2} \\ \vdots \\ w_{n} \end{bmatrix} \begin{bmatrix} x_{1} & x_{2} & \cdots & x_{n} \end{bmatrix} \)
 
-
-has \(X\) as the input an \(Y\) as the output. Using linear algebra, the entire computation can be represented as \(Y = Act(W \times X + b)\), where \(Act(...)\) is the activation function. \(W \times X\) can be interpreted as performing a linear transformation on X. The bias \(b\) adds addtional representational power by shifting the origin. Without \(Act\) multiple linear transformations within each layer \(W_{L}\) can be condensed into a single layer with \(W = \prod_{L}W_{L}\). A single layered linear neural network is pretty limited.
+Geometrically, this can be interpreted as a linear transformation of \(X\). Additionally, there is a bias term to shift the origin. So, the computation \(W.X + b\) can be interpreted as an affine transformation. Without an activation function, multiple linear transformations within each layer \(W_{L}\) can be condensed into a single layer with \(W = \prod_{L}W_{L}\). A single layered linear neural network is pretty limited.
 
 Putting all of this together, we can interpret a conv-net as follows.
 * Lets say we input a \(100 \times 100\) image to the conv net. The input tensor \(X\) can be thought of as a vector with 10000 basis. Each basis is representing some positional component in an image.
