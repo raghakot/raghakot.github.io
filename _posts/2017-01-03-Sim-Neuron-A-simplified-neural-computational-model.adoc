@@ -44,4 +44,4 @@ I think that in general, constraining as a research direction is largely unexplo
 
 Getting back to the topic at hand, there are several options for constraining \(|W| = 1\). 
 * Penalize when \(|W|\) deviates from 1 as a regularization loss.
-* 
+* Represent \(W\) in parametric form. Each \(w_{i}\) can be calculated using n-dim link:https://en.wikipedia.org/wiki/N-sphere#Spherical_coordinates[spherical coordinates].
