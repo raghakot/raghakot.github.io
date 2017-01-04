@@ -43,4 +43,5 @@ Considering that weight sharing in conv-nets led to huge improvements (a form on
 I think that in general, constraining as a research direction is largely unexplored. For example, it might be interesting to try and constrain conv filters to be as _distinct_ and _diverse_ and possible. I will follow up on these investigations in a future blog.
 
 Getting back to the topic at hand, there are several options for constraining \(|W| = 1\). 
+* Penalize when \(|W|\) deviates from 1 as a regularization loss.
 * 
