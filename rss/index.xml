@@ -1,9 +1,200 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Math, Tech, Machine Learning, Life...]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Wed, 04 Jan 2017 08:54:46 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Exploring alternative neural computational models.]]></title><description><![CDATA[<div class="sect1">
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Math, Tech, Machine Learning, Life...]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Wed, 04 Jan 2017 08:56:30 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Exploring alternative neural computational models.]]></title><description><![CDATA[<div class="sect1">
 <h2 id="_overview">Overview</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Despite different variations of neural networks architectures such as LSTMs, ConvNets, endcoder-decoder architectures and so on, the computational model of a neuron hasn&#8217;t changed since inception. Every neuron has \(n\) incomming inputs \(X = (x_{1}, x_{2}, &#8230;&#8203;, x_{n})\) with weights \(W = (w_{1}, w_{2}, &#8230;&#8203;, w_{n})\). A neuron then computes \(W.X = \sum_{i=0}^{n}w_{i}.x_{i}\) and then uses some nonlinearity like sigmoid or ReLU to generate the output</p>
+<p>Despite different variations of neural networks architectures such as LSTMs, ConvNets, endcoder-decoder architectures and so on, the computational model of a neuron hasn&#8217;t changed since inception. Every neuron has \(n\) incomming inputs \(X = (x_{1}, x_{2}, &#8230;&#8203;, x_{n})\) with weights \(W = (w_{1}, w_{2}, &#8230;&#8203;, w_{n})\). A neuron then computes \(W.X = \sum_{i=0}^{n}w_{i}.x_{i}\) and then uses some nonlinearity like sigmoid or ReLU to generate the output<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnote_1" title="View footnote.">1</a>]</sup>.</p>
 </div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="https://raghakot.github.io/images/sim_neuron/neuron_model.jpeg" alt="neuron_model">
+</div>
+<div class="title">Figure 1. Computation model of a neuron</div>
+</div>
+<div class="paragraph">
+<p><br></p>
+</div>
+<div class="paragraph">
+<p>All architectures build on this fundamental computational model. Let us examine what the computation is conceptually doing in a step by step fashion.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Each input component \(x_{i}\) is being magnified or diminished when multiplied with a scaling factor \(w_{i}\). This can be interpreted as enhancing or diminishing the contribution of some pattern component \(x_{i}\) to the output decision. Think of these weights as <em>knobs</em> that range from \([-\inf, +\inf]\). The task of learning is to <em>tune</em> these knobs to the correct value.</p>
+</li>
+<li>
+<p>The computation \(W.X\) is then enhancing/diminishing various input components of vector \(X\). In terms of linear algebra, the dot product of \(W\) and \(X\) can be interpeted as computing similarity. Consider \(X = (x_{1}, x_{2})\) and \(W = (w_{1}, w_{2})\). If you imagine plotting these vectors on a 2D graph paper, \(\frac{W.X}{|W||X|}\) is the cosine of angle between these two vectors. When these two vectors align (point in the same direction), the value of \(W.X\) is maximized indicating high degree of similarity. From this point of view, neuron is fundametally a pattern matching unit which outputs a large value when it matches a specific pattern (encoded by weights) in the input<sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnote_2" title="View footnote.">2</a>]</sup>.</p>
+</li>
+<li>
+<p>In a complex neural network, every neuron is matching the input against some template encoded via weights and forwarding that result to the subsequent layers. In case of image recognition, the first layer neurons might match whether the input contains vertical edge, horizontal edge and so on. The circle detection neuron might use various edge matching computation results from previous layers to detect the shape patterns.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>So far so good. What is the purpose of activation function? To understand the motivation, consider the geometric perspective of the computation in terms of linear algebra.</p>
+</div>
+<div class="paragraph">
+<p>\( W.X = \begin{bmatrix} w_{1} \\ w_{2} \\ \vdots \\ w_{n} \end{bmatrix} \begin{bmatrix} x_{1} &amp; x_{2} &amp; \cdots &amp; x_{n} \end{bmatrix} \)</p>
+</div>
+<div class="paragraph">
+<p>Geometrically, this can be interpreted as a linear transformation of \(X\). Additionally, there is a bias term to shift the origin. So, the computation \(W.X + b\) can be interpreted as an affine transformation. Without an activation function, multiple linear transformations within each layer \(W_{L}\) can be condensed into a single layer with \(W = \prod_{L}W_{L}\). A single layered linear neural network is pretty limited.</p>
+</div>
+<div class="paragraph">
+<p>Lets put all this togther to interpret what a multi-layered neural network might be doing<sup class="footnote">[<a id="_footnoteref_3" class="footnote" href="#_footnote_3" title="View footnote.">3</a>]</sup>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Lets say we input a \(100 \times 100\) image to a vggnet. The input tensor \(X\) can be thought of as a vector with 10000 basis. Each basis is representing some positional component in an image.</p>
+</li>
+<li>
+<p>We know that the very first conv layer learns gabor filter like edge detection weight templates. Lets assume that a single conv-filter generates \(100 \times 100\) output (with the appropriate padding). This can be seen as <em>transforming</em> input from positional basis vector space to edge-like basis vector space. Insead of measuring the pixel intensity, the new vector space measures the similarity of the positional input patch with respect to a template (\(3 \times 3\) filter weights). In this manner, every layer <em>transforms</em> the data into a more meaningful basis vector space, eventually leading to basis vectors consisting of output categories.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_motivation">Motivation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In the current computational model, the output of a neuron is different even though \(X\) and \(W\) perfectly align with each other but differ in magnitudes. As each \(w_{i}\) has range \([-\inf, \inf]\), backprop is essentially searching for this weight vector spanning all of the weight vector space.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="https://raghakot.github.io/images/sim_neuron/vector_similarity.png" alt="vector_similarity">
+</div>
+<div class="title">Figure 2. Similarity between vectors X and W</div>
+</div>
+<div class="paragraph">
+<p><br></p>
+</div>
+<div class="paragraph">
+<p>If we view a neuron as fundamental template matching unit, then various magnitude (length) of \(X\) and \(W\) should yield the same output. If we constrain \(W\) to be a unit vector (\(|W| = 1\)), then backprop would only need to search along points on a hypersphere of unit radius. Although the hypersphere contains infinitely many points, with sufficient discretization, the search space intuitively <em>feels</em> a lot smaller than the entire weight vector space.</p>
+</div>
+<div class="paragraph">
+<p>Considering that weight sharing (a form on constraint) in conv-nets led to huge improvements, constraining seems like a resonable approach. Weight regularization - a form of constraint - penalizes large \(|W|\) and vaguely fits the idea of encouraging weight updates to explore points along the hypersphere.</p>
+</div>
+<div class="paragraph">
+<p>I think that in general, constraining as a research direction is largely unexplored. For example, it might be interesting to try and constrain conv filters to be as <em>distinct</em> and <em>diverse</em> and possible. I will follow up on these investigations in a future blog.</p>
+</div>
+<div class="paragraph">
+<p>Getting back to the topic at hand, there are several options for constraining \(|W| = 1\).</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Penalize when \(|W|\) deviates from 1 as a regularization loss.</p>
+</li>
+<li>
+<p>Represent \(W\) in parametric form. Each \(w_{i}\) can be calculated using n-dim <a href="https://en.wikipedia.org/wiki/N-sphere#Spherical_coordinates">spherical coordinates</a>.</p>
+</li>
+<li>
+<p>Instead of computing \(W.X\), compute \(\frac{W}{|W|} \times X\). Normalizing \(W\) ensures that the output does not change due to scaling. Consequently, the gradient of output with respect to \(W\) can only exist if \(W\) changes along the unit hypersphere.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_experiments">Experiments</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>I explored option 3 as it was the simplest to implement. The architecture is very basic. All conv are \(3 \times 3\) with <code>border_mode='same'</code>. I used cifar10 dataset with augmented with 10% random shifts along width/height and horizontal flips. I also used <code>random_seed = 1337</code> to get consistent and reproducable results.</p>
+</div>
+<div class="paragraph">
+<p>The model only has 1,250,858 parameters and trained for 50 epochs with a batch size of 32 using categorical crossentropy loss with Adam optimizer.</p>
+</div>
+<div class="paragraph">
+<p>\(W_{norm}\) is calculated as:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-python" data-lang="python"># 1e-8 is used to prevent division by 0
+W_norm = W / (tf.sqrt(tf.reduce_sum(tf.square(W), axis=[0, 1, 2], keepdims=True)) + 1e-8)</code></pre>
+</div>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="https://raghakot.github.io/images/sim_neuron/model.png" alt="test_model">
+</div>
+<div class="title">Figure 3. Test model</div>
+</div>
+<div class="paragraph">
+<p><br></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_results">Results</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Final loss and accuracy values on validation set are summarized in the table.</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 1. Convergence results after 50 epochs</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top">Old Model</th>
+<th class="tableblock halign-left valign-top">New Model</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">val_loss</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.8257</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.6156</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">val_accuracy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.7165</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.7935</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>As hypothesized, constraining weight vector to a unit hypersphere speeds up training (see convergence graphs).</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="https://raghakot.github.io/images/sim_neuron/convergence.png" alt="convergence_graphs">
+</div>
+<div class="title">Figure 4. Training convergence graphs of loss and accuracy on validation set</div>
+</div>
+<div class="paragraph">
+<p><br></p>
+</div>
+<div class="paragraph">
+<p>TODO: Compare learned conv filters between old/new model.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_conclusion">Conclusion</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>We saw pretty good improvements by making a relatively simple change to the neuron computation model. To make the neuron truly compute cosine similarity, we also need to normalize \(X\). i.e., the neuron computes \(W_{norm}.X_{norm}\). The convergence graphs, however, tracked almost exactly with the computational model that just normalizes \(W\).</p>
+</div>
+<div class="paragraph">
+<p>In these experiments we used ReLU which effectively attenuates negative values. This limits the neuron to only communicate information about the degree of similarity in matching with the weight template. We effectively squish all the <em>dissimilarity</em> or the <em>lack of</em> weight template information to zero indicating no similarity. Perhaps it is useful if a neuron can communicate dissimilarity information instead. This is tricky because we need to use a non-linear activation function to maintain the representational power. Perhaps something like \(y = x^{2}\) might work.</p>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<hr>
+<div class="footnote" id="_footnote_1">
+<a href="#_footnoteref_1">1</a>. Technically, bias is involved, but i am excluding it to keep the discussion focused.
+</div>
+<div class="footnote" id="_footnote_2">
+<a href="#_footnoteref_2">2</a>. The correct weight vectors are learned using backpropogation.
+</div>
+<div class="footnote" id="_footnote_3">
+<a href="#_footnoteref_3">3</a>. This is my own interpretation and might as well be incorrect.
 </div>
 </div>]]></description><link>https://raghakot.github.io/2017/01/03/Exploring-alternative-neural-computational-models.html</link><guid isPermaLink="true">https://raghakot.github.io/2017/01/03/Exploring-alternative-neural-computational-models.html</guid><dc:creator><![CDATA[Raghavendra Kotikalapudi]]></dc:creator><pubDate>Tue, 03 Jan 2017 00:00:00 GMT</pubDate></item><item><title><![CDATA[Facebook hacker cup: Power Overwhelming]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
