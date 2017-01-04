@@ -97,4 +97,4 @@ TODO: Compare learned conv filters between old/new model.
 
 We saw pretty good improvements by making a relatively simple change to the neuron computation model. In these experiments we used ReLU which effectively attenuates negative values. This limits the neuron to only communicate information about the degree of similarity in matching with the weight template. ReLU effectively squishes _dissimilarity_ or the _inverse_ of weight template information to zero indicating no similarity. Perhaps it is useful if a neuron can communicate dissimilarity information instead. For example, lack of a specific stripe pattern might increase the probability of one cat species over another. 
 
-First thought might be to use a `linear` activation function, but this limits the representational power. A quick experiment with `ELU` activation confirms this intuition by reaching `val_loss=` and `val_accuracy=`.
+First thought might be to use a `linear` activation function, but this limits the representational power. A quick experiment with `ELU` activation, however, did not show any significant improvement over ReLU. 
