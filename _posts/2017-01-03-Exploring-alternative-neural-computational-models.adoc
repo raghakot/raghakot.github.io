@@ -1,4 +1,4 @@
-= Exploring neural computational models.
+= Exploring alternative neural computational models.
 
 == Overview
 
@@ -45,7 +45,13 @@ I think that in general, constraining as a research direction is largely unexplo
 
 Getting back to the topic at hand, there are several options for constraining \(|W| = 1\). 
 
-* Penalize when \(|W|\) deviates from 1 as a regularization loss.
-* Represent \(W\) in parametric form. Each \(w_{i}\) can be calculated using n-dim link:https://en.wikipedia.org/wiki/N-sphere#Spherical_coordinates[spherical coordinates].
-* Instead of computing \(W.X\), compute \(\frac{W}{|W|} \times X\). Normalizing \(W\) ensures that the output does not change due to scaling. Consequently, the gradient of output with respect to \(W\) can only exist if \(W\) changes along the unit hypersphere.
+1. Penalize when \(|W|\) deviates from 1 as a regularization loss.
+2. Represent \(W\) in parametric form. Each \(w_{i}\) can be calculated using n-dim link:https://en.wikipedia.org/wiki/N-sphere#Spherical_coordinates[spherical coordinates].
+3. Instead of computing \(W.X\), compute \(\frac{W}{|W|} \times X\). Normalizing \(W\) ensures that the output does not change due to scaling. Consequently, the gradient of output with respect to \(W\) can only exist if \(W\) changes along the unit hypersphere.
+
+I explored option 3 as it was the simplest to implement and has some intriguing properties.
+
+* 
+
+
 
