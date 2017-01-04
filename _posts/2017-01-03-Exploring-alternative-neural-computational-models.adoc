@@ -6,7 +6,7 @@ Despite different variations of neural networks architectures such as LSTMs, Con
 
 [.text-center]
 .Computation model of a neuron
-image::sim_neuron/neuron_model.jpeg[neuron_model]
+image::sim_neuron/neuron_model.jpeg[neuron_model, 400]
 {empty} +
 
 All architectures build on this fundamental computational model. Let us examine what the computation is conceptually doing in a step by step fashion.
@@ -34,7 +34,7 @@ In the current computational model, the output of a neuron is different even tho
 
 [.text-center]
 .Similarity between vectors X and W
-image::sim_neuron/vector_similarity.png[vector_similarity]
+image::sim_neuron/vector_similarity.png[vector_similarity, 300]
 {empty} +
 
 If we view a neuron as fundamental template matching unit, then various magnitude (length) of \(X\) and \(W\) should yield the same output. If we constrain \(W\) to be a unit vector (\(|W| = 1\)), then backprop would only need to search along points on a hypersphere of unit radius. Although the hypersphere contains infinitely many points, with sufficient discretization, the search space intuitively _feels_ a lot smaller than the entire weight vector space.
@@ -64,7 +64,7 @@ W_norm = W / (tf.sqrt(tf.reduce_sum(tf.square(W), axis=[0, 1, 2], keepdims=True)
 
 [.text-center]
 .Test model
-image::sim_neuron/model.png[test_model]
+image::sim_neuron/model.png[test_model, 300]
 {empty} +
 
 == Results
@@ -88,7 +88,7 @@ As hypothesized, constraining weight vector to a unit hypersphere speeds up trai
 
 [.text-center]
 .Training convergence graphs of loss and accuracy on validation set
-image::sim_neuron/convergence.png[convergence_graphs]
+image::sim_neuron/convergence.png[convergence_graphs, 600]
 {empty} +
 
 TODO: Compare learned conv filters between old/new model.
