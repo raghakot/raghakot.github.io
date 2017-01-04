@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Math, Tech, Machine Learning, Life...]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Wed, 04 Jan 2017 08:58:34 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Exploring alternative neural computational models.]]></title><description><![CDATA[<div class="sect1">
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Math, Tech, Machine Learning, Life...]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Wed, 04 Jan 2017 09:04:54 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Exploring alternative neural computational models.]]></title><description><![CDATA[<div class="sect1">
 <h2 id="_overview">Overview</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -6,7 +6,7 @@
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="https://raghakot.github.io/images/sim_neuron/neuron_model.jpeg" alt="neuron_model">
+<img src="https://raghakot.github.io/images/sim_neuron/neuron_model.jpeg" alt="neuron_model" width="400">
 </div>
 <div class="title">Figure 1. Computation model of a neuron</div>
 </div>
@@ -61,7 +61,7 @@
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="https://raghakot.github.io/images/sim_neuron/vector_similarity.png" alt="vector_similarity">
+<img src="https://raghakot.github.io/images/sim_neuron/vector_similarity.png" alt="vector_similarity" width="300">
 </div>
 <div class="title">Figure 2. Similarity between vectors X and W</div>
 </div>
@@ -115,7 +115,7 @@ W_norm = W / (tf.sqrt(tf.reduce_sum(tf.square(W), axis=[0, 1, 2], keepdims=True)
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="https://raghakot.github.io/images/sim_neuron/model.png" alt="test_model">
+<img src="https://raghakot.github.io/images/sim_neuron/model.png" alt="test_model" width="300">
 </div>
 <div class="title">Figure 3. Test model</div>
 </div>
@@ -162,7 +162,7 @@ W_norm = W / (tf.sqrt(tf.reduce_sum(tf.square(W), axis=[0, 1, 2], keepdims=True)
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="https://raghakot.github.io/images/sim_neuron/convergence.png" alt="convergence_graphs">
+<img src="https://raghakot.github.io/images/sim_neuron/convergence.png" alt="convergence_graphs" width="600">
 </div>
 <div class="title">Figure 4. Training convergence graphs of loss and accuracy on validation set</div>
 </div>
