@@ -91,8 +91,6 @@ As hypothesized, constraining weight vector to a unit hypersphere speeds up trai
 image::sim_neuron/convergence.png[convergence_graphs, 800]
 {empty} +
 
-TODO: Compare learned conv filters between old/new model.
-
 == Conclusion
 
 We saw pretty good improvements by making a relatively simple change to the neuron computation model. In these experiments we used ReLU which effectively attenuates negative values. This limits the neuron to only communicate information about the degree of similarity in matching with the weight template. ReLU effectively squishes _dissimilarity_ or the _inverse_ of weight template information to zero indicating no similarity. Perhaps it is useful if a neuron can communicate dissimilarity information instead. For example, lack of a specific stripe pattern might increase the probability of one cat species over another. 
