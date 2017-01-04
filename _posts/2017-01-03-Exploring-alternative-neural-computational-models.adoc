@@ -51,8 +51,50 @@ Getting back to the topic at hand, there are several options for constraining \(
 
 == Experiments
 
-I explored option 3 as it was the simplest to implement.
+I explored option 3 as it was the simplest to implement. The architecture is very basic. All conv are \(3 \times 3\) with `border_mode='same'`. I used cifar10 dataset with augmented with 10% random shifts along width/height and horizontal flips. I also used `random_seed = 1337` to get consistent and reproducable results.
 
+The model only has 1,250,858 parameters and trained for 50 epochs with a batch size of 32 using categorical crossentropy loss with Adam optimizer.
 
+\(W_{norm}\) is calculated as:
+[source,python]
+----
+# 1e-8 is used to prevent division by 0
+W_norm = W / (tf.sqrt(tf.reduce_sum(tf.square(W), axis=[0, 1, 2], keepdims=True)) + 1e-8)
+----
 
+[.text-center]
+.Test model
+image::sim_neuron/model.png[test_model]
+{empty} +
 
+== Results
+
+Final loss and accuracy values on validation set are summarized in the table. 
+
+.Convergence results after 50 epochs
+|===
+| |Old Model |New Model
+
+|val_loss
+|0.8257
+|0.6156
+
+|val_accuracy
+|0.7165
+|0.7935
+|===
+
+As hypothesized, constraining weight vector to a unit hypersphere speeds up training (see convergence graphs).
+
+[.text-center]
+.Training convergence graphs of loss and accuracy on validation set
+image::sim_neuron/convergence.png[convergence_graphs]
+{empty} +
+
+TODO: Compare learned conv filters between old/new model.
+
+== Conclusion
+
+We saw pretty good improvements by making a relatively simple change to the neuron computation model. To make the neuron truly compute cosine similarity, we also need to normalize \(X\). i.e., the neuron computes \(W_{norm}.X_{norm}\). The convergence graphs, however, tracked almost exactly with the computational model that just normalizes \(W\).
+
+In these experiments we used ReLU which effectively attenuates negative values. This limits the neuron to only communicate information about the degree of similarity in matching with the weight template. We effectively squish all the _dissimilarity_ or the _lack of_ weight template information to zero indicating no similarity. Perhaps it is useful if a neuron can communicate dissimilarity information instead. This is tricky because we need to use a non-linear activation function to maintain the representational power. Perhaps something like \(y = x^{2}\) might work.
