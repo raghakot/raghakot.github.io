@@ -11,7 +11,7 @@ image::sim_neuron/neuron_model.jpeg[neuron_model, 400]
 
 All architectures build on this fundamental computational model. Let us examine what the computation is conceptually doing in a step by step fashion.
 
-* Each input component \(x_{i}\) is being magnified or diminished when multiplied with a scaling factor \(w_{i}\). This can be interpreted as enhancing or diminishing the contribution of some pattern component \(x_{i}\) to the output decision. Think of these weights as _knobs_ that range from \([-\inf, +\inf]\). The task of learning is to _tune_ these knobs to the correct value.
+* Each input component \(x_{i}\) is being magnified or diminished when multiplied with a scaling factor \(w_{i}\). This can be interpreted as enhancing or diminishing the contribution of some pattern component \(x_{i}\) to the output decision. Think of these weights as _knobs_ that range from \([-\infty, +\infty]\). The task of learning is to _tune_ these knobs to the correct value.
 
 * The computation \(W.X\) is then enhancing/diminishing various input components of vector \(X\). In terms of linear algebra, the dot product of \(W\) and \(X\) can be interpeted as computing similarity. Consider \(X = (x_{1}, x_{2})\) and \(W = (w_{1}, w_{2})\). If you imagine plotting these vectors on a 2D graph paper, \(\frac{W.X}{|W||X|}\) is the cosine of angle between these two vectors. When these two vectors align (point in the same direction), the value of \(W.X\) is maximized indicating high degree of similarity. From this point of view, neuron is fundametally a pattern matching unit which outputs a large value when it matches a specific pattern (encoded by weights) in the inputfootnote:[The correct weight vectors are learned using backpropogation.].
 
@@ -30,7 +30,7 @@ Lets put all this togther to interpret what a multi-layered neural network might
 
 == Motivation
 
-In the current computational model, the output of a neuron is different even though \(X\) and \(W\) perfectly align with each other but differ in magnitudes. As each \(w_{i}\) has range \([-\inf, \inf]\), backprop is essentially searching for this weight vector spanning all of the weight vector space.
+In the current computational model, the output of a neuron is different even though \(X\) and \(W\) perfectly align with each other but differ in magnitudes. As each \(w_{i}\) has range \([-\infty, \infty]\), backprop is essentially searching for this weight vector spanning all of the weight vector space.
 
 [.text-center]
 .Similarity between vectors X and W
