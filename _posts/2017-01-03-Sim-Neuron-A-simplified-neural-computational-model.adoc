@@ -2,7 +2,11 @@
 
 == Overview
 
-Despite different variations of neural networks architectures such as LSTMs, ConvNets, endcoder-decoder architectures and so on, the computational model of a neuron hasn't changed since inception. Every neuron has \(n\) incomming inputs \(X = (x_{1}, x_{2}, ..., x_{n})\) with weights \(W = (w_{1}, w_{2}, ..., w_{n})\). A neuron then computes \(W.X = \sum_{i=0}^{n}w_{i}.x_{i}\) and then uses some nonlinearity like sigmoid or ReLU to generate the output. All architectures build on this fundamental computational model. Let us examine what the computation is conceptually doing in a step by step fashion.
+Despite different variations of neural networks architectures such as LSTMs, ConvNets, endcoder-decoder architectures and so on, the computational model of a neuron hasn't changed since inception. Every neuron has \(n\) incomming inputs \(X = (x_{1}, x_{2}, ..., x_{n})\) with weights \(W = (w_{1}, w_{2}, ..., w_{n})\). A neuron then computes \(W.X = \sum_{i=0}^{n}w_{i}.x_{i}\) and then uses some nonlinearity like sigmoid or ReLU to generate the output. 
+
+
+
+All architectures build on this fundamental computational model. Let us examine what the computation is conceptually doing in a step by step fashion.
 
 1. Each input component \(x_{i}\) is being magnified or diminished when multiplied with a scaling factor \(w_{i}\). This can be interpreted as enhancing or diminishing the contribution of some pattern component \(x_{i}\) to the output decision. Think of these weights as _knobs_ that range from \([-\inf, +\inf]\). The task of learning is to _tune_ these knobs to the correct value.
 2. The computation \(W.X\) is then enhancing/diminishing various input components of \(X\). In terms of linear algebra, the dot product of \(W\) and \(X\) can be interpeted as computing similarity. Consider \(X = (x_{1}, x_{2})\) and \(W = (w_{1}, w_{2})\). If you imagine plotting these vectors on a 2D graph paper, \(\frac{W.X}{|W||X|}\) is the cosine of angle between these two vectors. When these two vectors align, but irrespective of magnitude, the output value \(W.X\) is maximized indicating max similarility. From this point of view, neuron is fundametally a pattern matching unit which outputs a max value when it recognizes a specific pattern (encoded by weights). The weight pattern is learned via gradient descent.
