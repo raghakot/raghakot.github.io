@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Math, Tech, Machine Learning, Life...]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Wed, 04 Jan 2017 09:04:54 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Exploring alternative neural computational models.]]></title><description><![CDATA[<div class="sect1">
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Math, Tech, Machine Learning, Life...]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Wed, 04 Jan 2017 09:07:00 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Exploring alternative neural computational models.]]></title><description><![CDATA[<div class="sect1">
 <h2 id="_overview">Overview</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -19,7 +19,7 @@
 <div class="ulist">
 <ul>
 <li>
-<p>Each input component \(x_{i}\) is being magnified or diminished when multiplied with a scaling factor \(w_{i}\). This can be interpreted as enhancing or diminishing the contribution of some pattern component \(x_{i}\) to the output decision. Think of these weights as <em>knobs</em> that range from \([-\inf, +\inf]\). The task of learning is to <em>tune</em> these knobs to the correct value.</p>
+<p>Each input component \(x_{i}\) is being magnified or diminished when multiplied with a scaling factor \(w_{i}\). This can be interpreted as enhancing or diminishing the contribution of some pattern component \(x_{i}\) to the output decision. Think of these weights as <em>knobs</em> that range from \([-\infty, +\infty]\). The task of learning is to <em>tune</em> these knobs to the correct value.</p>
 </li>
 <li>
 <p>The computation \(W.X\) is then enhancing/diminishing various input components of vector \(X\). In terms of linear algebra, the dot product of \(W\) and \(X\) can be interpeted as computing similarity. Consider \(X = (x_{1}, x_{2})\) and \(W = (w_{1}, w_{2})\). If you imagine plotting these vectors on a 2D graph paper, \(\frac{W.X}{|W||X|}\) is the cosine of angle between these two vectors. When these two vectors align (point in the same direction), the value of \(W.X\) is maximized indicating high degree of similarity. From this point of view, neuron is fundametally a pattern matching unit which outputs a large value when it matches a specific pattern (encoded by weights) in the input<sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnote_2" title="View footnote.">2</a>]</sup>.</p>
@@ -57,7 +57,7 @@
 <h2 id="_motivation">Motivation</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In the current computational model, the output of a neuron is different even though \(X\) and \(W\) perfectly align with each other but differ in magnitudes. As each \(w_{i}\) has range \([-\inf, \inf]\), backprop is essentially searching for this weight vector spanning all of the weight vector space.</p>
+<p>In the current computational model, the output of a neuron is different even though \(X\) and \(W\) perfectly align with each other but differ in magnitudes. As each \(w_{i}\) has range \([-\infty, \infty]\), backprop is essentially searching for this weight vector spanning all of the weight vector space.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
