@@ -87,7 +87,7 @@ Final loss and accuracy values on validation set are summarized in the table.
 As hypothesized, constraining weight vector to a unit hypersphere speeds up training (see convergence graphs).
 
 [.text-center]
-.Training convergence graphs of loss and accuracy on validation set
+.Training convergence graphs for loss and accuracy on validation set (blue = old model, red = new model)
 image::sim_neuron/convergence.png[convergence_graphs, 800]
 {empty} +
 
