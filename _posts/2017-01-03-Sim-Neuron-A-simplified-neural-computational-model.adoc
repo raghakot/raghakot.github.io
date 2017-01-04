@@ -40,6 +40,6 @@ If we view a neuron as fundamental template matching unit, then various magnitud
 
 Considering that weight sharing in conv-nets led to huge improvements (a form on constraint), constraining seems like a good approach. Weight regularization, a form of constraint, penalizes scaling \(W\) and vaguely fits the idea of encouraging weight updates to explore points along the hypersphere.
 
-I think that in general, constraining as a research direction is largely unexplored. For example, it might be interesting to try and constraint conv filters to be as _distinct_ and _diverse_ and possible.
+I think that in general, constraining as a research direction is largely unexplored. For example, it might be interesting to try and constraint conv filters to be as _distinct_ and _diverse_ and possible. I will follow up on these investigations in a future blog.
 
 The proposal is simple. Each neuron should compute: \(Y = \frac{W.X}{|W||X|}\). From a layer perspective, instead of computing \(W \times X\) we are now computing \(\frac{W \times X}{|X|}\).
