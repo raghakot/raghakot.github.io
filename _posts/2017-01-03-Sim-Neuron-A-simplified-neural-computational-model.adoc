@@ -38,6 +38,4 @@ image::sim_neuron/vector_similarity.png[vector_similarity]
 
 If we view a neuron as fundamental template matching unit, then various magnitude (length) of \(X\) and \(W\) should yield the same output. If we constrain \(W\) to be a unit vector (\(|W| = 1\)), then backprop would only need to search along points on a hypersphere of unit radius. Although the hypersphere contains infinitely many points, with sufficient discretization, the search space intuitively _feels_ a lot smaller than the entire weight vector space.
 
-It also _feels_ like a simplification because we are now effectively searching for a unit vector \(W\) confined to various rotations around the origin. If \(W\) can be represented in parametric form, we are searching for \(\theta \in [0, 360]\) as opposed to \(\w_{i}\) which can range from \([-\inf, +\inf]\). Even though both spaces are infinite, with a small enough discretization, the search space of \(\theta\) seems a lot smaller.
-
 The proposal is simple. Each neuron should compute: \(Y = \frac{W.X}{|W||X|}\). From a layer perspective, instead of computing \(W \times X\) we are now computing \(\frac{W \times X}{|X|}\).
