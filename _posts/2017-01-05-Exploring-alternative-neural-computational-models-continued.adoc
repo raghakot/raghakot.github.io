@@ -24,13 +24,13 @@ Consider the following weight vector template corresponding to vertical edge pat
 image::alt_metrics/w_template.jpg[weight_template, 200]
 {empty} +
 
-When a neuron tries to match this pattern in a \(3 \times 3\) input image patch, it will only output a high value if a vertical edge is found in the center of the image patch. This is however not a problem in practice as the filter is slid across all possible \(3 \times 3\) patches within the input image as depicted in the figure below.
+When a neuron tries to match this pattern in a \(3 \times 3\) input image patch, it will only output a high value if a vertical edge is found in the center of the image patch. i.e., dot product is not invariant to shifts. My first thought was to use link:https://en.wikipedia.org/wiki/Pearson_product-moment_correlation_coefficient[pearson coefficient] as it provides shift invariance. However, this not a problem in practice as the filter is slid across all possible \(3 \times 3\) patches within the input image.
 
 [.text-center]
 .Sliding filter over input image to generate the output activation area (image borrowed from link:http://intellabs.github.io/RiverTrail/tutorial/[river trail documentation])
 image::alt_metrics/sliding_operation.png[sliding_operation, 400]
 {empty} +
 
-The output activation area communicates if the corresponding image patch matches the weight template pattern.
+In a way, the sliding window operation is quite clever as it communicates information about _parts of the image_ matching filter template without increasing the number of _trainable_ parameters.
 
 
