@@ -33,4 +33,6 @@ image::alt_metrics/sliding_operation.png[sliding_operation, 400]
 
 In a way, the sliding window operation is quite clever as it communicates information about _parts of the image_ matching filter template without increasing the number of _trainable_ parameters.
 
+How about rotational invariance? 
+
 
