@@ -19,3 +19,7 @@ Consider the following weight vector template correspond to `+` like pattern:
 0.2 & 1.0 & 0.2 
 \end{bmatrix} \)
 
+[.text-center]
+.Visual representation of \(W\) template
+image::alt_metrics/w_template.jpg[weight_template, 200]
+{empty} +
