@@ -11,5 +11,10 @@ The remainder of this post is set out to explore this question.
 
 == Similarity metric candidates
 
+Lets begin by examining what the dot product might be lacking. Consider the template vector:
 
-Lets begin by examining what the dot prodct might be lacking. Consider vector W = 
+\(W = \begin{bmatrix}
+0.2 & 1.0 & 0.2\\ 
+0.2 & 1.0 & 0.2\\ 
+0.2 & 1.0  & 0.2 
+\end{bmatrix} \)
