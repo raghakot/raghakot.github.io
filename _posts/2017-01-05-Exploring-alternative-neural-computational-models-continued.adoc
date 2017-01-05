@@ -31,4 +31,6 @@ When a neuron tries to match this pattern in a \(3 \times 3\) input image patch,
 image::alt_metrics/sliding_operation.png[sliding_operation, 400]
 {empty} +
 
+The output activation area commicates if the corresponding image patch matches the weight template pattern.
+
 
