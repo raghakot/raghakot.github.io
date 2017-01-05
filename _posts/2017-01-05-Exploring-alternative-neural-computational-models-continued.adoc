@@ -1,0 +1,15 @@
+= Exploring alternative neural computational models, continued
+:hp-tags: deep learning
+
+This is a continuation from the first link:https://raghakot.github.io/2017/01/03/Exploring-alternative-neural-computational-models.html[post] on exporing alternative neural computational models.
+
+To recap quickly, a neuron is fundamentally acting as a pattern matching unit by computing the dot product \(W \cdot X\), which is equivalent to un-normalized cosine similarity between vectors \(W\) and \(X\). This raises an obvious question.
+
+> What if the neuron computes alternative similarity metrics?
+
+The remainder of this post is set out to explore this question.
+
+== Similarity metric candidates
+
+
+Lets begin by examining what the dot prodct might be lacking. Consider vector W = 
