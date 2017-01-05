@@ -11,10 +11,11 @@ The remainder of this post is set out to explore this question.
 
 == Similarity metric candidates
 
-Lets begin by examining what the dot product might be lacking. Consider the template vector:
+Consider the following weight vector template correspond to `+` like pattern:
 
 \(W = \begin{bmatrix}
 0.2 & 1.0 & 0.2\\ 
-0.2 & 1.0 & 0.2\\ 
-0.2 & 1.0  & 0.2 
+1.0 & 1.0 & 1.0\\
+0.2 & 1.0 & 0.2 
 \end{bmatrix} \)
+
