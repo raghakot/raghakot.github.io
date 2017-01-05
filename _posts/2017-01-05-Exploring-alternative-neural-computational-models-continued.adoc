@@ -11,7 +11,7 @@ The remainder of this post is set out to explore this question.
 
 == Similarity metric candidates
 
-Consider the following weight vector template correspond to `+` like pattern:
+Consider the following weight vector template corresponding to vertical edge pattern `|`:
 
 \(W = \begin{bmatrix}
 0.2 & 1.0 & 0.2\\ 
@@ -23,3 +23,7 @@ Consider the following weight vector template correspond to `+` like pattern:
 .Visual representation of \(W\) template
 image::alt_metrics/w_template.jpg[weight_template, 200]
 {empty} +
+
+When a neuron tries to match this pattern in a \(3 \times 3\) input image patch, it will only output a high value if a vertical edge is found in the center of the image patch. This is however not a problem in practice as the filter is slid across all possible \(3 \times 3\) patches within the input image.
+
+
