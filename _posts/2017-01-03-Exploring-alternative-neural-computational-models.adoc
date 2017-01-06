@@ -5,7 +5,7 @@ Despite different variations of neural networks architectures, the computational
 
 [.text-center]
 .Computation model of a neuron
-image::sim_neuron/neuron_model.jpeg[neuron_model, 400]
+image::alt_neural1/neuron_model.jpeg[neuron_model, 400]
 {empty} +
 
 As far as i am aware, all architectures build on this fundamental computational model. Let us examine what the computation is conceptually doing in a step by step fashion.
@@ -33,7 +33,7 @@ In the current computational model, the output of a neuron is different even tho
 
 [.text-center]
 .Similarity between vectors X and W
-image::sim_neuron/vector_similarity.png[vector_similarity, 300]
+image::alt_neural1/vector_similarity.png[vector_similarity, 300]
 {empty} +
 
 If we view a neuron as fundamental template matching unit, then various magnitude (length) of \(X\) and \(W\) should yield the same output. If we constrain \(W\) to be a unit vector (\(|W| = 1\)), then backprop would only need to search along points on a hypersphere of unit radius. Although the hypersphere contains infinitely many points, with sufficient discretization, the search space intuitively _feels_ a lot smaller than the entire weight vector space.
@@ -87,7 +87,7 @@ As hypothesized, constraining weight vector to a unit hypersphere speeds up trai
 
 [.text-center]
 .Convergence graphs for loss and accuracy on validation set for [aqua]#old# and [red]#new# computational models
-image::sim_neuron/convergence.png[convergence_graphs, 800]
+image::alt_neural1/convergence.png[convergence_graphs, 800]
 {empty} +
 
 == Conclusion
