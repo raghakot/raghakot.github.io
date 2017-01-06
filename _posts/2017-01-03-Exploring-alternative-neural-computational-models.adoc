@@ -63,7 +63,7 @@ W_norm = W / (tf.sqrt(tf.reduce_sum(tf.square(W), axis=[0, 1, 2], keepdims=True)
 
 [.text-center]
 .Test model
-image::sim_neuron/model.png[test_model, 300]
+image::alt_neural1/model.png[test_model, 300]
 {empty} +
 
 == Results
