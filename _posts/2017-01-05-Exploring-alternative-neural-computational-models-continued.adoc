@@ -39,3 +39,4 @@ How about rotational invariance? We know that a lot of conv filters are identica
 .A few conv filters of a vggnet (image borrowed from keras link:https://blog.keras.io/how-convolutional-neural-networks-see-the-world.html[blog post]). Notice how some filters are identical but rotated.
 image::alt_neural2/conv_filters.jpg[conv_filters, 600]
 {empty} +
+
