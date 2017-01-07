@@ -45,3 +45,13 @@ image::alt_neural2/conv_filters.jpg[conv_filters, 600]
 {empty} +
 
 == Building in rotational invariance
+
+How can we build rotational invariance into dot product similarity computation? I did a bit of searching and couldn't find any obvious similarity metrics that do this. Sure there is link:https://en.wikipedia.org/wiki/Scale-invariant_feature_transform[SIFT] and link:https://en.wikipedia.org/wiki/Speeded_up_robust_features[SURF], but they are complex computations and cannot be expressed in terms of dor products alone.
+
+I dont think there is a simple way to come up with a metric (there would already be one if this was the case). Instead, lets try the brute force approach of matching the input patch with all possible rotations of the filter. This is inspired by how translational invariance is acheived using similar strategy.
+
+
+
+
+
+
