@@ -50,7 +50,7 @@ How can we build rotational invariance into dot product similarity computation? 
 
 I dont think there is a simple way to come up with a metric (there would already be one if this was the case). Instead, lets try the brute force approach of matching the input patch with all possible rotations of the filter. This is inspired by how translational invariance is acheived using similar strategy.
 
-
+The key idea/motivativation is simple. We want the neuron to output high value even if some rotated version of pattern is present in the input.
 
 
 
