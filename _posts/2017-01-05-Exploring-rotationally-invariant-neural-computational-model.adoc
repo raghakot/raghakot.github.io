@@ -37,12 +37,11 @@ Now suppose the face (represented by two red and one magenta point) is moved to 
 image::alt_neural2/conv_net2.png[conv_illustration, 400]
 {empty} +
 
-So far so good. How about rotational invariance? Pooling helps to some extent, b
-
-How about rotational invariance? We know that a lot of conv filters are identical, rotated by some non-random factor.
+So far so good. How about rotational invariance? We know that a lot of learned conv filters are identical, but rotated by some non-random factor. Instead of learning rotational invariance in this manner, we will try to build it directly into the computational model.
 
 [.text-center]
 .A few conv filters of a vggnet (image borrowed from keras link:https://blog.keras.io/how-convolutional-neural-networks-see-the-world.html[blog post]). Notice how some filters are identical but rotated.
 image::alt_neural2/conv_filters.jpg[conv_filters, 600]
 {empty} +
 
+== Building in rotational invariance
