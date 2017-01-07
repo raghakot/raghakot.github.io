@@ -1,17 +1,9 @@
-= Exploring alternative neural computational models, continued
+= Rotationally invariant neuron
 :hp-tags: deep learning
 
-This is a continuation from the first link:https://raghakot.github.io/2017/01/03/Exploring-alternative-neural-computational-models.html[post] on exporing alternative neural computational models.
+This is a continuation from the first link:https://raghakot.github.io/2017/01/03/Exploring-alternative-neural-computational-models.html[post] on exporing alternative neural computational models. To recap quickly, a neuron is fundamentally acting as a pattern matching unit by computing the dot product \(W \cdot X\), which is equivalent to un-normalized cosine similarity between vectors \(W\) and \(X\).
 
-To recap quickly, a neuron is fundamentally acting as a pattern matching unit by computing the dot product \(W \cdot X\), which is equivalent to un-normalized cosine similarity between vectors \(W\) and \(X\). This raises an obvious question.
-
-> What if the neuron computes alternative similarity metrics?
-
-The remainder of this post is set out to explore this question.
-
-== Similarity metric candidates
-
-Consider the following weight vector template corresponding to vertical edge pattern `|`:
+This model of pattern matching is very naive, in a sense that it is not invariant to translations or rotations. Consider the following weight vector template (conv filter) corresponding to vertical edge pattern `|`:
 
 \(W = \begin{bmatrix}
 0.2 & 1.0 & 0.2\\ 
