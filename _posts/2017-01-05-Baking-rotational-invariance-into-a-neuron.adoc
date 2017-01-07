@@ -46,9 +46,11 @@ image::alt_neural2/conv_filters.jpg[conv_filters, 600]
 
 == Endowing rotational invariance
 
-How can we build rotational invariance into dot product similarity computation? I did a bit of searching and couldn't find any obvious similarity metrics that do this. Sure there is link:https://en.wikipedia.org/wiki/Scale-invariant_feature_transform[SIFT] and link:https://en.wikipedia.org/wiki/Speeded_up_robust_features[SURF], but they are complex computations and cannot be expressed in terms of dor products alone.
+How can we build rotational invariance into dot product similarity computation? After searching for a bit on the internet, I couldn't find any obvious similarity metrics that do this. Sure there is link:https://en.wikipedia.org/wiki/Scale-invariant_feature_transform[SIFT] and link:https://en.wikipedia.org/wiki/Speeded_up_robust_features[SURF], but they are complex computations and cannot be expressed in terms of dot products alone.
 
-Instead of trying to come up with a rotationally invariant similarity metric, I decided to try the brute force approach of matching the input patch with all possible rotations of the filter. If we take `max` of all those outputs, then, in principle, we are choosing the output resulting from the rotated filter that best `aligns` with the pattern in input patch. This startegy is partly inspired by how conv nets gets around translational invariance problem by simply sliding the filter over all possible locations.
+Instead of trying to come up with a metric, I decided to try the brute force approach of matching the input patch with all possible rotations of the filter. If we take `max` of all those outputs, then, in principle, we are choosing the output resulting from the rotated filter that best `aligns` with the pattern in input patch. This startegy is partly inspired by how conv nets gets around translational invariance problem by simply sliding the filter over all possible locations. Unlike sliding operation, which is an _architectural_ property rather than the computational property of the neuron, the brute force rotations of filters can be confined within the abstraction of neuron, making it a part of the computational model.
+
+Lets look at this idea in more concrete terms. A neuron receives input \(X\) and has associated weights \(W\). Let \(r\) denote some arbitrary discrete rotation \(\theta\). Instead of directly computing \(W \cdot X\), 
 
 
 
