@@ -27,14 +27,14 @@ In a way, the sliding window operation is quite clever as it communicates inform
 
 [.text-center]
 .Hypothetical conv-net filters to illustrate how a `human` might be detected. (image borrowed from quora link:https://www.quora.com/How-is-a-convolutional-neural-network-able-to-learn-invariant-features[post])
-image::alt_neural2/conv_net1.png[conv_illustration, 400]
+image::alt_neural2/conv_net1.png[conv_illustration, 600]
 {empty} +
 
 Now suppose the face (represented by two red and one magenta point) is moved to another corner as shown in fig4. The same activations occur, leading to the same end result.
 
 [.text-center]
 .Illustration of activations when an input object is shifted. (image borrowed from quora link:https://www.quora.com/How-is-a-convolutional-neural-network-able-to-learn-invariant-features[post])
-image::alt_neural2/conv_net2.png[conv_illustration, 400]
+image::alt_neural2/conv_net2.png[conv_illustration, 600]
 {empty} +
 
 So far so good. How about rotational invariance? We know that a lot of learned conv filters are identical, but rotated by some non-random factor. Instead of learning rotational invariance in this manner, we will try to build it directly into the computational model. The motivativation is simple - the neuron should output high value even if some rotated version of pattern is present in the input. Hopefully this eliminates redundant filters and improves test time accuracy.
@@ -44,7 +44,7 @@ So far so good. How about rotational invariance? We know that a lot of learned c
 image::alt_neural2/conv_filters.jpg[conv_filters, 600]
 {empty} +
 
-== Building in rotational invariance
+== Endowing rotational invariance
 
 How can we build rotational invariance into dot product similarity computation? I did a bit of searching and couldn't find any obvious similarity metrics that do this. Sure there is link:https://en.wikipedia.org/wiki/Scale-invariant_feature_transform[SIFT] and link:https://en.wikipedia.org/wiki/Speeded_up_robust_features[SURF], but they are complex computations and cannot be expressed in terms of dor products alone.
 
