@@ -1,4 +1,4 @@
-= Rotationally invariant neuron
+= Exploring rotationally invariant neural computational model
 :hp-tags: deep learning
 
 This is a continuation from the first link:https://raghakot.github.io/2017/01/03/Exploring-alternative-neural-computational-models.html[post] on exporing alternative neural computational models. To recap quickly, a neuron is fundamentally acting as a pattern matching unit by computing the dot product \(W \cdot X\), which is equivalent to un-normalized cosine similarity between vectors \(W\) and \(X\).
@@ -16,14 +16,28 @@ This model of pattern matching is very naive, in a sense that it is not invarian
 image::alt_neural2/vertical_line_filter.png[vertical_line_filter, 300]
 {empty} +
 
-When a neuron tries to match this pattern in a \(3 \times 3\) input image patch, it will only output a high value if a vertical edge is found in the center of the image patch. i.e., dot product is not invariant to shifts. My first thought was to use link:https://en.wikipedia.org/wiki/Pearson_product-moment_correlation_coefficient[pearson coefficient] as it provides shift invariance. However, this not a problem in practice as the filter is slid across all possible \(3 \times 3\) patches within the input image.
+When a neuron tries to match this pattern in a \(3 \times 3\) input image patch, it will only output a high value if a vertical edge is found in the center of the image patch. i.e., dot product is not invariant to shifts. My first thought was to use link:https://en.wikipedia.org/wiki/Pearson_product-moment_correlation_coefficient[pearson coefficient] as it provides shift invariance. However, this not a problem in practice as the filter is slid across all possible \(3 \times 3\) patches within the input image (see fig2).
 
 [.text-center]
 .Sliding filter over input image to generate the output activation area (image borrowed from link:http://intellabs.github.io/RiverTrail/tutorial/[river trail documentation])
 image::alt_neural2/conv_illustration.png[conv_illustration, 400]
 {empty} +
 
-In a way, the sliding window operation is quite clever as it communicates information about _parts of the image_ matching filter template without increasing the number of _trainable_ parameters.
+In a way, the sliding window operation is quite clever as it communicates information about _parts of the image_ matching filter template without increasing the number of _trainable_ parameters.  As a concrete example, consider a conv-net with filters as shown in fig3footnote:[First layer filters generally detect basic lines and textures, this is just a simplified view to illustrate the point]. The first layer filters (green) detect eyes, nose etc., second layer filters (yellow) detect face, leg etc., by aggregating features from first layer and so onfootnote:[In reality, convolution filters may detect objects that have no meaningful interpretation].
+
+[.text-center]
+.Hypothetical conv-net filters to illustrate how a `human` might be detected. (image borrowed from quora link:https://www.quora.com/How-is-a-convolutional-neural-network-able-to-learn-invariant-features[post])
+image::alt_neural2/conv_net1.png[conv_illustration, 400]
+{empty} +
+
+Now suppose the face (represented by two red and one magenta point) is moved to another corner as shown in fig4. The same activations occur, leading to the same end result.
+
+[.text-center]
+.Illustration of activations when an input object is shifted. (image borrowed from quora link:https://www.quora.com/How-is-a-convolutional-neural-network-able-to-learn-invariant-features[post])
+image::alt_neural2/conv_net2.png[conv_illustration, 400]
+{empty} +
+
+So far so good. How about rotational invariance? Pooling helps to some extent, b
 
 How about rotational invariance? We know that a lot of conv filters are identical, rotated by some non-random factor.
 
