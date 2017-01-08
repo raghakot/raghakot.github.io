@@ -57,18 +57,20 @@ This idea has a number of practical challenges.
 * How do we decide \(\theta\)? If we set \(\theta = 90^{\circ}\), we can produce 4 rotated filters.
 * For \(\theta \neq 90^{\circ}\) we need interpolation, which might change filter shape.
 
-To avoid interpolation, we can try to shift the image by rotating elements clockwise from outermost layer to innermost layer. For a \(3 \times 3\) image, there are 8 possible rotations. Unfortunately, this only works for filters that are symmetric along the center of the matrix. As an example, consider the filter shaped as `L`
+To avoid interpolation, we can try to shift the image by rotating elements clockwise from outermost layer to innermost layer. For a \(3 \times 3\) image, there are 8 possible rotations. Unfortunately, this only works for filters that are symmetric along the center of the matrix. As an example, consider all 8 rolled rotations of the `L` shaped filter (fig 6). As the image is not symmetric along the center, we get skewed representations for \(45\circ\) rotations. The second image in fig 6 still looks like an `L`, except that the tail end of `L` is squished upwards to maintain \(3 \times \3\) filter shape.
 
 [.text-center]
-.A few conv filters of a vggnet (image borrowed from keras link:https://blog.keras.io/how-convolutional-neural-networks-see-the-world.html[blog post]). Notice how some filters are identical but rotated.
-image::alt_neural2/rotations_L.jpg[rotations_of_filter, 600]
+.All 8 shifts of the `L` shaped filter. Each row contains a clockwise rolled elements from the previous.
+image::alt_neural2/rotations_L.png[rotations_of_filter, 600]
 {empty} +
 
+Despite the above setback, all \(90\circ\) are accurate and \(45\circ\) are slightly skewed. Skew might be a blessing in disguise as it might endow the neuron to be _deform_ invariant as well (wishful thinking). In either case, the deformations are not too bad for \(3 \times \3\) filters, and it is atleast worth experiementing with vggnet which uses all \(3 \times \3\) conv filters.
 
 
 
 
 == Future work
+
 Lets look at it in another way; We only care about computing the dot product with the `best` aligned filter. Perhaps we can try to find \(\theta\) that _maximizes_ the dot product using calculus.
 
 Let R denote \(2 \times \2) rotation matrix.
