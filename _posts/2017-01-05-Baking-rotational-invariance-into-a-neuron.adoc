@@ -69,9 +69,11 @@ Despite the setback, all \(90\circ\) are accurate and \(45\circ\) are only sligh
 The computations discussed so far apply to an individual neuron. For Convolutional layer, the output is genenerated as follows:
 
 * Generate all 8 rotated filters from \(W\), \(W_{1}, \cdots, W_{8}\).
-* Compute output activation volumefootnote:[If you are not familiar with the idea of activation volumes, I would recommend referring to link:http://cs231n.github.io/convolutional-networks/[CS231n Convolutional Neural Networks for Visual Recognition] for an outstanding explanation.]
+* Compute output activation volumesfootnote:[If you are not familiar with the idea of activation volumes, I would recommend referring to link:http://cs231n.github.io/convolutional-networks/[CS231n Convolutional Neural Networks for Visual Recognition] for an outstanding explanation.] \(O_{1}, \cdots, O_{8}\) by convolving input with \(W_{1}, \cdots, W_{8}\).
+* Output the volume \(V_{i} \mid \arg\max_{i} \sum ReLU(V_{i})\). i.e., choose the activation volume that has the maximum sum after `ReLU`. `ReLU` is since we want to consider the volume that has the most `positive` activations, which indicates similarity.
 
-Instead of computing `tf.conv2d(x, W)` for the convolutional layers, we will compute
+These steps can be implemented as follows:
+
 [source,python]
 ----
 import tensorflow as tf
