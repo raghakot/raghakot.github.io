@@ -66,8 +66,30 @@ image::alt_neural2/rotations_L.png[rotations_of_filter, 600]
 
 Despite the above setback, all \(90\circ\) are accurate and \(45\circ\) are slightly skewed. Skew might be a blessing in disguise as it might endow the neuron to be _deform_ invariant as well (wishful thinking). In either case, the deformations are not too bad for \(3 \times \3\) filters, and it is atleast worth experiementing with vggnet which uses all \(3 \times \3\) conv filters.
 
+Instead of computing `tf.conv2d(x, W)` for the convolutional layers, we will compute
+[source,python]
+----
+import tensorflow as tf
 
 
+----
+
+
+
+== Experiments
+
+**Setup**
+
+* Mini vggnet comprising of \(3 \times 3\) convolutions with ReLU activation.
+* cifar10 dataset augmented with 10% random shifts along image rows/cols along with a 50% chance of horizontal flip.
+* `random_seed = 1337` for reproducability.
+
+The model has 1,250,858 parameters and trained for 50 epochs with a batch size of 32 using categorical crossentropy loss with Adam optimizer.
+
+[.text-center]
+.Test model
+image::alt_neural1/model.png[test_model, 300]
+{empty} +
 
 == Future work
 
