@@ -93,7 +93,7 @@ image::alt_neural1/model.png[test_model, 300]
 
 == Future work
 
-Lets look at it in another way; We only care about computing the dot product with the `best` aligned filter. Perhaps we can try to find \(\theta\) that _maximizes_ the dot product using calculus.
+Instead of trying all possible alignments, we could try to find \(\theta\) that _maximizes_ the dot product.
 
 Let R denote \(2 \times \2) rotation matrix.
 
