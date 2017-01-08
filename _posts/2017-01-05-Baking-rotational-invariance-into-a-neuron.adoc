@@ -66,6 +66,11 @@ image::alt_neural2/rotations_L.png[rotations_of_filter, 600]
 
 Despite the above setback, all \(90\circ\) are accurate and \(45\circ\) are slightly skewed. Skew might be a blessing in disguise as it might endow the neuron to be _deform_ invariant as well (wishful thinking). In either case, the deformations are not too bad for \(3 \times \3\) filters, and it is atleast worth experiementing with vggnet which uses all \(3 \times \3\) conv filters.
 
+The computations discussed so far apply to an individual neuron. For Convolutional layer, the output is genenerated as follows:
+
+* Generate all 8 rotated filters from \(W\), \(W_{1}, \cdots, W_{8}\).
+* Compute output activation volumefootnote:[If you are not familiar with the idea of activation volumes, I would recommend referring to link:http://cs231n.github.io/convolutional-networks/[CS231n Convolutional Neural Networks for Visual Recognition] for an outstanding explanation.]
+
 Instead of computing `tf.conv2d(x, W)` for the convolutional layers, we will compute
 [source,python]
 ----
