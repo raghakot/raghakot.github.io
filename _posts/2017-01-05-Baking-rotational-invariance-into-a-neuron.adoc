@@ -57,7 +57,7 @@ This idea has a number of practical challenges.
 * How do we decide \(\theta\)? If we set \(\theta = 90^{\circ}\), we can produce 4 rotated filters.
 * For \(\theta \neq 90^{\circ}\) we need interpolation, which might change filter shape.
 
-To avoid interpolation, we can try to shift the image by rotating elements clockwise from outermost layer to innermost layer. For a \(3 \times 3\) image, there are 8 possible rotations. Unfortunately, this only works for filters that are symmetric along the center of the matrix. As an example, consider all 8 rolled rotations of the `L` shaped filter (fig 6). As the image is not symmetric along the center, we get skewed representations for \(45\circ\) rotations. The second image in fig 6 still looks like an `L`, except that the tail end of `L` is squished upwards to maintain \(3 \times \3\) filter shape.
+To avoid interpolation, we can try to shift the image by rotating elements clockwise from outermost layer to innermost layer. For a \(3 \times 3\) image, there are 8 possible rotations. Unfortunately, this only works for filters that are symmetric along the center of the matrix. As an example, consider all 8 rolled rotations of the `L` shaped filter (fig 6). As the image is not symmetric along the center, we get skewed representations for \(45\circ\) rotations. The second image in fig 6 still looks like an `L`, except that the tail end of `L` is squished upwards to maintain \(3 \times 3\) filter shape.
 
 [.text-center]
 .All 8 shifts of the `L` shaped filter. Each row contains a clockwise rolled elements from the previous.
@@ -70,9 +70,9 @@ The computations discussed so far apply to an individual neuron. For Convolution
 
 * Generate all 8 rotated filters from \(W\), \(W_{1}, \cdots, W_{8}\).
 * Compute output activation volumesfootnote:[If you are not familiar with the idea of activation volumes, I would recommend referring to link:http://cs231n.github.io/convolutional-networks/[CS231n Convolutional Neural Networks for Visual Recognition] for an outstanding explanation.] \(O_{1}, \cdots, O_{8}\) by convolving input with \(W_{1}, \cdots, W_{8}\).
-* Across volumes, select \(x, y\) value corresponding to filter `(row, col)` that has the max value. This corresponding to selecting the best _aligned_ filter with input patch across the 8 rotations.
+* Across volumes, select \(x, y\) value corresponding to filter \((row, col)\) that has the max value. This corresponding to selecting the best _aligned_ filter with input patch across the 8 rotations.
 
-These steps can be implemented as follows. Note that `W.shape = (rows, cols, nb_input_filters, nb_output_filters)`. You also need bleeding edge tensorflow from `master`; as of Nov 2016, `gather_nd` does not have a gradient implementation.
+These steps can be implemented as follows. Note that `W.shape = (rows, cols, nb_input_filters, nb_output_filters)`. You also need bleeding edge tensorflow from _master_; as of Nov 2016, `gather_nd` does not have a gradient implementation.
 
 [source,python]
 ----
@@ -100,9 +100,7 @@ def conv2d(x, W, **kwargs):
     return output
 ----
 
-== Experiments
-
-**Setup**
+== Experimental Setup
 
 * Mini vggnet comprising of \(3 \times 3\) convolutions with ReLU activation.
 * cifar10 dataset augmented with 10% random shifts along image rows/cols along with a 50% chance of horizontal flip.
