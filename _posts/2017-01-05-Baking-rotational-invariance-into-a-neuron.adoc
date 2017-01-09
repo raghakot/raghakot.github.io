@@ -119,7 +119,7 @@ image::alt_neural1/model.png[test_model, 300]
 
 Instead of trying all possible alignments, we could try to find \(\theta\) that _maximizes_ the dot product.
 
-Let R denote \(2 \times \2) rotation matrix.
+Let R denote \(2 \times 2\) rotation matrix.
 
 \(R = \begin{bmatrix}
 cos(\theta) & sin(\theta)\\ 
