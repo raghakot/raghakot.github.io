@@ -38,9 +38,9 @@
     <link href="//fonts.googleapis.com/" rel="dns-prefetch">
     <link href="//fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic|Open+Sans:700,400&subset=latin,latin-ext" rel="stylesheet">
 
-    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/main.min.css?v=1483980228226"/>
-    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/custom.css?v=1483980228226"/>
-    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/asciidoctor-foundation.css?v=1483980228226"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/main.min.css?v=1483983785252"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/custom.css?v=1483983785252"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/asciidoctor-foundation.css?v=1483983785252"/>
 
 
 
@@ -70,7 +70,7 @@
       GHOSTIUM.enablePjax = typeof enable_pjax !== 'undefined' ? enable_pjax : true;
     </script>
 
-    <script src="//raghakot.github.io/themes/ghostium/assets/js/head-scripts.min.js?v=1483980228226"></script>
+    <script src="//raghakot.github.io/themes/ghostium/assets/js/head-scripts.min.js?v=1483983785252"></script>
 
     <link rel="canonical" href="https://raghakot.github.io/2017/01/03/Exploring-alternative-neural-computational-models.html" />
     <meta name="referrer" content="origin" />
@@ -283,7 +283,7 @@ null
 </div>
 </div>
 <div class="sect1">
-<h2 id="_experiments">Experiments</h2>
+<h2 id="_experimental_setup">Experimental setup</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>I explored option 3 as it was the simplest to implement. The architecture is a simplified version of vggnet comprising of \(3 \times 3\) convolutions with ReLU activation and max pooling. I used cifar10 dataset augmented with 10% random shifts along image rows/cols along with a 50% chance of horizontal flip. <code>random_seed = 1337</code> was used to get consistent and reproducible results across trials.</p>
@@ -455,7 +455,7 @@ W_norm = W / (tf.sqrt(tf.reduce_sum(tf.square(W), axis=[0, 1, 2], keep_dims=True
         hljs.initHighlightingOnLoad();
       </script>
 
-    <script src="//raghakot.github.io/themes/ghostium/assets/js/foot-scripts.min.js?v=1483980228226"></script>
+    <script src="//raghakot.github.io/themes/ghostium/assets/js/foot-scripts.min.js?v=1483983785252"></script>
 
     <script>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
