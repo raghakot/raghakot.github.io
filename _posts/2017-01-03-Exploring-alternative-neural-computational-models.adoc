@@ -1,7 +1,7 @@
 = Exploring alternative neural computational models.
 :hp-tags: deep learning
 
-Despite different variations of neural networks architectures, the computational model of a neuron hasn't changed since inception. Every neuron has \(n\) incomming inputs \(X = (x_{1}, x_{2}, ..., x_{n})\) with weights \(W = (w_{1}, w_{2}, ..., w_{n})\). A neuron then computes \(W.X = \sum_{i=0}^{n}w_{i}.x_{i}\), forwards it through some nonlinearity like sigmoid or ReLU to generate the outputfootnote:[Technically, bias is involved, but i am excluding it to keep the discussion focused.].
+Despite different variations of neural networks architectures, the computational model of a neuron hasn't changed since inception. Every neuron has \(n\) incoming inputs \(X = (x_{1}, x_{2}, ..., x_{n})\) with weights \(W = (w_{1}, w_{2}, ..., w_{n})\). A neuron then computes \(W.X = \sum_{i=0}^{n}w_{i}.x_{i}\), forwards it through some nonlinearity like sigmoid or ReLU to generate the outputfootnote:[Technically, bias is involved, but i am excluding it to keep the discussion focused.].
 
 [.text-center]
 .Computation model of a neuron
@@ -12,7 +12,7 @@ As far as i am aware, all architectures build on this fundamental computational 
 
 * Each input component \(x_{i}\) is being magnified or diminished when multiplied with a scaling factor \(w_{i}\). This can be interpreted as enhancing or diminishing the contribution of some pattern component \(x_{i}\) to the output decision. Think of these weights as _knobs_ that range from \([-\infty, +\infty]\). The task of learning is to _tune_ these knobs to the correct value.
 
-* The computation \(W.X\) is then enhancing/diminishing various input components of vector \(X\). In terms of linear algebra, the dot product of \(W\) and \(X\) can be interpeted as computing similarity. Consider \(X = (x_{1}, x_{2})\) and \(W = (w_{1}, w_{2})\). If you imagine plotting these vectors on a 2D graph paper, \(\frac{W.X}{|W||X|}\) is the cosine of angle between these two vectors. When these two vectors align (point in the same direction), the value of \(W.X\) is maximized indicating high degree of similarity. From this point of view, neuron is fundametally a pattern matching unit which outputs a large value when it matches a specific pattern (encoded by weights) in the inputfootnote:[The correct weight vectors are learned using backpropogation.].
+* The computation \(W.X\) is then enhancing/diminishing various input components of vector \(X\). In terms of linear algebra, the dot product of \(W\) and \(X\) can be interpreted as computing similarity. Consider \(X = (x_{1}, x_{2})\) and \(W = (w_{1}, w_{2})\). If you imagine plotting these vectors on a 2D graph paper, \(\frac{W.X}{|W||X|}\) is the cosine of angle between these two vectors. When these two vectors align (point in the same direction), the value of \(W.X\) is maximized indicating high degree of similarity. From this point of view, neuron is fundamentally a pattern matching unit which outputs a large value when it matches a specific pattern (encoded by weights) in the inputfootnote:[The correct weight vectors are learned using backpropogation.].
 
 * In a complex neural network, every neuron is matching the input against some template encoded via weights and forwarding that result to the subsequent layers. In case of image recognition, the first layer neurons might match whether the input contains vertical edge, horizontal edge and so on. The circle detection neuron might use various edge matching computation results from previous layers to detect the shape patterns.
 
@@ -22,10 +22,10 @@ So far so good. _What is the purpose of activation function?_ To understand the 
 
 Geometrically, this can be interpreted as a linear transformation of \(X\). Additionally, there is a bias term to shift the origin. So, the computation \(W.X + b\) can be interpreted as an affine transformation. Without an non-linear activation function, multiple linear transformations within each layer \(W_{L}\) can be condensed into a single layer with \(W = \prod_{L}W_{L}\). A single layered linear neural network is pretty limited in its representational power.
 
-Lets put all this togther to interpret what a multi-layered neural network might be doingfootnote:[This is my own interpretation and might as well be incorrect.]:
+Lets put all this together to interpret what a multi-layered neural network might be doingfootnote:[This is my own interpretation and might as well be incorrect.]:
 
 * Suppose we input a \(100 \times 100\) image to a vggnet. The input tensor \(X\) can be thought of as a vector with 10000 basis. Each basis is representing some positional component in an image.
-* We know that the very first conv layer learns gabor filter like edge detection weight templates. Lets assume that the first convolutional layer filter generates \(100 \times 100\) output (assuming appropriate padding). This can be seen as _transforming_ input from positional basis vector space to edge-like basis vector space. Insead of measuring the pixel intensity, the new vector space measures the similarity of the positional input patch with respect to a edge-detection templates (\(3 \times 3\) conv filter weights). Extrapolating on this notion, every layer _transforms_ the data into a more meaningful basis vector space, eventually leading to basis vectors comprising of output categories.
+* We know that the very first conv layer learns gabor filter like edge detection weight templates. Lets assume that the first convolutional layer filter generates \(100 \times 100\) output (assuming appropriate padding). This can be seen as _transforming_ input from positional basis vector space to edge-like basis vector space. Instead of measuring the pixel intensity, the new vector space measures the similarity of the positional input patch with respect to a edge-detection templates (\(3 \times 3\) conv filter weights). Extrapolating on this notion, every layer _transforms_ the data into a more meaningful basis vector space, eventually leading to basis vectors comprising of output categories.
 
 == Motivation
 
@@ -38,7 +38,7 @@ image::alt_neural1/vector_similarity.png[vector_similarity, 300]
 
 If we view a neuron as fundamental template matching unit, then various magnitude (length) of \(X\) and \(W\) should yield the same output. If we constrain \(W\) to be a unit vector (\(|W| = 1\)), then backprop would only need to search along points on a hypersphere of unit radius. Although the hypersphere contains infinitely many points, with sufficient discretization, the search space intuitively _feels_ a lot smaller than the entire weight vector space.
 
-Considering that weight sharing (a form on constraint) in conv-nets led to huge improvements, constraining seems like a resonable approach. Weight regularization - a form of constraint - penalizes large \(|W|\) and vaguely fits the idea of encouraging weight updates to explore points along the hypersphere. 
+Considering that weight sharing (a form on constraint) in conv-nets led to huge improvements, constraining seems like a reasonable approach. Weight regularization - a form of constraint - penalizes large \(|W|\) and vaguely fits the idea of encouraging weight updates to explore points along the hypersphere. 
 
 I think that in general, constraining as a research direction is largely unexplored. For example, it might be interesting to try and constrain conv filters to be as _distinct_ and _diverse_ and possible. I will follow up on these investigations in a future blog.
 
@@ -50,15 +50,15 @@ Getting back to the topic at hand, there are several options for constraining \(
 
 == Experiments
 
-I explored option 3 as it was the simplest to implement. The architecture is a simplified version of vggnet comprising of \(3 \times 3\) convolutions with ReLU activation and max pooling. I used cifar10 dataset augmented with 10% random shifts along image rows/cols along with a 50% chance of horizontal flip. `random_seed = 1337` was used to get consistent and reproducable results across trials.
+I explored option 3 as it was the simplest to implement. The architecture is a simplified version of vggnet comprising of \(3 \times 3\) convolutions with ReLU activation and max pooling. I used cifar10 dataset augmented with 10% random shifts along image rows/cols along with a 50% chance of horizontal flip. `random_seed = 1337` was used to get consistent and reproducible results across trials.
 
-The model has 1,250,858 parameters and trained for 50 epochs with a batch size of 32 using categorical crossentropy loss with Adam optimizer.
+The model has 1,250,858 parameters and trained for 50 epochs with a batch size of 32 using categorical cross-entropy loss with Adam optimizer.
 
 \(W_{norm}\) is calculated as:
 [source,python]
 ----
 # 1e-8 is used to prevent division by 0
-W_norm = W / (tf.sqrt(tf.reduce_sum(tf.square(W), axis=[0, 1, 2], keepdims=True)) + 1e-8)
+W_norm = W / (tf.sqrt(tf.reduce_sum(tf.square(W), axis=[0, 1, 2], keep_dims=True)) + 1e-8)
 ----
 
 [.text-center]
@@ -66,7 +66,7 @@ W_norm = W / (tf.sqrt(tf.reduce_sum(tf.square(W), axis=[0, 1, 2], keepdims=True)
 image::alt_neural1/model.png[test_model, 300]
 {empty} +
 
-== Results
+== Discussion
 
 Final loss and accuracy values on validation set are summarized in the table. 
 
@@ -90,8 +90,8 @@ As hypothesized, constraining weight vector to a unit hypersphere speeds up trai
 image::alt_neural1/convergence.png[convergence_graphs, 800]
 {empty} +
 
-== Conclusion
+Its neat when small changes like these make a significant difference. More experimentation is required to see if this improves over base model when run all the way until convergence. It is also worth experimenting with state of the art models such as the link:https://arxiv.org/pdf/1412.6806.pdf[All convolutional neural network] to see if makes any difference there.
 
-We saw pretty good improvements by making a relatively simple change to the neuron computation model. Experiments used `ReLU` which effectively attenuates negative values. This limits the neuron to only communicate information when the angle between \(X\) and \(W\) lies between \([-\frac{\pi}{2}, \frac{\pi}{2}]\). Perhaps it is useful if a neuron could also communicate the _lack of_ similarity or the _inverse_ of weight template information. For example, the lack of a specific stripe pattern might increase the networks confidence that the output is more likely to be one cat species over another. 
+We used `ReLU` which effectively attenuates negative values. This limits the neuron to only communicate information when the angle between \(X\) and \(W\) lies between \([-\frac{\pi}{2}, \frac{\pi}{2}]\). Perhaps it is useful if a neuron could also communicate the _lack of_ similarity or the _inverse_ of weight template information. For example, the lack of a specific stripe pattern might increase the networks confidence that the output is more likely to be one cat species over another. 
 
-One way to remedy this problem might be to use an activation function that allows negative values. A quick experiment with `ELU` activation, however, did not show any significant improvement over `ReLU`.
+One way to remedy this problem might be to use an activation function that allows negative values. A quick experiment with `ELU` activation, however, did not yield any significant improvement.
