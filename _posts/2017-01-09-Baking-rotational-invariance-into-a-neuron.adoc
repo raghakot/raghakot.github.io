@@ -1,5 +1,6 @@
 = Baking rotational invariance into a neuron
 :hp-tags: deep learning
+:published_at: 2017-01-09
 
 This is a continuation from the first link:https://raghakot.github.io/2017/01/03/Exploring-alternative-neural-computational-models.html[post] on exploring alternative neural computational models. To recap quickly, a neuron is fundamentally acting as a pattern matching unit by computing the dot product \(W \cdot X\), which is equivalent to unnormalized cosine similarity between vectors \(W\) and \(X\).
 
