@@ -48,7 +48,7 @@ Getting back to the topic at hand, there are several options for constraining \(
 2. Represent \(W\) in parametric form. Each \(w_{i}\) can be calculated using n-dim link:https://en.wikipedia.org/wiki/N-sphere#Spherical_coordinates[spherical coordinates].
 3. Instead of computing \(W.X\), compute \(\frac{W}{|W|} \times X\). Normalizing \(W\) ensures that the output does not change due to scaling. Consequently, the gradient of output with respect to \(W\) can only exist if \(W\) changes along the unit hypersphere.
 
-== Experimental setup
+== Experimental Setup
 
 I explored option 3 as it was the simplest to implement. The architecture is a simplified version of vggnet comprising of \(3 \times 3\) convolutions with ReLU activation and max pooling. I used cifar10 dataset augmented with 10% random shifts along image rows/cols along with a 50% chance of horizontal flip. `random_seed = 1337` was used to get consistent and reproducible results across trials.
 
