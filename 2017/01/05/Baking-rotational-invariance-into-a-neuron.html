@@ -38,9 +38,9 @@
     <link href="//fonts.googleapis.com/" rel="dns-prefetch">
     <link href="//fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic|Open+Sans:700,400&subset=latin,latin-ext" rel="stylesheet">
 
-    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/main.min.css?v=1483980452208"/>
-    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/custom.css?v=1483980452208"/>
-    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/asciidoctor-foundation.css?v=1483980452208"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/main.min.css?v=1483980631641"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/custom.css?v=1483980631641"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/asciidoctor-foundation.css?v=1483980631641"/>
 
 
 
@@ -70,7 +70,7 @@
       GHOSTIUM.enablePjax = typeof enable_pjax !== 'undefined' ? enable_pjax : true;
     </script>
 
-    <script src="//raghakot.github.io/themes/ghostium/assets/js/head-scripts.min.js?v=1483980452208"></script>
+    <script src="//raghakot.github.io/themes/ghostium/assets/js/head-scripts.min.js?v=1483980631641"></script>
 
     <link rel="canonical" href="https://raghakot.github.io/2017/01/05/Baking-rotational-invariance-into-a-neuron.html" />
     <meta name="referrer" content="origin" />
@@ -286,7 +286,7 @@ null
 </ul>
 </div>
 <div class="paragraph">
-<p>To avoid interpolation, we can try to shift the image by rotating elements clockwise from outermost layer to innermost layer. For a \(3 \times 3\) image, there are 8 possible rotations. Unfortunately, this only works for filters that are symmetric along the center of the matrix. As an example, consider all 8 rolled rotations of the <code>L</code> shaped filter (fig 6). As the image is not symmetric along the center, we get skewed representations for \(45\circ\) rotations. The second image in fig 6 still looks like an <code>L</code>, except that the tail end of <code>L</code> is squished upwards to maintain \(3 \times \3\) filter shape.</p>
+<p>To avoid interpolation, we can try to shift the image by rotating elements clockwise from outermost layer to innermost layer. For a \(3 \times 3\) image, there are 8 possible rotations. Unfortunately, this only works for filters that are symmetric along the center of the matrix. As an example, consider all 8 rolled rotations of the <code>L</code> shaped filter (fig 6). As the image is not symmetric along the center, we get skewed representations for \(45\circ\) rotations. The second image in fig 6 still looks like an <code>L</code>, except that the tail end of <code>L</code> is squished upwards to maintain \(3 \times 3\) filter shape.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
@@ -312,12 +312,12 @@ null
 <p>Compute output activation volumes<sup class="footnote">[<a id="_footnoteref_3" class="footnote" href="#_footnote_3" title="View footnote.">3</a>]</sup> \(O_{1}, \cdots, O_{8}\) by convolving input with \(W_{1}, \cdots, W_{8}\).</p>
 </li>
 <li>
-<p>Across volumes, select \(x, y\) value corresponding to filter <code>(row, col)</code> that has the max value. This corresponding to selecting the best <em>aligned</em> filter with input patch across the 8 rotations.</p>
+<p>Across volumes, select \(x, y\) value corresponding to filter \((row, col)\) that has the max value. This corresponding to selecting the best <em>aligned</em> filter with input patch across the 8 rotations.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>These steps can be implemented as follows. Note that <code>W.shape = (rows, cols, nb_input_filters, nb_output_filters)</code>. You also need bleeding edge tensorflow from <code>master</code>; as of Nov 2016, <code>gather_nd</code> does not have a gradient implementation.</p>
+<p>These steps can be implemented as follows. Note that <code>W.shape = (rows, cols, nb_input_filters, nb_output_filters)</code>. You also need bleeding edge tensorflow from <em>master</em>; as of Nov 2016, <code>gather_nd</code> does not have a gradient implementation.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -348,11 +348,8 @@ def conv2d(x, W, **kwargs):
 </div>
 </div>
 <div class="sect1">
-<h2 id="_experiments">Experiments</h2>
+<h2 id="_experimental_setup">Experimental Setup</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p><strong>Setup</strong></p>
-</div>
 <div class="ulist">
 <ul>
 <li>
@@ -497,7 +494,7 @@ cos(\theta) &amp; sin(\theta)\\
         hljs.initHighlightingOnLoad();
       </script>
 
-    <script src="//raghakot.github.io/themes/ghostium/assets/js/foot-scripts.min.js?v=1483980452208"></script>
+    <script src="//raghakot.github.io/themes/ghostium/assets/js/foot-scripts.min.js?v=1483980631641"></script>
 
     <script>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
