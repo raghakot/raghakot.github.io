@@ -1,4 +1,4 @@
-= Exploring alternative neural computational models.
+= Exploring alternative neural computational models
 :hp-tags: deep learning
 
 Despite different variations of neural networks architectures, the computational model of a neuron hasn't changed since inception. Every neuron has \(n\) incoming inputs \(X = (x_{1}, x_{2}, ..., x_{n})\) with weights \(W = (w_{1}, w_{2}, ..., w_{n})\). A neuron then computes \(W.X = \sum_{i=0}^{n}w_{i}.x_{i}\), forwards it through some nonlinearity like sigmoid or ReLU to generate the outputfootnote:[Technically, bias is involved, but i am excluding it to keep the discussion focused.].
