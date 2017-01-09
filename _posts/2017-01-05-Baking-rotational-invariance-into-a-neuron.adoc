@@ -1,7 +1,7 @@
 = Baking rotational invariance into a neuron
 :hp-tags: deep learning
 
-This is a continuation from the first link:https://raghakot.github.io/2017/01/03/Exploring-alternative-neural-computational-models.html[post] on expiring alternative neural computational models. To recap quickly, a neuron is fundamentally acting as a pattern matching unit by computing the dot product \(W \cdot X\), which is equivalent to unnormalized cosine similarity between vectors \(W\) and \(X\).
+This is a continuation from the first link:https://raghakot.github.io/2017/01/03/Exploring-alternative-neural-computational-models.html[post] on exploring alternative neural computational models. To recap quickly, a neuron is fundamentally acting as a pattern matching unit by computing the dot product \(W \cdot X\), which is equivalent to unnormalized cosine similarity between vectors \(W\) and \(X\).
 
 This model of pattern matching is very naive, in a sense that it is not invariant to translations or rotations. Consider the following weight vector template (conv filter) corresponding to vertical edge pattern `|`
 
@@ -64,7 +64,7 @@ To avoid interpolation, we can try to shift the image by rotating elements clock
 image::alt_neural2/rotations_L.png[rotations_of_filter, 600]
 {empty} +
 
-Despite the setback, all \(90\circ\) are accurate and \(45\circ\) are only slightly skewed. Skew might be a blessing in disguise as it might endow the neuron to be _deform_ invariant as well (wishful thinking). In either case, the deformations are not too bad for \(3 \times 3\) filters, and it is at-least worth experimenting with vggnet which uses all \(3 \times 3\) conv filters.
+Despite the setback, all \(90^{\circ}\) rotations are accurate and \(45^{\circ}\) rotations are only slightly skewed. Skew might be a blessing in disguise as it might endow the neuron to be _deform_ invariant as well (wishful thinking). In either case, the deformations are not too bad for \(3 \times 3\) filters, and it is at-least worth experimenting with vggnet which uses all \(3 \times 3\) conv filters.
 
 The computations discussed so far apply to an individual neuron. For Convolutional layer, the output is generated as follows:
 
