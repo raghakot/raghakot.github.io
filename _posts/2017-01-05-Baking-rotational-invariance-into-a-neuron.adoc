@@ -26,7 +26,7 @@ image::alt_neural2/conv_illustration.png[conv_illustration, 400]
 In a way, the sliding window operation is quite clever as it communicates information about _parts of the image_ matching filter template without increasing the number of _trainable_ parameters.  As a concrete example, consider a conv-net with filters as shown in fig3footnote:[First layer filters generally detect basic lines and textures, this is just a simplified view to illustrate the point]. The first layer filters (green) detect eyes, nose etc., second layer filters (yellow) detect face, leg etc., by aggregating features from first layer and so onfootnote:[In reality, convolution filters may detect objects that have no meaningful interpretation].
 
 [.text-center]
-.Hypothetical conv-net filters to illustrate how a `human` might be detected. (image borrowed from quora link:https://www.quora.com/How-is-a-convolutional-neural-network-able-to-learn-invariant-features[post])
+.Hypothetical conv-net filters to illustrate how a _human_ might be detected. (image borrowed from quora link:https://www.quora.com/How-is-a-convolutional-neural-network-able-to-learn-invariant-features[post])
 image::alt_neural2/conv_net1.png[conv_illustration, 600]
 {empty} +
 
