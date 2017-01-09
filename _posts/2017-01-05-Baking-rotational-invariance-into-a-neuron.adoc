@@ -50,7 +50,7 @@ How can we build rotational invariance into dot product similarity computation? 
 
 Instead of trying to come up with a metric, I decided to try the brute force approach of matching the input patch with all possible rotations of the filter. If we take `max` of all those outputs, then, in principle, we are choosing the output resulting from the rotated filter that best `aligns` with the pattern in input patch. This strategy is partly inspired by how conv nets gets around translational invariance problem by simply sliding the filter over all possible locations. Unlike sliding operation, which is an _architectural_ property rather than the computational property of the neuron, the brute force rotations of filters can be confined within the abstraction of neuron, making it a part of the computational model.
 
-Lets look at this idea in more concrete terms. A neuron receives input \(X\) and has associated weights \(W\). Let \(r\) denote some arbitrary discrete rotation \(\theta\). Instead of directly computing \(W \cdot X\), we will compute \(\max\left \{ rW \cdot X, r^{2}W \cdot X \right, \cdots, r^{k}W \cdot X \}\), where \(k = \left \lceil \frac{360}{\theta} \right \rceil\) is the number of brute force rotations of \(\theta\) step.
+Lets look at this idea in more concrete terms. A neuron receives input \(X\) and has associated weights \(W\). Let \(r\) denote some arbitrary discrete rotation \(\theta\). Instead of directly computing \(W \cdot X\), we will compute \(\max \{ rW \cdot X, r^{2}W \cdot X, \cdots, r^{k}W \cdot X \}\), where \(k = \left \lceil \frac{360}{\theta} \right \rceil\) is the number of brute force rotations of \(\theta\) step.
 
 This idea has a number of practical challenges.
 
