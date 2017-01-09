@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Musings on tech, machine learning, life..]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Mon, 09 Jan 2017 16:47:32 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Baking rotational invariance into a neuron]]></title><description><![CDATA[<div id="preamble">
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Musings on tech, machine learning, life..]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Mon, 09 Jan 2017 16:50:31 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Baking rotational invariance into a neuron]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>This is a continuation from the first <a href="https://raghakot.github.io/2017/01/03/Exploring-alternative-neural-computational-models.html">post</a> on expiring alternative neural computational models. To recap quickly, a neuron is fundamentally acting as a pattern matching unit by computing the dot product \(W \cdot X\), which is equivalent to unnormalized cosine similarity between vectors \(W\) and \(X\).</p>
@@ -98,7 +98,7 @@
 </ul>
 </div>
 <div class="paragraph">
-<p>To avoid interpolation, we can try to shift the image by rotating elements clockwise from outermost layer to innermost layer. For a \(3 \times 3\) image, there are 8 possible rotations. Unfortunately, this only works for filters that are symmetric along the center of the matrix. As an example, consider all 8 rolled rotations of the <code>L</code> shaped filter (fig 6). As the image is not symmetric along the center, we get skewed representations for \(45\circ\) rotations. The second image in fig 6 still looks like an <code>L</code>, except that the tail end of <code>L</code> is squished upwards to maintain \(3 \times \3\) filter shape.</p>
+<p>To avoid interpolation, we can try to shift the image by rotating elements clockwise from outermost layer to innermost layer. For a \(3 \times 3\) image, there are 8 possible rotations. Unfortunately, this only works for filters that are symmetric along the center of the matrix. As an example, consider all 8 rolled rotations of the <code>L</code> shaped filter (fig 6). As the image is not symmetric along the center, we get skewed representations for \(45\circ\) rotations. The second image in fig 6 still looks like an <code>L</code>, except that the tail end of <code>L</code> is squished upwards to maintain \(3 \times 3\) filter shape.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
@@ -124,12 +124,12 @@
 <p>Compute output activation volumes<sup class="footnote">[<a id="_footnoteref_3" class="footnote" href="#_footnote_3" title="View footnote.">3</a>]</sup> \(O_{1}, \cdots, O_{8}\) by convolving input with \(W_{1}, \cdots, W_{8}\).</p>
 </li>
 <li>
-<p>Across volumes, select \(x, y\) value corresponding to filter <code>(row, col)</code> that has the max value. This corresponding to selecting the best <em>aligned</em> filter with input patch across the 8 rotations.</p>
+<p>Across volumes, select \(x, y\) value corresponding to filter \((row, col)\) that has the max value. This corresponding to selecting the best <em>aligned</em> filter with input patch across the 8 rotations.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>These steps can be implemented as follows. Note that <code>W.shape = (rows, cols, nb_input_filters, nb_output_filters)</code>. You also need bleeding edge tensorflow from <code>master</code>; as of Nov 2016, <code>gather_nd</code> does not have a gradient implementation.</p>
+<p>These steps can be implemented as follows. Note that <code>W.shape = (rows, cols, nb_input_filters, nb_output_filters)</code>. You also need bleeding edge tensorflow from <em>master</em>; as of Nov 2016, <code>gather_nd</code> does not have a gradient implementation.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -160,11 +160,8 @@ def conv2d(x, W, **kwargs):
 </div>
 </div>
 <div class="sect1">
-<h2 id="_experiments">Experiments</h2>
+<h2 id="_experimental_setup">Experimental Setup</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p><strong>Setup</strong></p>
-</div>
 <div class="ulist">
 <ul>
 <li>
