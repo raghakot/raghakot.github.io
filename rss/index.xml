@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Musings on tech, machine learning, life..]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Mon, 09 Jan 2017 17:43:05 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Baking rotational invariance into a neuron]]></title><description><![CDATA[<div id="preamble">
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Musings on tech, machine learning, life..]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Mon, 09 Jan 2017 17:43:45 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Baking rotational invariance into a neuron]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>This is a continuation from the first <a href="https://raghakot.github.io/2017/01/03/Exploring-alternative-neural-computational-models.html">post</a> on exploring alternative neural computational models. To recap quickly, a neuron is fundamentally acting as a pattern matching unit by computing the dot product \(W \cdot X\), which is equivalent to unnormalized cosine similarity between vectors \(W\) and \(X\).</p>
@@ -326,7 +326,7 @@ cos(\theta) &amp; sin(\theta)\\
 </div>
 </div>
 <div class="sect1">
-<h2 id="_experimental_setup">Experimental setup</h2>
+<h2 id="_experimental_setup">Experimental Setup</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>I explored option 3 as it was the simplest to implement. The architecture is a simplified version of vggnet comprising of \(3 \times 3\) convolutions with ReLU activation and max pooling. I used cifar10 dataset augmented with 10% random shifts along image rows/cols along with a 50% chance of horizontal flip. <code>random_seed = 1337</code> was used to get consistent and reproducible results across trials.</p>
