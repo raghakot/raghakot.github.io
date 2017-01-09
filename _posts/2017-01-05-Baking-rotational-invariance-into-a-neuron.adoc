@@ -1,7 +1,7 @@
 = Baking rotational invariance into a neuron
 :hp-tags: deep learning
 
-This is a continuation from the first link:https://raghakot.github.io/2017/01/03/Exploring-alternative-neural-computational-models.html[post] on exporing alternative neural computational models. To recap quickly, a neuron is fundamentally acting as a pattern matching unit by computing the dot product \(W \cdot X\), which is equivalent to un-normalized cosine similarity between vectors \(W\) and \(X\).
+This is a continuation from the first link:https://raghakot.github.io/2017/01/03/Exploring-alternative-neural-computational-models.html[post] on expiring alternative neural computational models. To recap quickly, a neuron is fundamentally acting as a pattern matching unit by computing the dot product \(W \cdot X\), which is equivalent to unnormalized cosine similarity between vectors \(W\) and \(X\).
 
 This model of pattern matching is very naive, in a sense that it is not invariant to translations or rotations. Consider the following weight vector template (conv filter) corresponding to vertical edge pattern `|`:
 
@@ -16,7 +16,7 @@ This model of pattern matching is very naive, in a sense that it is not invarian
 image::alt_neural2/vertical_line_filter.png[vertical_line_filter, 300]
 {empty} +
 
-When a neuron tries to match this pattern in a \(3 \times 3\) input image patch, it will only output a high value if a vertical edge is found in the center of the image patch. i.e., dot product is not invariant to shifts. My first thought was to use link:https://en.wikipedia.org/wiki/Pearson_product-moment_correlation_coefficient[pearson coefficient] as it provides shift invariance. However, this not a problem in practice as the filter is slid across all possible \(3 \times 3\) patches within the input image (see fig2).
+When a neuron tries to match this pattern in a \(3 \times 3\) input image patch, it will only output a high value if a vertical edge is found in the center of the image patch. i.e., dot product is not invariant to shifts. My first thought was to use link:https://en.wikipedia.org/wiki/Pearson_product-moment_correlation_coefficient[Pearson coefficient] as it provides shift invariance. However, this not a problem in practice as the filter is slid across all possible \(3 \times 3\) patches within the input image (see fig2).
 
 [.text-center]
 .Sliding filter over input image to generate the output activation area (image borrowed from link:http://intellabs.github.io/RiverTrail/tutorial/[river trail documentation])
@@ -37,7 +37,7 @@ Now suppose the face (represented by two red and one magenta point) is moved to 
 image::alt_neural2/conv_net2.png[conv_illustration, 600]
 {empty} +
 
-So far so good. How about rotational invariance? We know that a lot of learned conv filters are identical, but rotated by some non-random factor. Instead of learning rotational invariance in this manner, we will try to build it directly into the computational model. The motivativation is simple - the neuron should output high value even if some rotated version of pattern is present in the input. Hopefully this eliminates redundant filters and improves test time accuracy.
+So far so good. How about rotational invariance? We know that a lot of learned conv filters are identical, but rotated by some non-random factor. Instead of learning rotational invariance in this manner, we will try to build it directly into the computational model. The motivation is simple - the neuron should output high value even if some rotated version of pattern is present in the input. Hopefully this eliminates redundant filters and improves test time accuracy.
 
 [.text-center]
 .A few conv filters of a vggnet (image borrowed from keras link:https://blog.keras.io/how-convolutional-neural-networks-see-the-world.html[blog post]). Notice how some filters are identical but rotated.
@@ -46,9 +46,9 @@ image::alt_neural2/conv_filters.jpg[conv_filters, 600]
 
 == Endowing rotational invariance
 
-How can we build rotational invariance into dot product similarity computation? After searching for a bit on the internet, I couldn't find any obvious similarity metrics that do this. Sure there is link:https://en.wikipedia.org/wiki/Scale-invariant_feature_transform[SIFT] and link:https://en.wikipedia.org/wiki/Speeded_up_robust_features[SURF], but they are complex computations and cannot be expressed in terms of dot products alone.
+How can we build rotational invariance into dot product similarity computation? After searching for a bit on the Internet, I couldn't find any obvious similarity metrics that do this. Sure there is link:https://en.wikipedia.org/wiki/Scale-invariant_feature_transform[SIFT] and link:https://en.wikipedia.org/wiki/Speeded_up_robust_features[SURF], but they are complex computations and cannot be expressed in terms of dot products alone.
 
-Instead of trying to come up with a metric, I decided to try the brute force approach of matching the input patch with all possible rotations of the filter. If we take `max` of all those outputs, then, in principle, we are choosing the output resulting from the rotated filter that best `aligns` with the pattern in input patch. This startegy is partly inspired by how conv nets gets around translational invariance problem by simply sliding the filter over all possible locations. Unlike sliding operation, which is an _architectural_ property rather than the computational property of the neuron, the brute force rotations of filters can be confined within the abstraction of neuron, making it a part of the computational model.
+Instead of trying to come up with a metric, I decided to try the brute force approach of matching the input patch with all possible rotations of the filter. If we take `max` of all those outputs, then, in principle, we are choosing the output resulting from the rotated filter that best `aligns` with the pattern in input patch. This strategy is partly inspired by how conv nets gets around translational invariance problem by simply sliding the filter over all possible locations. Unlike sliding operation, which is an _architectural_ property rather than the computational property of the neuron, the brute force rotations of filters can be confined within the abstraction of neuron, making it a part of the computational model.
 
 Lets look at this idea in more concrete terms. A neuron receives input \(X\) and has associated weights \(W\). Let \(r\) denote some arbitrary discrete rotation \(\theta\). Instead of directly computing \(W \cdot X\), we will compute \(\max\left \{ rW \cdot X, r^{2}W \cdot X \right, \cdots, r^{k}W \cdot X \}\), where \(k = \left \lceil \frac{360}{\theta} \right \rceil\) is the number of brute force rotations of \(\theta\) step.
 
@@ -64,15 +64,15 @@ To avoid interpolation, we can try to shift the image by rotating elements clock
 image::alt_neural2/rotations_L.png[rotations_of_filter, 600]
 {empty} +
 
-Despite the setback, all \(90\circ\) are accurate and \(45\circ\) are only slightly skewed. Skew might be a blessing in disguise as it might endow the neuron to be _deform_ invariant as well (wishful thinking). In either case, the deformations are not too bad for \(3 \times \3\) filters, and it is atleast worth experiementing with vggnet which uses all \(3 \times \3\) conv filters.
+Despite the setback, all \(90\circ\) are accurate and \(45\circ\) are only slightly skewed. Skew might be a blessing in disguise as it might endow the neuron to be _deform_ invariant as well (wishful thinking). In either case, the deformations are not too bad for \(3 \times \3\) filters, and it is at-least worth experimenting with vggnet which uses all \(3 \times \3\) conv filters.
 
-The computations discussed so far apply to an individual neuron. For Convolutional layer, the output is genenerated as follows:
+The computations discussed so far apply to an individual neuron. For Convolutional layer, the output is generated as follows:
 
 * Generate all 8 rotated filters from \(W\), \(W_{1}, \cdots, W_{8}\).
 * Compute output activation volumesfootnote:[If you are not familiar with the idea of activation volumes, I would recommend referring to link:http://cs231n.github.io/convolutional-networks/[CS231n Convolutional Neural Networks for Visual Recognition] for an outstanding explanation.] \(O_{1}, \cdots, O_{8}\) by convolving input with \(W_{1}, \cdots, W_{8}\).
-* Across volumes, select \(x, y\) value corresponding to filter `(row, col)` that has the max value. This correspondins to selecting the best _aligned_ filter with input patch across the 8 rotations.
+* Across volumes, select \(x, y\) value corresponding to filter `(row, col)` that has the max value. This corresponding to selecting the best _aligned_ filter with input patch across the 8 rotations.
 
-These steps can be implemented as follows. Note that `W.shape = (rows, cols, nb_input_filters, nb_output_filters)`. You also need bleeding edge tensorflow from `master`; as of Nov 2016, `gather_nd`does nto have a gradient implementation.
+These steps can be implemented as follows. Note that `W.shape = (rows, cols, nb_input_filters, nb_output_filters)`. You also need bleeding edge tensorflow from `master`; as of Nov 2016, `gather_nd` does not have a gradient implementation.
 
 [source,python]
 ----
@@ -100,17 +100,15 @@ def conv2d(x, W, **kwargs):
     return output
 ----
 
-
-
 == Experiments
 
 **Setup**
 
 * Mini vggnet comprising of \(3 \times 3\) convolutions with ReLU activation.
 * cifar10 dataset augmented with 10% random shifts along image rows/cols along with a 50% chance of horizontal flip.
-* `random_seed = 1337` for reproducability.
+* `random_seed = 1337` for reproducibility.
 
-The model has 1,250,858 parameters and trained for 50 epochs with a batch size of 32 using categorical crossentropy loss with Adam optimizer.
+The model has 1,250,858 parameters and trained for 50 epochs with a batch size of 32 using categorical cross-entropy loss with Adam optimizer.
 
 [.text-center]
 .Test model
@@ -118,6 +116,8 @@ image::alt_neural1/model.png[test_model, 300]
 {empty} +
 
 == Discussion
+
+**TODO: Add experimental results. WIP**
 
 Instead of trying all possible alignments, we could try to find \(\theta\) that _maximizes_ the dot product.
 
@@ -132,4 +132,4 @@ To accomplish optimal alignment, we need \(\theta\) such that:
 
 \(\arg\max_\theta R_{\theta}W \cdot X\)
 
-This can be solved by differentiating with respect to \(\theta\) and equating the derivative to 0. I didnt get around trying this yet.
+This can be solved by differentiating with respect to \(\theta\) and equating the derivative to 0. I didn't get around trying this yet.
