@@ -64,7 +64,7 @@ To avoid interpolation, we can try to shift the image by rotating elements clock
 image::alt_neural2/rotations_L.png[rotations_of_filter, 600]
 {empty} +
 
-Despite the setback, all \(90\circ\) are accurate and \(45\circ\) are only slightly skewed. Skew might be a blessing in disguise as it might endow the neuron to be _deform_ invariant as well (wishful thinking). In either case, the deformations are not too bad for \(3 \times \3\) filters, and it is at-least worth experimenting with vggnet which uses all \(3 \times \3\) conv filters.
+Despite the setback, all \(90\circ\) are accurate and \(45\circ\) are only slightly skewed. Skew might be a blessing in disguise as it might endow the neuron to be _deform_ invariant as well (wishful thinking). In either case, the deformations are not too bad for \(3 \times 3\) filters, and it is at-least worth experimenting with vggnet which uses all \(3 \times 3\) conv filters.
 
 The computations discussed so far apply to an individual neuron. For Convolutional layer, the output is generated as follows:
 
