@@ -1,4 +1,238 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Musings on tech, machine learning, life..]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Mon, 09 Jan 2017 16:38:54 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Exploring alternative neural computational models.]]></title><description><![CDATA[<div id="preamble">
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Musings on tech, machine learning, life..]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Mon, 09 Jan 2017 16:42:34 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Baking rotational invariance into a neuron]]></title><description><![CDATA[<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>This is a continuation from the first <a href="https://raghakot.github.io/2017/01/03/Exploring-alternative-neural-computational-models.html">post</a> on expiring alternative neural computational models. To recap quickly, a neuron is fundamentally acting as a pattern matching unit by computing the dot product \(W \cdot X\), which is equivalent to unnormalized cosine similarity between vectors \(W\) and \(X\).</p>
+</div>
+<div class="paragraph">
+<p>This model of pattern matching is very naive, in a sense that it is not invariant to translations or rotations. Consider the following weight vector template (conv filter) corresponding to vertical edge pattern <code>|</code>:</p>
+</div>
+<div class="paragraph">
+<p>\(W = \begin{bmatrix}
+0.2 &amp; 1.0 &amp; 0.2\\
+1.0 &amp; 1.0 &amp; 1.0\\
+0.2 &amp; 1.0 &amp; 0.2
+\end{bmatrix} \)</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="https://raghakot.github.io/images/alt_neural2/vertical_line_filter.png" alt="vertical_line_filter" width="300">
+</div>
+<div class="title">Figure 1. Visual representation of \(W\) template</div>
+</div>
+<div class="paragraph">
+<p><br></p>
+</div>
+<div class="paragraph">
+<p>When a neuron tries to match this pattern in a \(3 \times 3\) input image patch, it will only output a high value if a vertical edge is found in the center of the image patch. i.e., dot product is not invariant to shifts. My first thought was to use <a href="https://en.wikipedia.org/wiki/Pearson_product-moment_correlation_coefficient">Pearson coefficient</a> as it provides shift invariance. However, this not a problem in practice as the filter is slid across all possible \(3 \times 3\) patches within the input image (see fig2).</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="https://raghakot.github.io/images/alt_neural2/conv_illustration.png" alt="conv_illustration" width="400">
+</div>
+<div class="title">Figure 2. Sliding filter over input image to generate the output activation area (image borrowed from <a href="http://intellabs.github.io/RiverTrail/tutorial/">river trail documentation</a>)</div>
+</div>
+<div class="paragraph">
+<p><br></p>
+</div>
+<div class="paragraph">
+<p>In a way, the sliding window operation is quite clever as it communicates information about <em>parts of the image</em> matching filter template without increasing the number of <em>trainable</em> parameters.  As a concrete example, consider a conv-net with filters as shown in fig3<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnote_1" title="View footnote.">1</a>]</sup>. The first layer filters (green) detect eyes, nose etc., second layer filters (yellow) detect face, leg etc., by aggregating features from first layer and so on<sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnote_2" title="View footnote.">2</a>]</sup>.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="https://raghakot.github.io/images/alt_neural2/conv_net1.png" alt="conv_illustration" width="600">
+</div>
+<div class="title">Figure 3. Hypothetical conv-net filters to illustrate how a <code>human</code> might be detected. (image borrowed from quora <a href="https://www.quora.com/How-is-a-convolutional-neural-network-able-to-learn-invariant-features">post</a>)</div>
+</div>
+<div class="paragraph">
+<p><br></p>
+</div>
+<div class="paragraph">
+<p>Now suppose the face (represented by two red and one magenta point) is moved to another corner as shown in fig4. The same activations occur, leading to the same end result.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="https://raghakot.github.io/images/alt_neural2/conv_net2.png" alt="conv_illustration" width="600">
+</div>
+<div class="title">Figure 4. Illustration of activations when an input object is shifted. (image borrowed from quora <a href="https://www.quora.com/How-is-a-convolutional-neural-network-able-to-learn-invariant-features">post</a>)</div>
+</div>
+<div class="paragraph">
+<p><br></p>
+</div>
+<div class="paragraph">
+<p>So far so good. How about rotational invariance? We know that a lot of learned conv filters are identical, but rotated by some non-random factor. Instead of learning rotational invariance in this manner, we will try to build it directly into the computational model. The motivation is simple - the neuron should output high value even if some rotated version of pattern is present in the input. Hopefully this eliminates redundant filters and improves test time accuracy.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="https://raghakot.github.io/images/alt_neural2/conv_filters.jpg" alt="conv_filters" width="600">
+</div>
+<div class="title">Figure 5. A few conv filters of a vggnet (image borrowed from keras <a href="https://blog.keras.io/how-convolutional-neural-networks-see-the-world.html">blog post</a>). Notice how some filters are identical but rotated.</div>
+</div>
+<div class="paragraph">
+<p><br></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_endowing_rotational_invariance">Endowing rotational invariance</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>How can we build rotational invariance into dot product similarity computation? After searching for a bit on the Internet, I couldn&#8217;t find any obvious similarity metrics that do this. Sure there is <a href="https://en.wikipedia.org/wiki/Scale-invariant_feature_transform">SIFT</a> and <a href="https://en.wikipedia.org/wiki/Speeded_up_robust_features">SURF</a>, but they are complex computations and cannot be expressed in terms of dot products alone.</p>
+</div>
+<div class="paragraph">
+<p>Instead of trying to come up with a metric, I decided to try the brute force approach of matching the input patch with all possible rotations of the filter. If we take <code>max</code> of all those outputs, then, in principle, we are choosing the output resulting from the rotated filter that best <code>aligns</code> with the pattern in input patch. This strategy is partly inspired by how conv nets gets around translational invariance problem by simply sliding the filter over all possible locations. Unlike sliding operation, which is an <em>architectural</em> property rather than the computational property of the neuron, the brute force rotations of filters can be confined within the abstraction of neuron, making it a part of the computational model.</p>
+</div>
+<div class="paragraph">
+<p>Lets look at this idea in more concrete terms. A neuron receives input \(X\) and has associated weights \(W\). Let \(r\) denote some arbitrary discrete rotation \(\theta\). Instead of directly computing \(W \cdot X\), we will compute \(\max\left \{ rW \cdot X, r^{2}W \cdot X \right, \cdots, r^{k}W \cdot X \}\), where \(k = \left \lceil \frac{360}{\theta} \right \rceil\) is the number of brute force rotations of \(\theta\) step.</p>
+</div>
+<div class="paragraph">
+<p>This idea has a number of practical challenges.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>How do we decide \(\theta\)? If we set \(\theta = 90^{\circ}\), we can produce 4 rotated filters.</p>
+</li>
+<li>
+<p>For \(\theta \neq 90^{\circ}\) we need interpolation, which might change filter shape.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To avoid interpolation, we can try to shift the image by rotating elements clockwise from outermost layer to innermost layer. For a \(3 \times 3\) image, there are 8 possible rotations. Unfortunately, this only works for filters that are symmetric along the center of the matrix. As an example, consider all 8 rolled rotations of the <code>L</code> shaped filter (fig 6). As the image is not symmetric along the center, we get skewed representations for \(45\circ\) rotations. The second image in fig 6 still looks like an <code>L</code>, except that the tail end of <code>L</code> is squished upwards to maintain \(3 \times \3\) filter shape.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="https://raghakot.github.io/images/alt_neural2/rotations_L.png" alt="rotations_of_filter" width="600">
+</div>
+<div class="title">Figure 6. All 8 shifts of the <code>L</code> shaped filter. Each row contains a clockwise rolled elements from the previous.</div>
+</div>
+<div class="paragraph">
+<p><br></p>
+</div>
+<div class="paragraph">
+<p>Despite the setback, all \(90\circ\) are accurate and \(45\circ\) are only slightly skewed. Skew might be a blessing in disguise as it might endow the neuron to be <em>deform</em> invariant as well (wishful thinking). In either case, the deformations are not too bad for \(3 \times \3\) filters, and it is at-least worth experimenting with vggnet which uses all \(3 \times \3\) conv filters.</p>
+</div>
+<div class="paragraph">
+<p>The computations discussed so far apply to an individual neuron. For Convolutional layer, the output is generated as follows:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Generate all 8 rotated filters from \(W\), \(W_{1}, \cdots, W_{8}\).</p>
+</li>
+<li>
+<p>Compute output activation volumes<sup class="footnote">[<a id="_footnoteref_3" class="footnote" href="#_footnote_3" title="View footnote.">3</a>]</sup> \(O_{1}, \cdots, O_{8}\) by convolving input with \(W_{1}, \cdots, W_{8}\).</p>
+</li>
+<li>
+<p>Across volumes, select \(x, y\) value corresponding to filter <code>(row, col)</code> that has the max value. This corresponding to selecting the best <em>aligned</em> filter with input patch across the 8 rotations.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>These steps can be implemented as follows. Note that <code>W.shape = (rows, cols, nb_input_filters, nb_output_filters)</code>. You also need bleeding edge tensorflow from <code>master</code>; as of Nov 2016, <code>gather_nd</code> does not have a gradient implementation.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-python" data-lang="python">import tensorflow as tf
+
+# The clockwise shift-1 rotation permutation.
+permutation = [[1, 0], [0, 0], [0, 1], [2, 0], [1, 1], [0, 2], [2, 1], [2, 2], [1, 2]]
+
+
+def conv2d(x, W, **kwargs):
+    w = W
+    shape = w.get_shape()
+
+    # Determine all 7 rotations of w.
+    w_rot = [w]
+    for i in range(7):
+        w = tf.reshape(tf.gather_nd(w, permutation), shape)
+        w_rot.append(w)
+
+    # Convolve with all 8 rotations and stack.
+    outputs = tf.stack([tf.nn.conv2d(x, w_i, **kwargs) for w_i in w_rot])
+
+    # Max filter activation across rotations.
+    output = tf.reduce_max(outputs, 0)
+    return output</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_experiments">Experiments</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>Setup</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Mini vggnet comprising of \(3 \times 3\) convolutions with ReLU activation.</p>
+</li>
+<li>
+<p>cifar10 dataset augmented with 10% random shifts along image rows/cols along with a 50% chance of horizontal flip.</p>
+</li>
+<li>
+<p><code>random_seed = 1337</code> for reproducibility.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The model has 1,250,858 parameters and trained for 50 epochs with a batch size of 32 using categorical cross-entropy loss with Adam optimizer.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="https://raghakot.github.io/images/alt_neural1/model.png" alt="test_model" width="300">
+</div>
+<div class="title">Figure 7. Test model</div>
+</div>
+<div class="paragraph">
+<p><br></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_discussion">Discussion</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>TODO: Add experimental results. WIP</strong></p>
+</div>
+<div class="paragraph">
+<p>Instead of trying all possible alignments, we could try to find \(\theta\) that <em>maximizes</em> the dot product.</p>
+</div>
+<div class="paragraph">
+<p>Let R denote \(2 \times \2) rotation matrix.</p>
+</div>
+<div class="paragraph">
+<p>\(R = \begin{bmatrix}
+cos(\theta) &amp; sin(\theta)\\
+-sin(\theta) &amp; cos(\theta)
+\end{bmatrix}\)</p>
+</div>
+<div class="paragraph">
+<p>To accomplish optimal alignment, we need \(\theta\) such that:</p>
+</div>
+<div class="paragraph">
+<p>\(\arg\max_\theta R_{\theta}W \cdot X\)</p>
+</div>
+<div class="paragraph">
+<p>This can be solved by differentiating with respect to \(\theta\) and equating the derivative to 0. I didn&#8217;t get around trying this yet.</p>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<hr>
+<div class="footnote" id="_footnote_1">
+<a href="#_footnoteref_1">1</a>. First layer filters generally detect basic lines and textures, this is just a simplified view to illustrate the point
+</div>
+<div class="footnote" id="_footnote_2">
+<a href="#_footnoteref_2">2</a>. In reality, convolution filters may detect objects that have no meaningful interpretation
+</div>
+<div class="footnote" id="_footnote_3">
+<a href="#_footnoteref_3">3</a>. If you are not familiar with the idea of activation volumes, I would recommend referring to <a href="http://cs231n.github.io/convolutional-networks/">CS231n Convolutional Neural Networks for Visual Recognition</a> for an outstanding explanation.
+</div>
+</div>]]></description><link>https://raghakot.github.io/2017/01/05/Baking-rotational-invariance-into-a-neuron.html</link><guid isPermaLink="true">https://raghakot.github.io/2017/01/05/Baking-rotational-invariance-into-a-neuron.html</guid><category><![CDATA[deep learning]]></category><dc:creator><![CDATA[Raghavendra Kotikalapudi]]></dc:creator><pubDate>Thu, 05 Jan 2017 00:00:00 GMT</pubDate></item><item><title><![CDATA[Exploring alternative neural computational models.]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>Despite different variations of neural networks architectures, the computational model of a neuron hasn&#8217;t changed since inception. Every neuron has \(n\) incoming inputs \(X = (x_{1}, x_{2}, &#8230;&#8203;, x_{n})\) with weights \(W = (w_{1}, w_{2}, &#8230;&#8203;, w_{n})\). A neuron then computes \(W.X = \sum_{i=0}^{n}w_{i}.x_{i}\), forwards it through some nonlinearity like sigmoid or ReLU to generate the output<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnote_1" title="View footnote.">1</a>]</sup>.</p>
