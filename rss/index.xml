@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Musings on tech, machine learning, life..]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Mon, 09 Jan 2017 16:38:11 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Exploring alternative neural computational models.]]></title><description><![CDATA[<div id="preamble">
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Musings on tech, machine learning, life..]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Mon, 09 Jan 2017 16:38:54 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Exploring alternative neural computational models.]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Despite different variations of neural networks architectures, the computational model of a neuron hasn&#8217;t changed since inception. Every neuron has \(n\) incomming inputs \(X = (x_{1}, x_{2}, &#8230;&#8203;, x_{n})\) with weights \(W = (w_{1}, w_{2}, &#8230;&#8203;, w_{n})\). A neuron then computes \(W.X = \sum_{i=0}^{n}w_{i}.x_{i}\), forwards it through some nonlinearity like sigmoid or ReLU to generate the output<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnote_1" title="View footnote.">1</a>]</sup>.</p>
+<p>Despite different variations of neural networks architectures, the computational model of a neuron hasn&#8217;t changed since inception. Every neuron has \(n\) incoming inputs \(X = (x_{1}, x_{2}, &#8230;&#8203;, x_{n})\) with weights \(W = (w_{1}, w_{2}, &#8230;&#8203;, w_{n})\). A neuron then computes \(W.X = \sum_{i=0}^{n}w_{i}.x_{i}\), forwards it through some nonlinearity like sigmoid or ReLU to generate the output<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnote_1" title="View footnote.">1</a>]</sup>.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
@@ -21,7 +21,7 @@
 <p>Each input component \(x_{i}\) is being magnified or diminished when multiplied with a scaling factor \(w_{i}\). This can be interpreted as enhancing or diminishing the contribution of some pattern component \(x_{i}\) to the output decision. Think of these weights as <em>knobs</em> that range from \([-\infty, +\infty]\). The task of learning is to <em>tune</em> these knobs to the correct value.</p>
 </li>
 <li>
-<p>The computation \(W.X\) is then enhancing/diminishing various input components of vector \(X\). In terms of linear algebra, the dot product of \(W\) and \(X\) can be interpeted as computing similarity. Consider \(X = (x_{1}, x_{2})\) and \(W = (w_{1}, w_{2})\). If you imagine plotting these vectors on a 2D graph paper, \(\frac{W.X}{|W||X|}\) is the cosine of angle between these two vectors. When these two vectors align (point in the same direction), the value of \(W.X\) is maximized indicating high degree of similarity. From this point of view, neuron is fundametally a pattern matching unit which outputs a large value when it matches a specific pattern (encoded by weights) in the input<sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnote_2" title="View footnote.">2</a>]</sup>.</p>
+<p>The computation \(W.X\) is then enhancing/diminishing various input components of vector \(X\). In terms of linear algebra, the dot product of \(W\) and \(X\) can be interpreted as computing similarity. Consider \(X = (x_{1}, x_{2})\) and \(W = (w_{1}, w_{2})\). If you imagine plotting these vectors on a 2D graph paper, \(\frac{W.X}{|W||X|}\) is the cosine of angle between these two vectors. When these two vectors align (point in the same direction), the value of \(W.X\) is maximized indicating high degree of similarity. From this point of view, neuron is fundamentally a pattern matching unit which outputs a large value when it matches a specific pattern (encoded by weights) in the input<sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnote_2" title="View footnote.">2</a>]</sup>.</p>
 </li>
 <li>
 <p>In a complex neural network, every neuron is matching the input against some template encoded via weights and forwarding that result to the subsequent layers. In case of image recognition, the first layer neurons might match whether the input contains vertical edge, horizontal edge and so on. The circle detection neuron might use various edge matching computation results from previous layers to detect the shape patterns.</p>
@@ -38,7 +38,7 @@
 <p>Geometrically, this can be interpreted as a linear transformation of \(X\). Additionally, there is a bias term to shift the origin. So, the computation \(W.X + b\) can be interpreted as an affine transformation. Without an non-linear activation function, multiple linear transformations within each layer \(W_{L}\) can be condensed into a single layer with \(W = \prod_{L}W_{L}\). A single layered linear neural network is pretty limited in its representational power.</p>
 </div>
 <div class="paragraph">
-<p>Lets put all this togther to interpret what a multi-layered neural network might be doing<sup class="footnote">[<a id="_footnoteref_3" class="footnote" href="#_footnote_3" title="View footnote.">3</a>]</sup>:</p>
+<p>Lets put all this together to interpret what a multi-layered neural network might be doing<sup class="footnote">[<a id="_footnoteref_3" class="footnote" href="#_footnote_3" title="View footnote.">3</a>]</sup>:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -46,7 +46,7 @@
 <p>Suppose we input a \(100 \times 100\) image to a vggnet. The input tensor \(X\) can be thought of as a vector with 10000 basis. Each basis is representing some positional component in an image.</p>
 </li>
 <li>
-<p>We know that the very first conv layer learns gabor filter like edge detection weight templates. Lets assume that the first convolutional layer filter generates \(100 \times 100\) output (assuming appropriate padding). This can be seen as <em>transforming</em> input from positional basis vector space to edge-like basis vector space. Insead of measuring the pixel intensity, the new vector space measures the similarity of the positional input patch with respect to a edge-detection templates (\(3 \times 3\) conv filter weights). Extrapolating on this notion, every layer <em>transforms</em> the data into a more meaningful basis vector space, eventually leading to basis vectors comprising of output categories.</p>
+<p>We know that the very first conv layer learns gabor filter like edge detection weight templates. Lets assume that the first convolutional layer filter generates \(100 \times 100\) output (assuming appropriate padding). This can be seen as <em>transforming</em> input from positional basis vector space to edge-like basis vector space. Instead of measuring the pixel intensity, the new vector space measures the similarity of the positional input patch with respect to a edge-detection templates (\(3 \times 3\) conv filter weights). Extrapolating on this notion, every layer <em>transforms</em> the data into a more meaningful basis vector space, eventually leading to basis vectors comprising of output categories.</p>
 </li>
 </ul>
 </div>
@@ -71,7 +71,7 @@
 <p>If we view a neuron as fundamental template matching unit, then various magnitude (length) of \(X\) and \(W\) should yield the same output. If we constrain \(W\) to be a unit vector (\(|W| = 1\)), then backprop would only need to search along points on a hypersphere of unit radius. Although the hypersphere contains infinitely many points, with sufficient discretization, the search space intuitively <em>feels</em> a lot smaller than the entire weight vector space.</p>
 </div>
 <div class="paragraph">
-<p>Considering that weight sharing (a form on constraint) in conv-nets led to huge improvements, constraining seems like a resonable approach. Weight regularization - a form of constraint - penalizes large \(|W|\) and vaguely fits the idea of encouraging weight updates to explore points along the hypersphere.</p>
+<p>Considering that weight sharing (a form on constraint) in conv-nets led to huge improvements, constraining seems like a reasonable approach. Weight regularization - a form of constraint - penalizes large \(|W|\) and vaguely fits the idea of encouraging weight updates to explore points along the hypersphere.</p>
 </div>
 <div class="paragraph">
 <p>I think that in general, constraining as a research direction is largely unexplored. For example, it might be interesting to try and constrain conv filters to be as <em>distinct</em> and <em>diverse</em> and possible. I will follow up on these investigations in a future blog.</p>
@@ -98,10 +98,10 @@
 <h2 id="_experiments">Experiments</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>I explored option 3 as it was the simplest to implement. The architecture is a simplified version of vggnet comprising of \(3 \times 3\) convolutions with ReLU activation and max pooling. I used cifar10 dataset augmented with 10% random shifts along image rows/cols along with a 50% chance of horizontal flip. <code>random_seed = 1337</code> was used to get consistent and reproducable results across trials.</p>
+<p>I explored option 3 as it was the simplest to implement. The architecture is a simplified version of vggnet comprising of \(3 \times 3\) convolutions with ReLU activation and max pooling. I used cifar10 dataset augmented with 10% random shifts along image rows/cols along with a 50% chance of horizontal flip. <code>random_seed = 1337</code> was used to get consistent and reproducible results across trials.</p>
 </div>
 <div class="paragraph">
-<p>The model has 1,250,858 parameters and trained for 50 epochs with a batch size of 32 using categorical crossentropy loss with Adam optimizer.</p>
+<p>The model has 1,250,858 parameters and trained for 50 epochs with a batch size of 32 using categorical cross-entropy loss with Adam optimizer.</p>
 </div>
 <div class="paragraph">
 <p>\(W_{norm}\) is calculated as:</p>
@@ -109,7 +109,7 @@
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-python" data-lang="python"># 1e-8 is used to prevent division by 0
-W_norm = W / (tf.sqrt(tf.reduce_sum(tf.square(W), axis=[0, 1, 2], keepdims=True)) + 1e-8)</code></pre>
+W_norm = W / (tf.sqrt(tf.reduce_sum(tf.square(W), axis=[0, 1, 2], keep_dims=True)) + 1e-8)</code></pre>
 </div>
 </div>
 <div class="imageblock text-center">
@@ -124,7 +124,7 @@ W_norm = W / (tf.sqrt(tf.reduce_sum(tf.square(W), axis=[0, 1, 2], keepdims=True)
 </div>
 </div>
 <div class="sect1">
-<h2 id="_results">Results</h2>
+<h2 id="_discussion">Discussion</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Final loss and accuracy values on validation set are summarized in the table.</p>
@@ -168,16 +168,14 @@ W_norm = W / (tf.sqrt(tf.reduce_sum(tf.square(W), axis=[0, 1, 2], keepdims=True)
 <div class="paragraph">
 <p><br></p>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_conclusion">Conclusion</h2>
-<div class="sectionbody">
 <div class="paragraph">
-<p>We saw pretty good improvements by making a relatively simple change to the neuron computation model. Experiments used <code>ReLU</code> which effectively attenuates negative values. This limits the neuron to only communicate information when the angle between \(X\) and \(W\) lies between \([-\frac{\pi}{2}, \frac{\pi}{2}]\). Perhaps it is useful if a neuron could also communicate the <em>lack of</em> similarity or the <em>inverse</em> of weight template information. For example, the lack of a specific stripe pattern might increase the networks confidence that the output is more likely to be one cat species over another.</p>
+<p>Its neat when small changes like these make a significant difference. More experimentation is required to see if this improves over base model when run all the way until convergence. It is also worth experimenting with state of the art models such as the <a href="https://arxiv.org/pdf/1412.6806.pdf">All convolutional neural network</a> to see if makes any difference there.</p>
 </div>
 <div class="paragraph">
-<p>One way to remedy this problem might be to use an activation function that allows negative values. A quick experiment with <code>ELU</code> activation, however, did not show any significant improvement over <code>ReLU</code>.</p>
+<p>We used <code>ReLU</code> which effectively attenuates negative values. This limits the neuron to only communicate information when the angle between \(X\) and \(W\) lies between \([-\frac{\pi}{2}, \frac{\pi}{2}]\). Perhaps it is useful if a neuron could also communicate the <em>lack of</em> similarity or the <em>inverse</em> of weight template information. For example, the lack of a specific stripe pattern might increase the networks confidence that the output is more likely to be one cat species over another.</p>
+</div>
+<div class="paragraph">
+<p>One way to remedy this problem might be to use an activation function that allows negative values. A quick experiment with <code>ELU</code> activation, however, did not yield any significant improvement.</p>
 </div>
 </div>
 </div>
