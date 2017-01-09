@@ -70,15 +70,34 @@ The computations discussed so far apply to an individual neuron. For Convolution
 
 * Generate all 8 rotated filters from \(W\), \(W_{1}, \cdots, W_{8}\).
 * Compute output activation volumesfootnote:[If you are not familiar with the idea of activation volumes, I would recommend referring to link:http://cs231n.github.io/convolutional-networks/[CS231n Convolutional Neural Networks for Visual Recognition] for an outstanding explanation.] \(O_{1}, \cdots, O_{8}\) by convolving input with \(W_{1}, \cdots, W_{8}\).
-* Output the volume \(V_{i} \mid \arg\max_{i} \sum ReLU(V_{i})\). i.e., choose the activation volume that has the maximum sum after `ReLU`. `ReLU` is since we want to consider the volume that has the most `positive` activations, which indicates similarity.
+* Across volumes, select \(x, y\) value corresponding to filter `(row, col)` that has the max value. This correspondins to selecting the best _aligned_ filter with input patch across the 8 rotations.
 
-These steps can be implemented as follows. Note that `W.shape = (rows, cols, nb_input_filters, nb_output_filters)`.
+These steps can be implemented as follows. Note that `W.shape = (rows, cols, nb_input_filters, nb_output_filters)`. You also need bleeding edge tensorflow from `master`; as of Nov 2016, `gather_nd`does nto have a gradient implementation.
 
 [source,python]
 ----
 import tensorflow as tf
 
+# The clockwise shift-1 rotation permutation.
+permutation = [[1, 0], [0, 0], [0, 1], [2, 0], [1, 1], [0, 2], [2, 1], [2, 2], [1, 2]]
 
+
+def conv2d(x, W, **kwargs):
+    w = W
+    shape = w.get_shape()
+
+    # Determine all 7 rotations of w.
+    w_rot = [w]
+    for i in range(7):
+        w = tf.reshape(tf.gather_nd(w, permutation), shape)
+        w_rot.append(w)
+
+    # Convolve with all 8 rotations and stack.
+    outputs = tf.stack([tf.nn.conv2d(x, w_i, **kwargs) for w_i in w_rot])
+
+    # Max filter activation across rotations.
+    output = tf.reduce_max(outputs, 0)
+    return output
 ----
 
 
@@ -98,7 +117,7 @@ The model has 1,250,858 parameters and trained for 50 epochs with a batch size o
 image::alt_neural1/model.png[test_model, 300]
 {empty} +
 
-== Future work
+== Discussion
 
 Instead of trying all possible alignments, we could try to find \(\theta\) that _maximizes_ the dot product.
 
@@ -113,6 +132,4 @@ To accomplish optimal alignment, we need \(\theta\) such that:
 
 \(\arg\max_\theta R_{\theta}W \cdot X\)
 
-This can be solved by differentiating with respect to \(\theta\) and equating the derivative to 0.
-
-
+This can be solved by differentiating with respect to \(\theta\) and equating the derivative to 0. I didnt get around trying this yet.
