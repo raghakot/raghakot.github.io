@@ -151,3 +151,5 @@ image::alt_neural2/convergence.png[test_model, 800]
 
 It seems evident that using rotationally invariant convolutional layers everywhere is not a good idea (_4pass:[_]rotpass:[_]all_ and _8pass:[_]rotpass:[_]all_ have the lowest values). In accordance with hypothesis 2, the accuracy improved as we get rid of earlier rotationally invariant conv layers, with 4_rot_third and 8_rot_third almost catching up to baseline model accuracy. The skew (according to hypothesis 3) does not seem to the issue as _8pass:[_]rotpass:[_#]_ closely followed _4pass:[_]rotpass:[_#]_ accuracies.
 
+I wanted to compare how _4pass:[_]rotpass:[_]third_, _8pass:[_]rotpass:[_]third_ and baseline model fared if I tried to predict the output on a _rotated_ cifar10 test image.
+**WIP**
