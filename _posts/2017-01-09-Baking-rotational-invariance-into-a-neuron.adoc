@@ -135,7 +135,7 @@ Disappointingly, rotational invariant model resulted in lower val accuracy than 
 
 1. Implementation issue. I ruled this out by testing the `conv2d(...)` implementation by feeding it numpy arrays and verifying the output.
 2. Perhaps, rotational invariance is not a good idea for the earlier filters. As an example, consider a latter layer that uses _vertical_ and _horizontal_ edge features for the preceeding layer to detect a _square_ like shape. Having rotational invariance means that it is not possible to distinguish horizontal from vertical edges, making square detection a lot more challenging.
-3. Maybe the skew from \(\theta = \{45^{\circ}, 135^{\circ}, 225^{\circ}, 315^{\circ}\) was an issue after all.
+3. Maybe the skew from \(\theta = \{45^{\circ}, 135^{\circ}, 225^{\circ}, 315^{\circ}\}\) was an issue after all.
 
 To test 2, 3, I decided to run 6 more experiments by using:
 
