@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Musings on tech, machine learning, life..]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Mon, 09 Jan 2017 21:21:31 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Baking rotational invariance into a neuron]]></title><description><![CDATA[<div id="preamble">
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Musings on tech, machine learning, life..]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Tue, 10 Jan 2017 01:38:33 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Baking rotational invariance into a neuron]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>This is a continuation from the first <a href="https://raghakot.github.io/2017/01/03/Exploring-alternative-neural-computational-models.html">post</a> on exploring alternative neural computational models. To recap quickly, a neuron is fundamentally acting as a pattern matching unit by computing the dot product \(W \cdot X\), which is equivalent to unnormalized cosine similarity between vectors \(W\) and \(X\).</p>
@@ -113,7 +113,28 @@
 <p>Despite the setback, all \(90^{\circ}\) rotations are accurate and \(45^{\circ}\) rotations are only slightly skewed. Skew might be a blessing in disguise as it might endow the neuron to be <em>deform</em> invariant as well (wishful thinking). In either case, the deformations are not too bad for \(3 \times 3\) filters, and it is at-least worth experimenting with vggnet which uses all \(3 \times 3\) conv filters.</p>
 </div>
 <div class="paragraph">
-<p>The computations discussed so far apply to an individual neuron. For Convolutional layer, the output is generated as follows:</p>
+<p>Alternatively, instead of trying all possible alignments, we could try to find \(\theta\) that <em>maximizes</em> the dot product.</p>
+</div>
+<div class="paragraph">
+<p>Let R denote \(2 \times 2\) rotation matrix.</p>
+</div>
+<div class="paragraph">
+<p>\(R = \begin{bmatrix}
+cos(\theta) &amp; sin(\theta)\\
+-sin(\theta) &amp; cos(\theta)
+\end{bmatrix}\)</p>
+</div>
+<div class="paragraph">
+<p>To accomplish optimal alignment, we need \(\theta\) such that:</p>
+</div>
+<div class="paragraph">
+<p>\(\arg\max_\theta R_{\theta}W \cdot X\)</p>
+</div>
+<div class="paragraph">
+<p>This can be solved by differentiating with respect to \(\theta\) and equating the derivative to 0.</p>
+</div>
+<div class="paragraph">
+<p>I finally decided to go with the brute force approach to quickly test out the idea and maybe further develop the math for optimal alignment if it showed promise. The brute-force computations discussed so far apply to an individual neuron. For Convolutional layer, the output is generated as follows:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -193,28 +214,48 @@ def conv2d(x, W, **kwargs):
 <h2 id="_discussion">Discussion</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><strong>TODO: Add experimental results. WIP</strong></p>
+<p>Disappointingly, rotational invariant model resulted in lower val accuracy than the baseline. I had three running hypothesis as to why this might happen.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Implementation issue. I ruled this out by testing the <code>conv2d(&#8230;&#8203;)</code> implementation by feeding it numpy arrays and verifying the output.</p>
+</li>
+<li>
+<p>Perhaps, rotational invariance is not a good idea for the earlier filters. As an example, consider a latter layer that uses <em>vertical</em> and <em>horizontal</em> edge features for the preceeding layer to detect a <em>square</em> like shape. Having rotational invariance means that it is not possible to distinguish horizontal from vertical edges, making square detection a lot more challenging.</p>
+</li>
+<li>
+<p>Maybe the skew from (\theta = \{45^{\circ}, 135^{\circ}, 225^{\circ}, 315^{\circ}\) was an issue afterall.</p>
+</li>
+</ol>
 </div>
 <div class="paragraph">
-<p>Instead of trying all possible alignments, we could try to find \(\theta\) that <em>maximizes</em> the dot product.</p>
+<p>To test 2, 3, I decided to run 6 more expeiments by using:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>\(90^{\circ}\) rotations (4 filters) and \(45^{\circ}\) rotations (8 filters)</p>
+</li>
+<li>
+<p>Use new conv logic only on all four conv layers (all), last two conv layers (half), and the last conv layer (third).</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
-<p>Let R denote \(2 \times 2\) rotation matrix.</p>
+<p>The results of these expeiments are summarized in fig 8.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="https://raghakot.github.io/images/alt_neural2/convergence.png" alt="test_model" width="800">
+</div>
+<div class="title">Figure 8. Convergence graphs for #{8/4 rotations}_rot_{all/half/third} and the baseline model (old).</div>
 </div>
 <div class="paragraph">
-<p>\(R = \begin{bmatrix}
-cos(\theta) &amp; sin(\theta)\\
--sin(\theta) &amp; cos(\theta)
-\end{bmatrix}\)</p>
+<p><br></p>
 </div>
 <div class="paragraph">
-<p>To accomplish optimal alignment, we need \(\theta\) such that:</p>
-</div>
-<div class="paragraph">
-<p>\(\arg\max_\theta R_{\theta}W \cdot X\)</p>
-</div>
-<div class="paragraph">
-<p>This can be solved by differentiating with respect to \(\theta\) and equating the derivative to 0. I didn&#8217;t get around trying this yet.</p>
+<p>It seems evident that using rotationally invariant convolutional layers everywhere is not a good idea (<em>4_rot_all</em> and <em>8_rot_all</em> have the lowest values). In accordance with hypothesis 2, the accuracy improved as we get rid of earlier rotationally invariant conv layers, with 4_rot_third and 8_rot_third almost catching up to baseline model accuracy. The skew (according to hypothesis 3) does not seem to the issue as <em>8_rot_#</em> closely followed <em>4_rot_#</em> accuracies.</p>
 </div>
 </div>
 </div>
