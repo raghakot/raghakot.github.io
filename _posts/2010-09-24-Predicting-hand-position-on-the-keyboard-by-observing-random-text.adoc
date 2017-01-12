@@ -1,6 +1,19 @@
 = Predicting hand position on the keyboard by observing random text
+:hp-image: http://media02.hongkiat.com/thumbs/640x410/faster-keyboard-typing.jpg
 :hp-tags: light bulb, migrated
 :published_at: 2010-09-24
+
+++++
+<script src="extras/inlineDisqussions.js"></script>
+<link rel="stylesheet" type="text/css" href="extras/inlineDisqussions.css" />
+
+<script type="text/javascript">
+  disqus_shortname = 'raghakot-github-io';
+  jQuery(document).ready(function() {
+    jQuery("p").inlineDisqussions();
+  });
+</script>
+++++
 
 Today, I happened to type some random text and noticed interesting. This is a random sample of what i typed:
 ----

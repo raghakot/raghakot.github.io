@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Musings on tech, machine learning, life..]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Thu, 12 Jan 2017 03:56:41 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Baking rotational invariance into a neuron]]></title><description><![CDATA[<div id="preamble">
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Musings on intriguing phenomenon]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Thu, 12 Jan 2017 22:48:28 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Baking rotational invariance into a neuron]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>This is a continuation from the first <a href="https://raghakot.github.io/2017/01/03/Exploring-alternative-neural-computational-models.html">post</a> on exploring alternative neural computational models. To recap quickly, a neuron is fundamentally acting as a pattern matching unit by computing the dot product \(W \cdot X\), which is equivalent to unnormalized cosine similarity between vectors \(W\) and \(X\).</p>
@@ -725,7 +725,16 @@ In this case, it is better to use \(y = -x\) as the fitness function.</p>
 </div>
 <div class="paragraph">
 <p>Ironically, if we have fixed number of heartbeats, wouldn&#8217;t running/exercising make us die faster? I suppose, the long term benefits outweigh shot term loss.</p>
-</div>]]></description><link>https://raghakot.github.io/2010/11/17/Kleibers-Law.html</link><guid isPermaLink="true">https://raghakot.github.io/2010/11/17/Kleibers-Law.html</guid><category><![CDATA[light bulb]]></category><category><![CDATA[ migrated]]></category><dc:creator><![CDATA[Raghavendra Kotikalapudi]]></dc:creator><pubDate>Wed, 17 Nov 2010 00:00:00 GMT</pubDate></item><item><title><![CDATA[Predicting hand position on the keyboard by observing random text]]></title><description><![CDATA[<div class="paragraph">
+</div>]]></description><link>https://raghakot.github.io/2010/11/17/Kleibers-Law.html</link><guid isPermaLink="true">https://raghakot.github.io/2010/11/17/Kleibers-Law.html</guid><category><![CDATA[light bulb]]></category><category><![CDATA[ migrated]]></category><dc:creator><![CDATA[Raghavendra Kotikalapudi]]></dc:creator><pubDate>Wed, 17 Nov 2010 00:00:00 GMT</pubDate></item><item><title><![CDATA[Predicting hand position on the keyboard by observing random text]]></title><description><![CDATA[<script src="extras/inlineDisqussions.js"></script>
+<link rel="stylesheet" type="text/css" href="extras/inlineDisqussions.css" />
+
+<script type="text/javascript">
+  disqus_shortname = 'raghakot-github-io';
+  jQuery(document).ready(function() {
+    jQuery("p").inlineDisqussions();
+  });
+</script>
+<div class="paragraph">
 <p>Today, I happened to type some random text and noticed interesting. This is a random sample of what i typed:</p>
 </div>
 <div class="listingblock">
