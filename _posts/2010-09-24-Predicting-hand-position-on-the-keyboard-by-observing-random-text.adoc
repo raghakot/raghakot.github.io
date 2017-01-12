@@ -75,10 +75,14 @@ This should allow us to predict hand position on a keyboard based on a bunch of 
 <script src="https://cdn.rawgit.com/raghakot/raghakot.github.io/master/extras/inlineDisqussions.js" defer='defer'></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/raghakot/raghakot.github.io/master/extras/inlineDisqussions.css" />
 
-<script type="text/javascript" defer='defer'>
+<script type="text/javascript">
   disqus_shortname = 'raghakot-github-io';
-  window.setTimeout(function() {
-    jQuery("p").inlineDisqussions();
-  }, 0);
+  (function defer() {
+    if (window.jQuery) {
+      window.jQuery("p").inlineDisqussions();
+    } else {
+      setTimeout(function() { defer() }, 50);
+    }
+  })();
 </script>
 ++++
