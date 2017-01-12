@@ -1,4 +1,5 @@
 = Predicting hand position on the keyboard by observing random text
+:hp-image: http://media02.hongkiat.com/thumbs/640x410/faster-keyboard-typing.jpg
 :hp-tags: light bulb, migrated
 :published_at: 2010-09-24
 
