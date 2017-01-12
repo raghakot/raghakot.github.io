@@ -94,18 +94,24 @@ These steps can be implemented as follows. Note that `W.shape = (rows, cols, nb_
 ----
 import tensorflow as tf
 
+
 # The clockwise shift-1 rotation permutation.
 permutation = [[1, 0], [0, 0], [0, 1], [2, 0], [1, 1], [0, 2], [2, 1], [2, 2], [1, 2]]
 
 
-def conv2d(x, W, **kwargs):
-    w = W
+def shift_rotate(w, shift=1):
     shape = w.get_shape()
+    for i in range(shift):
+        w = tf.reshape(tf.gather_nd(w, permutation), shape)
+    return w
 
+
+def conv2d(x, W, **kwargs):    
     # Determine all 7 rotations of w.
+    w = W
     w_rot = [w]
     for i in range(7):
-        w = tf.reshape(tf.gather_nd(w, permutation), shape)
+        w = shift_rotate(w)
         w_rot.append(w)
 
     # Convolve with all 8 rotations and stack.
@@ -151,11 +157,11 @@ image::alt_neural2/convergence.png[convergence, 800]
 
 It seems evident that using rotationally invariant convolutional layers everywhere is not a good idea (_4pass:[_]rotpass:[_]all_ and _8pass:[_]rotpass:[_]all_ have the lowest values). In accordance with hypothesis 2, the accuracy improved as we get rid of earlier rotationally invariant conv layers, with 4_rot_third and 8_rot_third almost catching up to baseline model accuracy. The skew (according to hypothesis 3) does not seem to the issue as _8pass:[_]rotpass:[_#]_ closely followed _4pass:[_]rotpass:[_#]_ accuracies.
 
-Fortunately, there is a silver lining despite all the setbacks. fig 9 shows the plot of prediction probabilities for all three models across rotated test cifar10 image by step of \(1^{\circ}\) from \(\theta = \{0, 360\}\). 
+Fortunately, there is a silver lining despite all the setbacks. fig 9 shows the plot of prediction probabilities for all three models across rotated test cifar10 image by step of \(1^{\circ}\) from \(\theta = \{0, 360\}\). Adding rotationally invariant conv net to last layer (maybe last few for a larger conv net?) seems to make model robust to input image rotations, with the same convergence rate as the baseline model. It also appears that \(90^{\circ}\)  rotations are yielding most bang per computation.
 
 [.text-center]
 .Plot of prediction probability of the correct output class as the input image is rotated from \(\theta = \{0, 360\}\) by step of \(1^{\circ}\) across models. Legend shows the percentage of times the class was correctly predicted.
 image::alt_neural2/rotation_plot.png[rotation_plot, 800]
 {empty} +
 
-Adding rotationally invariant conv net to last layer (maybe last few for a larger conv net?) seems to make model robust to input image rotations, with the same convergence rate as the baseline model. It also appears that \(90^{\circ}\) rotations are yielding most bang per computation. Obviously a lot more experimentation needs to be done before any conclusions can be made.
+Curiously, even the baseline model shows better robustness to rotations if i take a pretrained baseline model but add rotational conv layer (this can be done because weights are shared across rotations). Table compares the % of accurate classification across \(\theta = \{0, 360\}\) with \(1^{\circ}\) step.
