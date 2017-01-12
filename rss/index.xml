@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Musings on tech, machine learning, life..]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Tue, 10 Jan 2017 18:14:30 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Baking rotational invariance into a neuron]]></title><description><![CDATA[<div id="preamble">
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Musings on tech, machine learning, life..]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Thu, 12 Jan 2017 03:56:41 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Baking rotational invariance into a neuron]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>This is a continuation from the first <a href="https://raghakot.github.io/2017/01/03/Exploring-alternative-neural-computational-models.html">post</a> on exploring alternative neural computational models. To recap quickly, a neuron is fundamentally acting as a pattern matching unit by computing the dot product \(W \cdot X\), which is equivalent to unnormalized cosine similarity between vectors \(W\) and \(X\).</p>
@@ -156,18 +156,24 @@ cos(\theta) &amp; sin(\theta)\\
 <div class="content">
 <pre class="highlight"><code class="language-python" data-lang="python">import tensorflow as tf
 
+
 # The clockwise shift-1 rotation permutation.
 permutation = [[1, 0], [0, 0], [0, 1], [2, 0], [1, 1], [0, 2], [2, 1], [2, 2], [1, 2]]
 
 
-def conv2d(x, W, **kwargs):
-    w = W
+def shift_rotate(w, shift=1):
     shape = w.get_shape()
+    for i in range(shift):
+        w = tf.reshape(tf.gather_nd(w, permutation), shape)
+    return w
 
+
+def conv2d(x, W, **kwargs):
     # Determine all 7 rotations of w.
+    w = W
     w_rot = [w]
     for i in range(7):
-        w = tf.reshape(tf.gather_nd(w, permutation), shape)
+        w = shift_rotate(w)
         w_rot.append(w)
 
     # Convolve with all 8 rotations and stack.
@@ -258,7 +264,7 @@ def conv2d(x, W, **kwargs):
 <p>It seems evident that using rotationally invariant convolutional layers everywhere is not a good idea (<em>4_rot_all</em> and <em>8_rot_all</em> have the lowest values). In accordance with hypothesis 2, the accuracy improved as we get rid of earlier rotationally invariant conv layers, with 4_rot_third and 8_rot_third almost catching up to baseline model accuracy. The skew (according to hypothesis 3) does not seem to the issue as <em>8_rot_#</em> closely followed <em>4_rot_#</em> accuracies.</p>
 </div>
 <div class="paragraph">
-<p>Fortunately, there is a silver lining despite all the setbacks. fig 9 shows the plot of prediction probabilities for all three models across rotated test cifar10 image by step of \(1^{\circ}\) from \(\theta = \{0, 360\}\).</p>
+<p>Fortunately, there is a silver lining despite all the setbacks. fig 9 shows the plot of prediction probabilities for all three models across rotated test cifar10 image by step of \(1^{\circ}\) from \(\theta = \{0, 360\}\). Adding rotationally invariant conv net to last layer (maybe last few for a larger conv net?) seems to make model robust to input image rotations, with the same convergence rate as the baseline model. It also appears that \(90^{\circ}\)  rotations are yielding most bang per computation.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
@@ -270,7 +276,7 @@ def conv2d(x, W, **kwargs):
 <p><br></p>
 </div>
 <div class="paragraph">
-<p>Adding rotationally invariant conv net to last layer (maybe last few for a larger conv net?) seems to make model robust to input image rotations, with the same convergence rate as the baseline model. It also appears that \(90^{\circ}\) rotations are yielding most bang per computation. Obviously a lot more experimentation needs to be done before any conclusions can be made.</p>
+<p>Curiously, even the baseline model shows better robustness to rotations if i take a pretrained baseline model but add rotational conv layer (this can be done because weights are shared across rotations). Table compares the % of accurate classification across \(\theta = \{0, 360\}\) with \(1^{\circ}\) step.</p>
 </div>
 </div>
 </div>
