@@ -38,9 +38,9 @@
     <link href="//fonts.googleapis.com/" rel="dns-prefetch">
     <link href="//fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic|Open+Sans:700,400&subset=latin,latin-ext" rel="stylesheet">
 
-    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/main.min.css?v=1484072070104"/>
-    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/custom.css?v=1484072070104"/>
-    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/asciidoctor-foundation.css?v=1484072070104"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/main.min.css?v=1484193401293"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/custom.css?v=1484193401293"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/asciidoctor-foundation.css?v=1484193401293"/>
 
 
 
@@ -70,7 +70,7 @@
       GHOSTIUM.enablePjax = typeof enable_pjax !== 'undefined' ? enable_pjax : true;
     </script>
 
-    <script src="//raghakot.github.io/themes/ghostium/assets/js/head-scripts.min.js?v=1484072070104"></script>
+    <script src="//raghakot.github.io/themes/ghostium/assets/js/head-scripts.min.js?v=1484193401293"></script>
 
     <link rel="canonical" href="https://raghakot.github.io/2017/01/09/Baking-rotational-invariance-into-a-neuron.html" />
     <meta name="referrer" content="origin" />
@@ -156,7 +156,7 @@ null
             <ul class="post-meta-list">
               <li class="post-meta-item">
                 <time datetime="2017-01-09" itemprop="datePublished">
-                  a day ago
+                  3 days ago
                 </time>
               </li>
                 <li class="post-meta-item">
@@ -344,18 +344,24 @@ cos(\theta) &amp; sin(\theta)\\
 <div class="content">
 <pre class="highlight"><code class="language-python" data-lang="python">import tensorflow as tf
 
+
 # The clockwise shift-1 rotation permutation.
 permutation = [[1, 0], [0, 0], [0, 1], [2, 0], [1, 1], [0, 2], [2, 1], [2, 2], [1, 2]]
 
 
-def conv2d(x, W, **kwargs):
-    w = W
+def shift_rotate(w, shift=1):
     shape = w.get_shape()
+    for i in range(shift):
+        w = tf.reshape(tf.gather_nd(w, permutation), shape)
+    return w
 
+
+def conv2d(x, W, **kwargs):
     # Determine all 7 rotations of w.
+    w = W
     w_rot = [w]
     for i in range(7):
-        w = tf.reshape(tf.gather_nd(w, permutation), shape)
+        w = shift_rotate(w)
         w_rot.append(w)
 
     # Convolve with all 8 rotations and stack.
@@ -446,7 +452,7 @@ def conv2d(x, W, **kwargs):
 <p>It seems evident that using rotationally invariant convolutional layers everywhere is not a good idea (<em>4_rot_all</em> and <em>8_rot_all</em> have the lowest values). In accordance with hypothesis 2, the accuracy improved as we get rid of earlier rotationally invariant conv layers, with 4_rot_third and 8_rot_third almost catching up to baseline model accuracy. The skew (according to hypothesis 3) does not seem to the issue as <em>8_rot_#</em> closely followed <em>4_rot_#</em> accuracies.</p>
 </div>
 <div class="paragraph">
-<p>Fortunately, there is a silver lining despite all the setbacks. fig 9 shows the plot of prediction probabilities for all three models across rotated test cifar10 image by step of \(1^{\circ}\) from \(\theta = \{0, 360\}\).</p>
+<p>Fortunately, there is a silver lining despite all the setbacks. fig 9 shows the plot of prediction probabilities for all three models across rotated test cifar10 image by step of \(1^{\circ}\) from \(\theta = \{0, 360\}\). Adding rotationally invariant conv net to last layer (maybe last few for a larger conv net?) seems to make model robust to input image rotations, with the same convergence rate as the baseline model. It also appears that \(90^{\circ}\)  rotations are yielding most bang per computation.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
@@ -458,7 +464,7 @@ def conv2d(x, W, **kwargs):
 <p><br></p>
 </div>
 <div class="paragraph">
-<p>Adding rotationally invariant conv net to last layer (maybe last few for a larger conv net?) seems to make model robust to input image rotations, with the same convergence rate as the baseline model. It also appears that \(90^{\circ}\) rotations are yielding most bang per computation. Obviously a lot more experimentation needs to be done before any conclusions can be made.</p>
+<p>Curiously, even the baseline model shows better robustness to rotations if i take a pretrained baseline model but add rotational conv layer (this can be done because weights are shared across rotations). Table compares the % of accurate classification across \(\theta = \{0, 360\}\) with \(1^{\circ}\) step.</p>
 </div>
 </div>
 </div>
@@ -550,7 +556,7 @@ def conv2d(x, W, **kwargs):
         hljs.initHighlightingOnLoad();
       </script>
 
-    <script src="//raghakot.github.io/themes/ghostium/assets/js/foot-scripts.min.js?v=1484072070104"></script>
+    <script src="//raghakot.github.io/themes/ghostium/assets/js/foot-scripts.min.js?v=1484193401293"></script>
 
     <script>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
