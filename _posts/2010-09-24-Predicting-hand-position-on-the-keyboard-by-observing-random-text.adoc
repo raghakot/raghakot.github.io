@@ -72,10 +72,10 @@ You can try this on your own. Place your fingers on the keyboard (horizontally, 
 This should allow us to predict hand position on a keyboard based on a bunch of randomly pressed keystrokes.
 
 ++++
-<script src="https://cdn.rawgit.com/raghakot/raghakot.github.io/master/extras/inlineDisqussions.js"></script>
+<script src="https://cdn.rawgit.com/raghakot/raghakot.github.io/master/extras/inlineDisqussions.js" defer='defer'></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/raghakot/raghakot.github.io/master/extras/inlineDisqussions.css" />
 
-<script type="text/javascript">
+<script type="text/javascript" defer='defer'>
   disqus_shortname = 'raghakot-github-io';
   jQuery(document).ready(function() {
     jQuery("p").inlineDisqussions();
