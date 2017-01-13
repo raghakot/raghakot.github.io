@@ -77,21 +77,13 @@ This should allow us to predict hand position on a keyboard based on a bunch of 
           if (window.jQuery) {
           	  disqus_shortname = 'raghakot-github-io';  
               jQuery(document).ready(function() {
-                jQuery("p:not(.footnotes ol li p)").inlineDisqussions({
+                jQuery("p, img").inlineDisqussions({
                   identifier: 'disqussion',
                   displayCount: true,
                   highlighted: false,
                   position: 'right',
                   background: 'white',
-                  maxWidth: 4000,
-                });
-                jQuery("img").inlineDisqussions({
-                  identifier: 'disqussion',
-                  displayCount: true,
-                  highlighted: false,
-                  position: 'right',
-                  background: 'white',
-                  maxWidth: 4000,
+                  maxWidth: 1000
                 });
               });
           } else {
