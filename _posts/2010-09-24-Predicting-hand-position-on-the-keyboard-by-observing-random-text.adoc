@@ -83,7 +83,7 @@ This should allow us to predict hand position on a keyboard based on a bunch of 
                   highlighted: false,
                   position: 'right',
                   background: 'white',
-                  maxWidth: 1000
+                  maxWidth: 600
                 });
               });
           } else {
