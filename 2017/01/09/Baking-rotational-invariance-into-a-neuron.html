@@ -38,9 +38,9 @@
     <link href="//fonts.googleapis.com/" rel="dns-prefetch">
     <link href="//fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic|Open+Sans:700,400&subset=latin,latin-ext" rel="stylesheet">
 
-    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/main.min.css?v=1484287895433"/>
-    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/custom.css?v=1484287895433"/>
-    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/asciidoctor-foundation.css?v=1484287895433"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/main.min.css?v=1484292687342"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/custom.css?v=1484292687342"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/asciidoctor-foundation.css?v=1484292687342"/>
 
 
 
@@ -70,7 +70,7 @@
       GHOSTIUM.enablePjax = typeof enable_pjax !== 'undefined' ? enable_pjax : true;
     </script>
 
-    <script src="//raghakot.github.io/themes/ghostium/assets/js/head-scripts.min.js?v=1484287895433"></script>
+    <script src="//raghakot.github.io/themes/ghostium/assets/js/head-scripts.min.js?v=1484292687342"></script>
 
     <link rel="canonical" href="https://raghakot.github.io/2017/01/09/Baking-rotational-invariance-into-a-neuron.html" />
     <meta name="referrer" content="origin" />
@@ -452,13 +452,25 @@ def conv2d(x, W, **kwargs):
 <p>It seems evident that using rotationally invariant convolutional layers everywhere is not a good idea (<em>4_rot_4</em> and <em>8_rot_4</em> have the lowest values). In line with hypothesis 2, the accuracy improved as we get rid of earlier rotationally invariant conv layers, with 4_rot_1 and 8_rot_1 on par/slightly better than the baseline model. The skew (according to hypothesis 3) does not seem to the issue as <em>8_rot_[4, 3, 2, 1]</em> closely followed <em>4_rot_[4, 3, 2, 1]</em> accuracies.</p>
 </div>
 <div class="paragraph">
-<p>Since <em>4_rot_1</em> and <em>8_rot_4</em> converged to similar <code>val_acc</code> as the baseline, it is worth comparing how prediction probability of the correct class changes as we rotate the input image from \(\theta = \{0, 360\}\) by a step of \(1^{\circ}\). Fig 8. shows this comparison across all models for the sake of completeness.</p>
+<p>Since <em>4_rot_1</em> and <em>8_rot_4</em> converged to similar <code>val_acc</code> as the baseline, it is worth comparing how prediction probability of the correct class changes as we rotate the input image from \(\theta = \{0, 360\}\) by a step of \(1^{\circ}\). Fig 9. shows this comparison across all models for the sake of completeness. It is awesome to note that all models outperform <em>baseline</em> model in terms of rotational invariance.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="https://raghakot.github.io/images/alt_neural2/rotations_all.png" alt="rotations_all" width="1024">
+<img src="https://raghakot.github.io/images/alt_neural2/rotations_all.png" alt="rotations_all" width="800">
 </div>
-<div class="title">Figure 9. Plot of prediction probability of the correct output class as a test input image is rotated from \(\theta = \{0, 360\}\) by step of \(1^{\circ}\) across models. Legend shows the percentage of times the class was correctly predicted across rotations.</div>
+<div class="title">Figure 9. Prediction probability of the correct output class as a test input image is rotated from \(\theta = \{0, 360\}\) by step of \(1^{\circ}\) across models. Legend shows the percentage correct classifications across rotations (ascending order).</div>
+</div>
+<div class="paragraph">
+<p><br></p>
+</div>
+<div class="paragraph">
+<p>Instead of checking random images, lets compute these values for 1000 random test images and use a box plot to see <em>mean, std, min, max</em> of percentage correct classifications across all rotations. Interestingly, <em>8_rot_4</em>, <em>4_rot_4</em> show the best rotational invariance (higher mean, large <em>std</em> in positive direction). It is also somewhat mysterious why <em>8_rot_2</em>, <em>4_rot_2</em> is slightly worse than <code>baseline</code> compared to 1, 3, 4.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="https://raghakot.github.io/images/alt_neural2/rotations_box_all.png" alt="rotations_box_all" width="800">
+</div>
+<div class="title">Figure 10. Box plot of percentage correct classifications across all rotations for 1000 random test images (in ascending order of <em>mean</em>).</div>
 </div>
 <div class="paragraph">
 <p><br></p>
@@ -471,8 +483,18 @@ def conv2d(x, W, **kwargs):
 <div class="sect1">
 <h2 id="_conclusions">Conclusions</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>Adding rotationally invariant conv net to last layer (maybe last few for a larger conv net?) seems to make model robust to input image rotations, with the same convergence rate as the baseline model. It also appears that \(90^{\circ}\)  rotations are yielding most bang per computation.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Filter skew does not seem to be an issue.</p>
+</li>
+<li>
+<p>Even though convergence is slower, 8 rotations seem to offer better invariance comapred to 4 rotations.</p>
+</li>
+<li>
+<p>It is interesting to note that all models exhibit the same seasonal pattern of accuracy with respect to rotation (see fig. 9). What&#8217;s with the weird dip at \(100^{\circ}\)?</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
@@ -551,11 +573,11 @@ def conv2d(x, W, **kwargs):
       </div>
     </main>
 
-    <script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script> <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js?v="></script> <script src="https://cdn.rawgit.com/raghakot/raghakot.github.io/master/extras/inlineDisqussions.js?v="></script> <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.min.js?v="></script> <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js?v="></script> 
+    <script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script> <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js?v="></script> <link rel='stylesheet' type='text/css' href='./extras/inlineDisqussions.css'></link> <script src="./extras/inlineDisqussions.js?v="></script> <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.min.js?v="></script> <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js?v="></script> 
       <script type="text/javascript">
         jQuery( document ).ready(function() {
           // Load disqus inline
-          jQuery('p').inlineDisqussions();
+          jQuery('p, img').inlineDisqussions();
           // change date with ago
           jQuery('ago.ago').each(function(){
             var element = jQuery(this).parent();
@@ -566,7 +588,7 @@ def conv2d(x, W, **kwargs):
         hljs.initHighlightingOnLoad();
       </script>
 
-    <script src="//raghakot.github.io/themes/ghostium/assets/js/foot-scripts.min.js?v=1484287895433"></script>
+    <script src="//raghakot.github.io/themes/ghostium/assets/js/foot-scripts.min.js?v=1484292687342"></script>
 
     <script>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
