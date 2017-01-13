@@ -78,29 +78,21 @@ Since the beginnning, it was clear that i had to do something about the weird sc
 
 During test/submission time, I could simply zero out all the segmentation mask values if `has_mask = False`.
 
+++++
+<link rel="stylesheet" type="text/css" href="../../../extras/inlineDisqussions.css" />
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+<script type="text/javascript"> 
+  (function defer() {
+    if (window.jQuery) {      
+      jQuery(document).ready(function() {
+      	$.getScript('../../../extras/inlineDisqussions.js', function() {
+          disqus_shortname = 'raghakot-github-io';
+          jQuery("p, img").inlineDisqussions();
+        });
+      });
+    } else {
+      setTimeout(function() { defer() }, 50);     
+    }
+  })(); 
+</script>
+++++
