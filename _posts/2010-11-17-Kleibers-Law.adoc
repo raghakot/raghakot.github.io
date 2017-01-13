@@ -9,3 +9,22 @@ Last week, I happened to read about Kleiber's law while browsing through literat
 Metabolism is ultimately linked to the number of heartbeats since the heart regulates the supply of oxygen. Therefore, \(\mid heartbeat \mid \propto mass\). Curiously, the number of heartbeats per lifetime tends to be constant. This means that bigger/heavier animals tend to have slower metabolism with lower heart rate compared to, say, flies, with faster metabolism.
 
 Ironically, if we have fixed number of heartbeats, wouldn't running/exercising make us die faster? I suppose, the long term benefits outweigh shot term loss.
+
+++++
+<link rel="stylesheet" type="text/css" href="../../../extras/inlineDisqussions.css" />
+
+<script type="text/javascript"> 
+  (function defer() {
+    if (window.jQuery) {      
+      jQuery(document).ready(function() {
+      	$.getScript('../../../extras/inlineDisqussions.js', function() {
+          disqus_shortname = 'raghakot-github-io';
+          jQuery("p, img").inlineDisqussions();
+        });
+      });
+    } else {
+      setTimeout(function() { defer() }, 50);     
+    }
+  })(); 
+</script>
+++++
