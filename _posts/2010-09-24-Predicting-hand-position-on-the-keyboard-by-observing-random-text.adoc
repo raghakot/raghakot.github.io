@@ -1,5 +1,4 @@
 = Predicting hand position on the keyboard by observing random text
-:hp-image: http://media02.hongkiat.com/thumbs/640x410/faster-keyboard-typing.jpg
 :hp-tags: light bulb, migrated
 :published_at: 2010-09-24
 
@@ -78,13 +77,21 @@ This should allow us to predict hand position on a keyboard based on a bunch of 
           if (window.jQuery) {
           	  disqus_shortname = 'raghakot-github-io';  
               jQuery(document).ready(function() {
-                jQuery("p").inlineDisqussions({
+                jQuery("p:not(.footnotes ol li p)").inlineDisqussions({
                   identifier: 'disqussion',
                   displayCount: true,
-                  highlighted: true,
+                  highlighted: false,
                   position: 'right',
-                  background: 'AliceBlue',
-                  maxWidth: 9999
+                  background: 'white',
+                  maxWidth: 4000,
+                });
+                jQuery("img").inlineDisqussions({
+                  identifier: 'disqussion',
+                  displayCount: true,
+                  highlighted: false,
+                  position: 'right',
+                  background: 'white',
+                  maxWidth: 4000,
                 });
               });
           } else {
