@@ -38,9 +38,9 @@
     <link href="//fonts.googleapis.com/" rel="dns-prefetch">
     <link href="//fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic|Open+Sans:700,400&subset=latin,latin-ext" rel="stylesheet">
 
-    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/main.min.css?v=1484271266062"/>
-    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/custom.css?v=1484271266062"/>
-    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/asciidoctor-foundation.css?v=1484271266062"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/main.min.css?v=1484287895433"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/custom.css?v=1484287895433"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/asciidoctor-foundation.css?v=1484287895433"/>
 
 
 
@@ -70,7 +70,7 @@
       GHOSTIUM.enablePjax = typeof enable_pjax !== 'undefined' ? enable_pjax : true;
     </script>
 
-    <script src="//raghakot.github.io/themes/ghostium/assets/js/head-scripts.min.js?v=1484271266062"></script>
+    <script src="//raghakot.github.io/themes/ghostium/assets/js/head-scripts.min.js?v=1484287895433"></script>
 
     <link rel="canonical" href="https://raghakot.github.io/2017/01/09/Baking-rotational-invariance-into-a-neuron.html" />
     <meta name="referrer" content="origin" />
@@ -429,10 +429,10 @@ def conv2d(x, W, **kwargs):
 <div class="ulist">
 <ul>
 <li>
-<p>\(90^{\circ}\) rotations (4 filters) and \(45^{\circ}\) rotations (8 filters)</p>
+<p>Use new conv logic only on last 4, 3, 2, 1 layer(s). If hypothesis 2 is true, the convergence should get better.</p>
 </li>
 <li>
-<p>Use new conv logic only on all four conv layers (all), last two conv layers (half), and the last conv layer (third).</p>
+<p>Use \(90^{\circ}\) rotations (4 filters) and \(45^{\circ}\) rotations (8 filters) to test if <em>skew</em> introduced by the 8 filter version was really an issue.</p>
 </li>
 </ul>
 </div>
@@ -443,28 +443,36 @@ def conv2d(x, W, **kwargs):
 <div class="content">
 <img src="https://raghakot.github.io/images/alt_neural2/convergence.png" alt="convergence" width="800">
 </div>
-<div class="title">Figure 8. Convergence graphs for #{8/4 rotations}_rot_{all/half/third} and the baseline model (old).</div>
+<div class="title">Figure 8. Convergence graphs for #{8/4 rotations}_rot_{last 1, 2, 3, 4 conv with new conv layer} and the baseline model. Models in legend are ordered in descending order of accuracy.</div>
 </div>
 <div class="paragraph">
 <p><br></p>
 </div>
 <div class="paragraph">
-<p>It seems evident that using rotationally invariant convolutional layers everywhere is not a good idea (<em>4_rot_all</em> and <em>8_rot_all</em> have the lowest values). In accordance with hypothesis 2, the accuracy improved as we get rid of earlier rotationally invariant conv layers, with 4_rot_third and 8_rot_third almost catching up to baseline model accuracy. The skew (according to hypothesis 3) does not seem to the issue as <em>8_rot_#</em> closely followed <em>4_rot_#</em> accuracies.</p>
+<p>It seems evident that using rotationally invariant convolutional layers everywhere is not a good idea (<em>4_rot_4</em> and <em>8_rot_4</em> have the lowest values). In line with hypothesis 2, the accuracy improved as we get rid of earlier rotationally invariant conv layers, with 4_rot_1 and 8_rot_1 on par/slightly better than the baseline model. The skew (according to hypothesis 3) does not seem to the issue as <em>8_rot_[4, 3, 2, 1]</em> closely followed <em>4_rot_[4, 3, 2, 1]</em> accuracies.</p>
 </div>
 <div class="paragraph">
-<p>Fortunately, there is a silver lining despite all the setbacks. fig 9 shows the plot of prediction probabilities for all three models across rotated test cifar10 image by step of \(1^{\circ}\) from \(\theta = \{0, 360\}\). Adding rotationally invariant conv net to last layer (maybe last few for a larger conv net?) seems to make model robust to input image rotations, with the same convergence rate as the baseline model. It also appears that \(90^{\circ}\)  rotations are yielding most bang per computation.</p>
+<p>Since <em>4_rot_1</em> and <em>8_rot_4</em> converged to similar <code>val_acc</code> as the baseline, it is worth comparing how prediction probability of the correct class changes as we rotate the input image from \(\theta = \{0, 360\}\) by a step of \(1^{\circ}\). Fig 8. shows this comparison across all models for the sake of completeness.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="https://raghakot.github.io/images/alt_neural2/rotation_plot.png" alt="rotation_plot" width="800">
+<img src="https://raghakot.github.io/images/alt_neural2/rotations_all.png" alt="rotations_all" width="1024">
 </div>
-<div class="title">Figure 9. Plot of prediction probability of the correct output class as the input image is rotated from \(\theta = \{0, 360\}\) by step of \(1^{\circ}\) across models. Legend shows the percentage of times the class was correctly predicted.</div>
+<div class="title">Figure 9. Plot of prediction probability of the correct output class as a test input image is rotated from \(\theta = \{0, 360\}\) by step of \(1^{\circ}\) across models. Legend shows the percentage of times the class was correctly predicted across rotations.</div>
 </div>
 <div class="paragraph">
 <p><br></p>
 </div>
 <div class="paragraph">
 <p>Curiously, even the baseline model shows better robustness to rotations if i take a pretrained baseline model but add rotational conv layer (this can be done because weights are shared across rotations). Table compares the % of accurate classification across \(\theta = \{0, 360\}\) with \(1^{\circ}\) step.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_conclusions">Conclusions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Adding rotationally invariant conv net to last layer (maybe last few for a larger conv net?) seems to make model robust to input image rotations, with the same convergence rate as the baseline model. It also appears that \(90^{\circ}\)  rotations are yielding most bang per computation.</p>
 </div>
 </div>
 </div>
@@ -543,9 +551,11 @@ def conv2d(x, W, **kwargs):
       </div>
     </main>
 
-    <script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script> <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js?v="></script> <script src='https://cdn.rawgit.com/raghakot/raghakot.github.io/master/extras/inlineDisqussions.js'></script> <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.min.js?v="></script> <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js?v="></script> 
+    <script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script> <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js?v="></script> <script src="https://cdn.rawgit.com/raghakot/raghakot.github.io/master/extras/inlineDisqussions.js?v="></script> <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.min.js?v="></script> <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js?v="></script> 
       <script type="text/javascript">
         jQuery( document ).ready(function() {
+          // Load disqus inline
+          jQuery('p').inlineDisqussions();
           // change date with ago
           jQuery('ago.ago').each(function(){
             var element = jQuery(this).parent();
@@ -556,7 +566,7 @@ def conv2d(x, W, **kwargs):
         hljs.initHighlightingOnLoad();
       </script>
 
-    <script src="//raghakot.github.io/themes/ghostium/assets/js/foot-scripts.min.js?v=1484271266062"></script>
+    <script src="//raghakot.github.io/themes/ghostium/assets/js/foot-scripts.min.js?v=1484287895433"></script>
 
     <script>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
