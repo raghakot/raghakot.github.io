@@ -95,3 +95,22 @@ Its neat when small changes like these make a significant difference. More exper
 We used `ReLU` which effectively attenuates negative values. This limits the neuron to only communicate information when the angle between \(X\) and \(W\) lies between \([-\frac{\pi}{2}, \frac{\pi}{2}]\). Perhaps it is useful if a neuron could also communicate the _lack of_ similarity or the _inverse_ of weight template information. For example, the lack of a specific stripe pattern might increase the networks confidence that the output is more likely to be one cat species over another. 
 
 One way to remedy this problem might be to use an activation function that allows negative values. A quick experiment with `ELU` activation, however, did not yield any significant improvement.
+
+++++
+<link rel="stylesheet" type="text/css" href="../../../extras/inlineDisqussions.css" />
+
+<script type="text/javascript"> 
+  (function defer() {
+    if (window.jQuery) {      
+      jQuery(document).ready(function() {
+      	$.getScript('../../../extras/inlineDisqussions.js', function() {
+          disqus_shortname = 'raghakot-github-io';
+          jQuery("p, img").inlineDisqussions();
+        });
+      });
+    } else {
+      setTimeout(function() { defer() }, 50);     
+    }
+  })(); 
+</script>
+++++
