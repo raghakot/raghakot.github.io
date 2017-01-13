@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Musings on intriguing phenomenon]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Fri, 13 Jan 2017 07:31:27 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Baking rotational invariance into a neuron]]></title><description><![CDATA[<div id="preamble">
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Musings on intriguing phenomenon]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Fri, 13 Jan 2017 08:00:33 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Baking rotational invariance into a neuron]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>This is a continuation from the first <a href="https://raghakot.github.io/2017/01/03/Exploring-alternative-neural-computational-models.html">post</a> on exploring alternative neural computational models. To recap quickly, a neuron is fundamentally acting as a pattern matching unit by computing the dot product \(W \cdot X\), which is equivalent to unnormalized cosine similarity between vectors \(W\) and \(X\).</p>
@@ -288,7 +288,28 @@ def conv2d(x, W, **kwargs):
 <p><br></p>
 </div>
 <div class="paragraph">
-<p>Curiously, even the baseline model shows better robustness to rotations if i take a pretrained baseline model but add rotational conv layer (this can be done because weights are shared across rotations). Table compares the % of accurate classification across \(\theta = \{0, 360\}\) with \(1^{\circ}\) step.</p>
+<p>Can we get the benefits of 8/4 rot models without the slower convergence? What if we applied new conv model (8/4 rotations) to the <em>baseline</em> model weights? Fig 10. shows the results for a single image. It is very curious to note that <em>8_rot_4</em> and <em>4_rot_4</em> models yield zero accuracy. This seems to indicate that weights from the usual conv layer won&#8217;t translate well into rotated conv model (the errors across various layers add up). The error rates seem to recover as we remove rotational conv layers from the early layers, but there is a lot of noise since this is for a single test image.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="https://raghakot.github.io/images/alt_neural2/rot_baseline_all.png" alt="rot_baseline_all" width="800">
+</div>
+<div class="title">Figure 11. Prediction probability of the correct output class as a test input image is rotated from \(\theta = \{0, 360\}\) by step of \(1^{\circ}\) across models with <em>baseline</em> trained weights. Legend shows the percentage correct classifications across rotations (ascending order).</div>
+</div>
+<div class="paragraph">
+<p><br></p>
+</div>
+<div class="paragraph">
+<p>To get a clearer picture, lets compute the box plot by considering 1000 random test images as described earlier.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="https://raghakot.github.io/images/alt_neural2/rot_baseline_box_all.png" alt="rot_baseline_box_all" width="800">
+</div>
+<div class="title">Figure 12. Box plot of percentage correct classifications across all rotations for 1000 random test images (in ascending order of <em>mean</em>). Note that all models use trained <em>baseline</em> weights.</div>
+</div>
+<div class="paragraph">
+<p><br></p>
 </div>
 </div>
 </div>
