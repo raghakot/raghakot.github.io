@@ -178,7 +178,7 @@ Can we get the benefits of 8/4 rot models without the slower convergence? What i
 image::alt_neural2/rot_baseline_all.png[rot_baseline_all, 800]
 {empty} +
 
-To get a clearer picture, lets compute the box plot by considering 1000 random test images as described earlier. 
+To get a clearer picture, lets compute the box plot by considering 1000 random test images as described earlier. This makes it pretty clear that cannot just add rotation operations to a _regular_ model. On the flip side, it provides evidence that rotational conv affects the weights and optimization process.
 
 [.text-center]
 .Box plot of percentage correct classifications across all rotations for 1000 random test images (in ascending order of _mean_). Note that all models use trained _baseline_ weights.
