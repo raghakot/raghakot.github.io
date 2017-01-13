@@ -157,15 +157,24 @@ image::alt_neural2/convergence.png[convergence, 800]
 
 It seems evident that using rotationally invariant convolutional layers everywhere is not a good idea (_4pass:[_]rotpass:[_]4_ and _8pass:[_]rotpass:[_]4_ have the lowest values). In line with hypothesis 2, the accuracy improved as we get rid of earlier rotationally invariant conv layers, with 4_rot_1 and 8_rot_1 on par/slightly better than the baseline model. The skew (according to hypothesis 3) does not seem to the issue as _8pass:[_]rotpass:[_][4, 3, 2, 1]_ closely followed _4pass:[_]rotpass:[_][4, 3, 2, 1]_ accuracies.
 
-Since _4pass:[_]rotpass:[_]1_ and _8pass:[_]rotpass:[_]4_ converged to similar `val_acc` as the baseline, it is worth comparing how prediction probability of the correct class changes as we rotate the input image from \(\theta = \{0, 360\}\) by a step of \(1^{\circ}\). Fig 8. shows this comparison across all models for the sake of completeness.
+Since _4pass:[_]rotpass:[_]1_ and _8pass:[_]rotpass:[_]4_ converged to similar `val_acc` as the baseline, it is worth comparing how prediction probability of the correct class changes as we rotate the input image from \(\theta = \{0, 360\}\) by a step of \(1^{\circ}\). Fig 9. shows this comparison across all models for the sake of completeness. It is awesome to note that all models outperform _baseline_ model in terms of rotational invariance.
 
 [.text-center]
-.Plot of prediction probability of the correct output class as a test input image is rotated from \(\theta = \{0, 360\}\) by step of \(1^{\circ}\) across models. Legend shows the percentage of times the class was correctly predicted across rotations.
-image::alt_neural2/rotations_all.png[rotations_all, 1024]
+.Prediction probability of the correct output class as a test input image is rotated from \(\theta = \{0, 360\}\) by step of \(1^{\circ}\) across models. Legend shows the percentage correct classifications across rotations (ascending order).
+image::alt_neural2/rotations_all.png[rotations_all, 800]
+{empty} +
+
+Instead of checking random images, lets compute these values for 1000 random test images and use a box plot to see _mean, std, min, max_ of percentage correct classifications across all rotations. Interestingly, _8pass:[_]rotpass:[_]4_, _4pass:[_]rotpass:[_]4_ show the best rotational invariance (higher mean, large _std_ in positive direction). It is also somewhat mysterious why _8pass:[_]rotpass:[_]2_, _4pass:[_]rotpass:[_]2_ is slightly worse than `baseline` compared to 1, 3, 4.
+
+[.text-center]
+.Box plot of percentage correct classifications across all rotations for 1000 random test images (in ascending order of _mean_).
+image::alt_neural2/rotations_box_all.png[rotations_box_all, 800]
 {empty} +
 
 Curiously, even the baseline model shows better robustness to rotations if i take a pretrained baseline model but add rotational conv layer (this can be done because weights are shared across rotations). Table compares the % of accurate classification across \(\theta = \{0, 360\}\) with \(1^{\circ}\) step.
 
 == Conclusions
 
-Adding rotationally invariant conv net to last layer (maybe last few for a larger conv net?) seems to make model robust to input image rotations, with the same convergence rate as the baseline model. It also appears that \(90^{\circ}\)  rotations are yielding most bang per computation.
+* Filter skew does not seem to be an issue.
+* Even though convergence is slower, 8 rotations seem to offer better invariance comapred to 4 rotations.
+* It is interesting to note that all models exhibit the same seasonal pattern of accuracy with respect to rotation (see fig. 9). What's with the weird dip at \(100^{\circ}\)? 
