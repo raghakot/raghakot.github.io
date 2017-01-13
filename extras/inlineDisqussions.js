@@ -159,25 +159,26 @@ var disqus_url;
 
   var loadDisqus = function(source, callback) {
 
-    disqus_identifier = source.attr('data-disqus-identifier');
-    disqus_url = source.attr('data-disqus-url');
+    var identifier = source.attr('data-disqus-identifier');
+    var url = source.attr('data-disqus-url');
 
     if (window.DISQUS) {
       // If Disqus exists, call it's reset method with new parameters.
       DISQUS.reset({
         reload: true,
         config: function () {
-          this.page.identifier = disqus_identifier;
-          this.page.url = disqus_url;
+          this.page.identifier = identifier;
+          this.page.url = url;
         }
       });
 
     } else {
 
+      disqus_identifier = identifier;
+      disqus_url = url;
+
       // Append the Disqus embed script to <head>.
-      var s = document.createElement('script');
-      s.type = 'text/javascript';
-      s.async = true;
+      var s = document.createElement('script'); s.type = 'text/javascript'; s.async = true;
       s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
       $('head').append(s);
 
@@ -188,7 +189,7 @@ var disqus_url;
 
     // Highlight
     if (source.is('.disqussion-highlight')) {
-      highlightDisqussion(disqus_identifier);
+      highlightDisqussion(identifier);
     }
 
     callback(source);
@@ -198,31 +199,16 @@ var disqus_url;
   var loadDisqusCounter = function() {
 
     // Append the Disqus count script to <head>.
-    if (!$('script[src*="disqus.com/count.js"]').length) {
-      var s = document.createElement('script');
-      s.type = 'text/javascript';
-      s.async = true;
-      s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+    var s = document.createElement('script'); s.type = 'text/javascript'; s.async = true;
+    s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+    $('head').append(s);
 
-      $('head').append(s);
-
-      var limit = 0;
-      var timer = setInterval(function() {
-        limit++;
-        // After script is loaded, show bubles with numbers.
-        if (typeof(DISQUSWIDGETS) === 'object') {
-          $('.disqussion-link').filter(function() {
-            return $(this).text().match(/[1-9]/g);
-          }).addClass("has-comments");
-          clearInterval(timer);
-        }
-        // Don't run forever.
-        if (limit > 10) {
-          clearInterval(timer);
-        }
-      }, 1000)
-
-    }
+    // Add class to discussions that already have comments.
+    window.setTimeout(function() {
+      $('.disqussion-link').filter(function() {
+        return $(this).text().match(/[1-9]/g);
+      }).addClass("has-comments");
+    }, 1000);
 
   };
 
@@ -250,7 +236,7 @@ var disqus_url;
       animate = {
         "top": el.offset().top,
         "left": el.offset().left + el.outerWidth(),
-        "width": Math.min(parseInt($(window).width() - (el.offset().left + el.outerWidth()), 10), settings.maxWidth)
+        "width": Math.min(parseInt($(window).width() - (el.offset().left + el.outerWidth()), 10) - 80, settings.maxWidth)
       };
     }
     else if (el.attr('data-disqus-position') == 'left') {
