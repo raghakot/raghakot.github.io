@@ -71,7 +71,7 @@ You can try this on your own. Place your fingers on the keyboard (horizontally, 
 This should allow us to predict hand position on a keyboard based on a bunch of randomly pressed keystrokes.
 
 ++++
-<link rel="stylesheet" type="text/css" href="../../extras/inlineDisqussions.css" />
+<link rel="stylesheet" type="text/css" href="../../../extras/inlineDisqussions.css" />
 <script>
 	(function defer() {
           if (window.jQuery) {
