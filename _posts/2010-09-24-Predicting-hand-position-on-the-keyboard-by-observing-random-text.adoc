@@ -69,3 +69,20 @@ Notice how 'h' repeats a lot. It so happens that my middle finger was on 'h'. Pe
 You can try this on your own. Place your fingers on the keyboard (horizontally, any other orientation complicates the situation as relative length changes). Probability theory suggests that the chance of occurrence of G, H, J or K is 1/4. But I think that in this case, probability is somehow weighted, proportional to the length of the finger.
 
 This should allow us to predict hand position on a keyboard based on a bunch of randomly pressed keystrokes.
+
+++++
+<link rel="stylesheet" type="text/css" href="../../../extras/inlineDisqussions.css" />
+
+<script type="text/javascript"> 
+  (function defer() {
+    if (window.jQuery) {      
+      jQuery(document).ready(function() {
+      	disqus_shortname = 'raghakot-github-io';
+      	jQuery("p, img").inlineDisqussions();
+      });
+    } else {
+      setTimeout(function() { defer() }, 50);     
+    }
+  })(); 
+</script>
+++++
