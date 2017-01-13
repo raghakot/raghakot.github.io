@@ -171,7 +171,19 @@ Instead of checking random images, lets compute these values for 1000 random tes
 image::alt_neural2/rotations_box_all.png[rotations_box_all, 800]
 {empty} +
 
-Curiously, even the baseline model shows better robustness to rotations if i take a pretrained baseline model but add rotational conv layer (this can be done because weights are shared across rotations). Table compares the % of accurate classification across \(\theta = \{0, 360\}\) with \(1^{\circ}\) step.
+Can we get the benefits of 8/4 rot models without the slower convergence? What if we applied new conv model (8/4 rotations) to the _baseline_ model weights? Fig 10. shows the results for a single image. It is very curious to note that _8pass:[_]rotpass:[_]4_ and _4pass:[_]rotpass:[_]4_ models yield zero accuracy. This seems to indicate that weights from the usual conv layer won't translate well into rotated conv model (the errors across various layers add up). The error rates seem to recover as we remove rotational conv layers from the early layers, but there is a lot of noise since this is for a single test image.
+
+[.text-center]
+.Prediction probability of the correct output class as a test input image is rotated from \(\theta = \{0, 360\}\) by step of \(1^{\circ}\) across models with _baseline_ trained weights. Legend shows the percentage correct classifications across rotations (ascending order).
+image::alt_neural2/rot_baseline_all.png[rot_baseline_all, 800]
+{empty} +
+
+To get a clearer picture, lets compute the box plot by considering 1000 random test images as described earlier. 
+
+[.text-center]
+.Box plot of percentage correct classifications across all rotations for 1000 random test images (in ascending order of _mean_). Note that all models use trained _baseline_ weights.
+image::alt_neural2/rot_baseline_box_all.png[rot_baseline_box_all, 800]
+{empty} +
 
 == Conclusions
 
