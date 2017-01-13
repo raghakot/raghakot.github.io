@@ -187,6 +187,8 @@ image::alt_neural2/rot_baseline_box_all.png[rot_baseline_box_all, 800]
 
 == Conclusions
 
+The code to reproduce all the experiments is available on link:https://github.com/raghakot/deep-learning-experiments/tree/master/exp2[Github]. Feel free to reuse or improve.
+
 * Even though convergence is slower, 8 rotations seem to offer better invariance compared to 4 rotations. It would be interesting to see whether all models converge to the same accuracy eventually.
 * Filter skew does not seem to be an issue.
 * All models seem to exhibit the same seasonal pattern of accuracy with respect to rotation (see fig. 9). What's with the weird dip at \(100^{\circ}\)? 
