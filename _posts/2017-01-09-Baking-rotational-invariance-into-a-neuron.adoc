@@ -145,23 +145,27 @@ Disappointingly, rotational invariant model resulted in lower val accuracy than 
 
 To test 2, 3, I decided to run 6 more experiments by using:
 
-* \(90^{\circ}\) rotations (4 filters) and \(45^{\circ}\) rotations (8 filters)
-* Use new conv logic only on all four conv layers (all), last two conv layers (half), and the last conv layer (third).
+* Use new conv logic only on last 4, 3, 2, 1 layer(s). If hypothesis 2 is true, the convergence should get better.
+* Use \(90^{\circ}\) rotations (4 filters) and \(45^{\circ}\) rotations (8 filters) to test if _skew_ introduced by the 8 filter version was really an issue.
 
 The results of these experiments are summarized in fig 8.
 
 [.text-center]
-.Convergence graphs for #{8/4 rotations}_rot_{all/half/third} and the baseline model (old).
+.Convergence graphs for #{8/4 rotations}_rot_{last 1, 2, 3, 4 conv with new conv layer} and the baseline model. Models in legend are ordered in descending order of accuracy.
 image::alt_neural2/convergence.png[convergence, 800]
 {empty} +
 
-It seems evident that using rotationally invariant convolutional layers everywhere is not a good idea (_4pass:[_]rotpass:[_]all_ and _8pass:[_]rotpass:[_]all_ have the lowest values). In accordance with hypothesis 2, the accuracy improved as we get rid of earlier rotationally invariant conv layers, with 4_rot_third and 8_rot_third almost catching up to baseline model accuracy. The skew (according to hypothesis 3) does not seem to the issue as _8pass:[_]rotpass:[_#]_ closely followed _4pass:[_]rotpass:[_#]_ accuracies.
+It seems evident that using rotationally invariant convolutional layers everywhere is not a good idea (_4pass:[_]rotpass:[_]4_ and _8pass:[_]rotpass:[_]4_ have the lowest values). In line with hypothesis 2, the accuracy improved as we get rid of earlier rotationally invariant conv layers, with 4_rot_1 and 8_rot_1 on par/slightly better than the baseline model. The skew (according to hypothesis 3) does not seem to the issue as _8pass:[_]rotpass:[_][4, 3, 2, 1]_ closely followed _4pass:[_]rotpass:[_][4, 3, 2, 1]_ accuracies.
 
-Fortunately, there is a silver lining despite all the setbacks. fig 9 shows the plot of prediction probabilities for all three models across rotated test cifar10 image by step of \(1^{\circ}\) from \(\theta = \{0, 360\}\). Adding rotationally invariant conv net to last layer (maybe last few for a larger conv net?) seems to make model robust to input image rotations, with the same convergence rate as the baseline model. It also appears that \(90^{\circ}\)  rotations are yielding most bang per computation.
+Since _4pass:[_]rotpass:[_]1_ and _8pass:[_]rotpass:[_]4_ converged to similar `val_acc` as the baseline, it is worth comparing how prediction probability of the correct class changes as we rotate the input image from \(\theta = \{0, 360\}\) by a step of \(1^{\circ}\). Fig 8. shows this comparison across all models for the sake of completeness.
 
 [.text-center]
-.Plot of prediction probability of the correct output class as the input image is rotated from \(\theta = \{0, 360\}\) by step of \(1^{\circ}\) across models. Legend shows the percentage of times the class was correctly predicted.
-image::alt_neural2/rotation_plot.png[rotation_plot, 800]
+.Plot of prediction probability of the correct output class as a test input image is rotated from \(\theta = \{0, 360\}\) by step of \(1^{\circ}\) across models. Legend shows the percentage of times the class was correctly predicted across rotations.
+image::alt_neural2/rotations_all.png[rotations_all, 1024]
 {empty} +
 
 Curiously, even the baseline model shows better robustness to rotations if i take a pretrained baseline model but add rotational conv layer (this can be done because weights are shared across rotations). Table compares the % of accurate classification across \(\theta = \{0, 360\}\) with \(1^{\circ}\) step.
+
+== Conclusions
+
+Adding rotationally invariant conv net to last layer (maybe last few for a larger conv net?) seems to make model robust to input image rotations, with the same convergence rate as the baseline model. It also appears that \(90^{\circ}\)  rotations are yielding most bang per computation.
