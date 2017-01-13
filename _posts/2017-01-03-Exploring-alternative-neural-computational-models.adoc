@@ -96,6 +96,10 @@ We used `ReLU` which effectively attenuates negative values. This limits the neu
 
 One way to remedy this problem might be to use an activation function that allows negative values. A quick experiment with `ELU` activation, however, did not yield any significant improvement.
 
+== Reproducibility
+
+The code to reproduce all the experiments in this blog is available on link:https://github.com/raghakot/deep-learning-experiments/tree/master/exp1[Github]. Feel free to reuse or improve.
+
 ++++
 <link rel="stylesheet" type="text/css" href="../../../extras/inlineDisqussions.css" />
 
