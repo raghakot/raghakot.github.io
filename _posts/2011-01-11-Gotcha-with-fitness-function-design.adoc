@@ -11,3 +11,22 @@ If we move from the right, the maximum occurs at \(x = 0\) instead of \(x = -5\)
 In this case, it is better to use \(y = -x\) as the fitness function.
 
 In general, if we are seeking to minimize \(y = f(x)\), where \(f(x)\) is differentiable, then it is safer to use \(y = -f(x)\) as the fitness function. Probably very obvious, but I got burned by this.
+
+++++
+<link rel="stylesheet" type="text/css" href="../../../extras/inlineDisqussions.css" />
+
+<script type="text/javascript"> 
+  (function defer() {
+    if (window.jQuery) {      
+      jQuery(document).ready(function() {
+      	$.getScript('../../../extras/inlineDisqussions.js', function() {
+          disqus_shortname = 'raghakot-github-io';
+          jQuery("p, img").inlineDisqussions();
+        });
+      });
+    } else {
+      setTimeout(function() { defer() }, 50);     
+    }
+  })(); 
+</script>
+++++
