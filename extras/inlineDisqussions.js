@@ -213,25 +213,18 @@ var disqus_url;
   };
 
   var relocateDisqussion = function(el, main) {
-
+  	
     // Move the discussion to the right position.
     var css = {};
     if (main === true) {
-      $('#disqus_thread')
-        .appendTo('.disqus_thread_wrap')
-        .removeClass("positioned");
+      $('#disqus_thread').removeClass("positioned");
       css = {
         'position': 'static',
         'width': 'auto'
       };
     }
     else {
-      if (!$(".disqus_thread_wrap").length) {
-        $('#disqus_thread').wrap('<div class="disqus_thread_wrap" />');        
-      }
-      $('#disqus_thread')
-        .appendTo("body")
-        .addClass("positioned");
+      $('#disqus_thread').addClass("positioned");
       css = {
         'position': 'absolute'
       };
@@ -243,7 +236,7 @@ var disqus_url;
       animate = {
         "top": el.offset().top,
         "left": el.offset().left + el.outerWidth(),
-        "width": Math.min(parseInt($(window).width() - (el.offset().left + el.outerWidth()), 10), settings.maxWidth)
+        "width": Math.min(parseInt($(window).width() - (el.offset().left + el.outerWidth()), 10) - 80, settings.maxWidth)
       };
     }
     else if (el.attr('data-disqus-position') == 'left') {
