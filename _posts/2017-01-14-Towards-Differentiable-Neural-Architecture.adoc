@@ -5,6 +5,10 @@ Ever since AlexNet was introduced in 2012, neural net research landscape changed
 
 First step is to make this more concrete. Ideally, we want to learn connectivity amongst individual neurons; instead, lets simplify the problem by constraining ourselves to known layer lego blocks (By layer lego blocks, I mean general purpose computational layers such as _Convolutional Layer_, _LSTM_, _Pooling_ etc.). Given a bunch of Layer Legos \(L = \{L_{1}, L_{2}, \cdots, L_{n}\}\), our task is to learn how these should be assembled. First thing that comes to mind is evolutionary search, but this is computationally prohibive. A quicker and more elegant alternative would be to learn this by computing the gradient of _architecture_ with respect to loss. The challenge is to make _architecture_ itself differentiable.
 
+== Differentiable Architecture
+
+Let us start by considering all possible ways in which \(n\) layers can be connected. This is equivalent to the maximum number of connections (edges) in a directed graph with \(n\) vertices, which is \(n(n-1)\). The simplest way to search amongst all these possibilities is to start with a fully connected network where each layer is connected to every other layer via some _weight_ which can then be _learned_ via backprop. Backward connections introduce cycles in the graph which are problematicfootnote:[There are ways to avoid the issue by unrolling the recurrent loops to a fixed number of time steps but lets put that off in the interest of simplicity]. Excluding backward connections, we are left with \(\frac{n(n-1)}{2}\) possible connections. This is exactly what DenseNets do!, except that we arrived at at the same thing with a different motivation.
+
 
 
 
