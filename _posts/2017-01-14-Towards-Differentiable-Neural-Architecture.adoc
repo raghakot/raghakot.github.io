@@ -7,7 +7,7 @@ First step is to make this more concrete. Ideally, we want to learn connectivity
 
 == Differentiable Architecture
 
-WARNING: This article is still a work in progress. Check back for updates.
+NOTE: This article is still a work in progress. Check back for updates.
 
 Let us start by considering all possible ways in which \(n\) layers can be connected. This is equivalent to the maximum number of connections (edges) in a directed graph with \(n\) vertices, which is \(n(n-1)\). The simplest way to search amongst all these possibilities is to start with a fully connected network where each layer is connected to every other layer via some _weight_ which can then be _learned_ via backprop. Backward connections introduce cycles in the graph which are problematicfootnote:[There are ways to avoid the issue by unrolling the recurrent loops to a fixed number of time steps but lets put that off in the interest of simplicity]. Excluding backward connections, we are left with \(\frac{n(n-1)}{2}\) possible connections. This is exactly what link:https://arxiv.org/pdf/1608.06993v3.pdf[DenseNets] do!, except that we arrived at the same thing with a different motivation.
 
@@ -37,7 +37,7 @@ The model has 1,250,858 parameters and trained for 50 epochs with a batch size o
 
 == Discussion
 
-WARNING: Experimentation is still a work in progress. Check back for updates.
+NOTE: Experimentation is still a work in progress. Check back for updates.
 
 ++++
 <link rel="stylesheet" type="text/css" href="../../../extras/inlineDisqussions.css" />
