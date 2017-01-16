@@ -235,8 +235,8 @@ var disqus_url;
     if (el.attr('data-disqus-position') == 'right') {
       animate = {
         "top": el.offset().top,
-        "left": el.offset().left + el.outerWidth(),
-        "width": Math.min(parseInt($(window).width() - (el.offset().left + el.outerWidth()), 10) - 80, settings.maxWidth)
+        "left": el.offset().left + el.outerWidth() - 460	,
+        "width": Math.min(parseInt($(window).width() - (el.offset().left + el.outerWidth()), 10) - 40, settings.maxWidth)
       };
     }
     else if (el.attr('data-disqus-position') == 'left') {
