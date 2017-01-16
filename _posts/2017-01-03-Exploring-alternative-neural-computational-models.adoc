@@ -106,11 +106,9 @@ The code to reproduce all the experiments in this blog is available on link:http
 <script type="text/javascript"> 
   (function defer() {
     if (window.jQuery) {      
-      jQuery(document).ready(function() {
-      	$.getScript('../../../extras/inlineDisqussions.js', function() {
+      jQuery(document).ready(function() {      	
           disqus_shortname = 'raghakot-github-io';
-          jQuery("p, img").inlineDisqussions();
-        });
+          jQuery("p, img").inlineDisqussions();        
       });
     } else {
       setTimeout(function() { defer() }, 50);     
