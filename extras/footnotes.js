@@ -17,7 +17,8 @@ var Footnotes = {
         clearTimeout(Footnotes.footnotetimeout);
         $('#footnotediv').stop();
         $('#footnotediv').remove();
-        
+        $(this).removeAttr("title");
+
         var id = $(this).attr('href').substr(1);
         var position = $(this).offset();
     
