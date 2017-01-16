@@ -76,11 +76,9 @@ This should allow us to predict hand position on a keyboard based on a bunch of 
 <script type="text/javascript"> 
   (function defer() {
     if (window.jQuery) {      
-      jQuery(document).ready(function() {
-      	$.getScript('../../../extras/inlineDisqussions.js', function() {
+      jQuery(document).ready(function() {      	
           disqus_shortname = 'raghakot-github-io';
-          jQuery("p, img").inlineDisqussions();
-        });
+          jQuery("p, img").inlineDisqussions();        
       });
     } else {
       setTimeout(function() { defer() }, 50);     
