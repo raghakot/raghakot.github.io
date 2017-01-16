@@ -86,11 +86,9 @@ This algorithm works in \(O(\sqrt{n/2}) \sim O(\sqrt{n})\). This only takes 0.04
 <script type="text/javascript"> 
   (function defer() {
     if (window.jQuery) {      
-      jQuery(document).ready(function() {
-      	$.getScript('../../../extras/inlineDisqussions.js', function() {
+      jQuery(document).ready(function() {      	
           disqus_shortname = 'raghakot-github-io';
-          jQuery("p, img").inlineDisqussions();
-        });
+          jQuery("p, img").inlineDisqussions();        
       });
     } else {
       setTimeout(function() { defer() }, 50);     
