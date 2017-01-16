@@ -13,7 +13,31 @@ Let us start by considering all possible ways in which \(n\) layers can be conne
 
 Unlike DenseNets, we want the connections to be gated so that they can be turned off if needed. We ideally want these weights to have _sigmoid_ like characteristics - mostly allow or disallow connectivity. This is in similar spirit to how LSTMs use the _forget gate layer_ footnote:[An excellent overview of LSTMs can be found on http://colah.github.io/posts/2015-08-Understanding-LSTMs/]. For every outgoing egde from layer \(L\), we will associate a weight \(W = [w_{1}, w_{2}, \cdots, w_{f}]\), where \(f\) is the number of feature maps for layer \(L\). For a layer with incoming edges, we can simply compute the weighted feature maps from each incomming connection. Alternatively, we can weight it with \(\sigmoid(W)\) to make them "mostly allow or disallow".
 
+Suppose Layer \(l_{i}\) gets two feature maps \(f_{1}, f_{2}\) weighted with \(w_{1}, w_{2}\). There are a couple of options to define the computation of \(L_{i}\) in terms of input feature maps.
 
+1. DenseNet style concatenation. i.e., \(Output = F(\[f_{1}, f_{2}\]\). This has the limitation that concatenation is not viable when the size of feature maps are different. One option is to downsample all input feature maps to the smallest feature map (since feature maps from prev layers are usually larger). Once all feature maps are of the same shape, we could try to condense them into a single feature map using avg, max or min opertation across features. Intuitively, max makes sense since it is equivalent to focusing on input patterns that matched with a filter (high output value) across various feature maps. A high value at some \((row, col)\) of the filter might indicate the presence of some heirarchical feature detected by previous convolutional layers.
+2. ResNet style summation. i.e., \(Output = F(f_{1} + f_{2})\). I somehow dislike this idea as i cannot reconcile what it means to sum activations over arbitrary feature maps. It is still worth experimenting. We can also try various forms of merging using \([+, -, \times]\).
+
+With that out setup is complete. To summarize, we start out with an fully connected network where every layer gets inputs from all the previous layers in a weighted fashion. Before weighing, we use \(sigmoid(W)\) to bias the values mostly towards 0 or 1. The entire setup when learned end-end via backprop, should, in-principle, learn to prune unwanted connections.
+
+== Experimental Setup
+
+* Mini vggnet comprising of \(3 \times 3\) convolutions with ReLU activation.
+* cifar10 dataset augmented with 10% random shifts along image rows/cols along with a 50% chance of horizontal flip.
+* `random_seed = 1337` for reproducibility.
+
+The model has 1,250,858 parameters and trained for 50 epochs with a batch size of 32 using categorical cross-entropy loss with Adam optimizer.
+
+**Experiments**
+
+1. Connection weights with/without sigmoid
+2. DenseNet style concat with downscaling.
+3. DenseNet style concat with downscaling followed by max/min/avg aggregation.
+4. ResNet style mwerge with \([+, -, \times]\).
+
+== Discussion
+
+WARNING: Experimentation is still a work in progress. Check back for updates.
 
 ++++
 <link rel="stylesheet" type="text/css" href="../../../extras/inlineDisqussions.css" />
