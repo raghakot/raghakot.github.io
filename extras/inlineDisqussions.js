@@ -233,10 +233,13 @@ var disqus_url;
 
     var animate = {};
     if (el.attr('data-disqus-position') == 'right') {
+      // Hackfix
+      right_margin = parseInt($('.wrapper-container').css('margin-right').replace('px', ''), 10)
+      left = el.offset().left + el.outerWidth() - right_margin + 20
       animate = {
         "top": el.offset().top,
-        "left": el.offset().left + el.outerWidth() - 460,
-        "width": Math.min(parseInt($(window).width() - (el.offset().left + el.outerWidth()), 10) - 40, settings.maxWidth)
+        "left": left,
+        "width": Math.max(parseInt($(window).width() - (el.offset().left + el.outerWidth()), 10), 400)
       };
     }
     else if (el.attr('data-disqus-position') == 'left') {
