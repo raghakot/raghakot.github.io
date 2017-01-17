@@ -5,12 +5,10 @@ A while ago, kaggle hosted the link:https://www.kaggle.com/c/ultrasound-nerve-se
 [.text-center]
 .Sample ultrasound and segmentation mask
 image::ultrasound/example.jpg[sample]
-{empty} +
 
 [.text-center]
 .Various ultrasound images overlayed with segmentation contours.
 image::ultrasound/contour.gif[contour]
-{empty} +
 
 What makes this challenge particularly interesting is that ~60% of images do not contain the brachial plexus, i.e., segmentations mask is empty. Since the competetion uses the mean of link:https://en.wikipedia.org/wiki/S%C3%B8rensen%E2%80%93Dice_coefficient[dice coefficient] across all samples as the evaluation metric, even a single pixel in segmentation mask for non-nerve images mask kills the score. Ironically, you can achieve a score of ~0.6 just by predicting zero masks; it drops to ~[0.35, 0.45] when you try to learn it using a standard link:https://arxiv.org/pdf/1505.04597.pdf[U-Net]. This, combined with nosiy ultrasound images and a lack of obvious nerve patterns, intrigued me enough to participate in the challenge.
 
@@ -36,7 +34,6 @@ Initial manual exploration revealed contradictory examples. i.e., two very simil
 [.text-center]
 .Contradictory samples
 image::ultrasound/contradictory_samples.gif[contour]
-{empty} +
 
 Lets try to find all such near duplicates. High level idea is as follows:
 
