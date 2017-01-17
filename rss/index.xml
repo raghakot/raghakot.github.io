@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Musings on intriguing phenomenon]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Tue, 17 Jan 2017 03:31:08 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Towards Differentiable Neural Architecture]]></title><description><![CDATA[<div id="preamble">
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Musings on intriguing phenomenon]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Tue, 17 Jan 2017 03:34:08 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Towards Differentiable Neural Architecture]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>Ever since AlexNet was introduced in 2012, neural net research landscape changed fundamentally. With deep computational graphs, the possibilities are endless. We quickly iterated through a dizzying number of architectures such as AlexNet, VGGNet, Inception, ResNets, FractalNet, Xception, DenseNets and so on. It is clear that the architecture plays an important role in advancing the state of the art. Instead of making incremental improvements, is there a way to <em>learn</em> the connectivity pattern itself?</p>
@@ -673,7 +673,163 @@ W_norm = W / (tf.sqrt(tf.reduce_sum(tf.square(W), axis=[0, 1, 2], keep_dims=True
 <div class="footnote" id="_footnote_3">
 <a href="#_footnoteref_3">3</a>. This is my own interpretation and might as well be incorrect.
 </div>
-</div>]]></description><link>https://raghakot.github.io/2017/01/03/Exploring-alternative-neural-computational-models.html</link><guid isPermaLink="true">https://raghakot.github.io/2017/01/03/Exploring-alternative-neural-computational-models.html</guid><category><![CDATA[deep learning]]></category><dc:creator><![CDATA[Raghavendra Kotikalapudi]]></dc:creator><pubDate>Tue, 03 Jan 2017 00:00:00 GMT</pubDate></item><item><title><![CDATA[Facebook hacker cup: Power Overwhelming]]></title><description><![CDATA[<div id="preamble">
+</div>]]></description><link>https://raghakot.github.io/2017/01/03/Exploring-alternative-neural-computational-models.html</link><guid isPermaLink="true">https://raghakot.github.io/2017/01/03/Exploring-alternative-neural-computational-models.html</guid><category><![CDATA[deep learning]]></category><dc:creator><![CDATA[Raghavendra Kotikalapudi]]></dc:creator><pubDate>Tue, 03 Jan 2017 00:00:00 GMT</pubDate></item><item><title><![CDATA[Ultrasound nerve segmentation challenge on Kaggle]]></title><description><![CDATA[<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>A while ago, kaggle hosted the <a href="https://www.kaggle.com/c/ultrasound-nerve-segmentation">ultrasound nerve segmentation challenge</a>, which requires partipants to predict the nerve area (brachial plexus) in a given Ultrasound image. The task is to predict the segmentation mask for the the brachial plexus. Even my own neural network (brain) finds it difficult to spot patterns in these images. Can you spot the pattern?</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="https://raghakot.github.io/images/ultrasound/example.jpg" alt="sample">
+</div>
+<div class="title">Figure 1. Sample ultrasound and segmentation mask</div>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="https://raghakot.github.io/images/ultrasound/contour.gif" alt="contour">
+</div>
+<div class="title">Figure 2. Various ultrasound images overlayed with segmentation contours.</div>
+</div>
+<div class="paragraph">
+<p>What makes this challenge particularly interesting is that ~60% of images do not contain the brachial plexus, i.e., segmentations mask is empty. Since the competition uses the mean of <a href="https://en.wikipedia.org/wiki/S%C3%B8rensen%E2%80%93Dice_coefficient">dice coefficient</a> across all samples as the evaluation metric, even a single pixel in segmentation mask for non-nerve images mask kills the score. Ironically, you can achieve a score of ~0.6 just by predicting zero masks; it drops to ~[0.35, 0.45] when you try to learn it using a standard <a href="https://arxiv.org/pdf/1505.04597.pdf">U-Net</a>. This, combined with nosiy ultrasound images and a lack of obvious nerve patterns, intrigued me enough to participate in the challenge.</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Unlike most kaggle posts, this article is more about the thought-process involved in coming up with a solution. I find it distasteful when folks just hand out a giant blob of code on github or just post their final complex solution that somehow gives good results.</p>
+</div>
+</blockquote>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_step1_quick_and_dirty_baseline">Step1: Quick and dirty baseline</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>My methodology is always to first start with a quick and simple baseline model and setup and end-end working code. In case of this challenge, this means:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Data related I/O - Loading, train/test splits, optional preprocessing blocks</p>
+</li>
+<li>
+<p>Baseline model: I stated with a U-Net as it seemed like the state of the art model for these kinds of data. I also retrofitted it with batch normalization, ELU activation, and dropout.</p>
+</li>
+<li>
+<p>Clean code: Try to organize code into classes. Having function blocks everywhere makes the code messy and error prone.</p>
+</li>
+<li>
+<p>Submission code: Code to generate submission file.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>As mentioned in the overview, this tends to give mean dice score of ~[0.35, 0.45], which is pretty abysmal.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_step2_data_exploration">Step2: Data exploration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Now that an end-end working code is setup. We can work on optimizing individual blocks. The most obvious strategy is to get a better understanding of dataset at hand. The idea is to leverage insights from the dataset to improve/build the conv-net architecture and perhaps use dataset specific idiosynchronicities to provide better training signal.</p>
+</div>
+<div class="paragraph">
+<p>Initial manual exploration revealed contradictory examples. i.e., two very similar images have different labels, one with a valid segmentation mask while the other doesn&#8217;t.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="https://raghakot.github.io/images/ultrasound/contradictory_samples.gif" alt="contour">
+</div>
+<div class="title">Figure 3. Contradictory samples</div>
+</div>
+<div class="paragraph">
+<p>Lets try to find all such near duplicates. High level idea is as follows:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Divide image into blocks, say (20, 20).</p>
+</li>
+<li>
+<p>Compute histogram over various blocks. The concatenated set of histograms represents the image <em>hash</em>.</p>
+</li>
+<li>
+<p>Compute pairwise cosine similarity between image hashes and find ones within some reasonable threshold.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-python" data-lang="python">import skimage.util
+import scipy.spatial.distance as spdist
+
+def compute_img_hist(img):
+    # Divide the image in blocks and compute per-block histogram
+    blocks = skimage.util.view_as_blocks(img, block_shape=(20, 20))
+    img_hists = [np.histogram(block, bins=np.linspace(0, 1, 10))[0] for block in blocks]
+    return np.concatenate(img_hists)
+
+# Compute hashes over all images
+hashes = np.array(map(compute_img_hist, imgs))
+
+# pairwise distance matrix
+dist = spdist.squareform(spdist.pdist(hashes, metric='cosine'))
+
+# find duplicates. +np.eye because we want to exclude image matching with itself.
+# 0.008 is determined after some trial and errors.
+close_pairs = dists + np.eye(dists.shape[0]) &lt; 0.008</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The number of samples with inconsistent labeling is a whooping ~40% of the training set!!! Such a large number of inconsistent samples is bound to put an upper limit on the accuracy of the model. I think part of the problem lies with how the dataset was setup. Typically, doctors use ultrasound video frames to localize the nerve. Finding the nerve with a single frame is extremely challenging, even for human experts. I think it would be more interesting if they included videos instead.</p>
+</div>
+<div class="paragraph">
+<p>The training set is small as is, just 5635 samples. After discards, we are only left with 3398 samples. This certainly doesn&#8217;t look good for training a deep model as they require lots of training data. On top of that, we cannot use transfer learning either as there are no pretrained-nets on this sort of data.</p>
+</div>
+<div class="paragraph">
+<p>Despite all this, the cleaned raining data manages to improve baseline model score to ~0.55.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_step3_real_work_begins">Step3: Real work begins&#8230;&#8203;</h2>
+<div class="sectionbody">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+This article is still a work in progress. Check back for updates.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Since the beginning, it was clear that i had to do something about the weird score evaluation. Even a single pixel predicted on the segmentation output for non-nerve images was going to hurt the score. A pretty straight forward strategy was to add a <code>Dense</code> layer towards the end of encoder an predict whether the image contains the mask or not. Lets call this value <code>has_mask</code></p>
+</div>
+<div class="paragraph">
+<p>During test/submission time, I could simply zero out all the segmentation mask values if <code>has_mask = False</code>.</p>
+</div>
+<link rel="stylesheet" type="text/css" href="../../../extras/inlineDisqussions.css" />
+
+<script type="text/javascript">
+  (function defer() {
+    if (window.jQuery) {
+      jQuery(document).ready(function() {
+          disqus_shortname = 'raghakot-github-io';
+          jQuery("p, img").inlineDisqussions();
+      });
+    } else {
+      setTimeout(function() { defer() }, 50);
+    }
+  })();
+</script>
+</div>
+</div>]]></description><link>https://raghakot.github.io/2016/12/26/Ultrasound-nerve-segmentation-challenge-on-Kaggle.html</link><guid isPermaLink="true">https://raghakot.github.io/2016/12/26/Ultrasound-nerve-segmentation-challenge-on-Kaggle.html</guid><dc:creator><![CDATA[Raghavendra Kotikalapudi]]></dc:creator><pubDate>Mon, 26 Dec 2016 00:00:00 GMT</pubDate></item><item><title><![CDATA[Facebook hacker cup: Power Overwhelming]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>You are to inflict maximum damage to the zerg army. There are two types of units - Warrior and Shield. Warriors do damage every second, while a shield protects your entire army for one second. Your army is instantly overrun after the shield generators expire. Given \(G\) cost to build a shield, \(W\) cost to build a warrior and total money \(M\), how many shields would you build?</p>
