@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Musings on intriguing phenomenon]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Tue, 17 Jan 2017 03:25:42 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Towards Differentiable Neural Architecture]]></title><description><![CDATA[<div id="preamble">
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Musings on intriguing phenomenon]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Tue, 17 Jan 2017 03:27:26 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Towards Differentiable Neural Architecture]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>Ever since AlexNet was introduced in 2012, neural net research landscape changed fundamentally. With deep computational graphs, the possibilities are endless. We quickly iterated through a dizzying number of architectures such as AlexNet, VGGNet, Inception, ResNets, FractalNet, Xception, DenseNets and so on. It is clear that the architecture plays an important role in advancing the state of the art. Instead of making incremental improvements, is there a way to <em>learn</em> the connectivity pattern itself?</p>
@@ -483,9 +483,6 @@ def conv2d(x, W, **kwargs):
 <div class="title">Figure 1. Computation model of a neuron</div>
 </div>
 <div class="paragraph">
-<p><br></p>
-</div>
-<div class="paragraph">
 <p>As far as i am aware, all architectures build on this fundamental computational model. Let us examine what the computation is conceptually doing in a step by step fashion.</p>
 </div>
 <div class="ulist">
@@ -538,9 +535,6 @@ def conv2d(x, W, **kwargs):
 <div class="title">Figure 2. Similarity between vectors X and W</div>
 </div>
 <div class="paragraph">
-<p><br></p>
-</div>
-<div class="paragraph">
 <p>If we view a neuron as fundamental template matching unit, then various magnitude (length) of \(X\) and \(W\) should yield the same output. If we constrain \(W\) to be a unit vector (\(|W| = 1\)), then backprop would only need to search along points on a hypersphere of unit radius. Although the hypersphere contains infinitely many points, with sufficient discretization, the search space intuitively <em>feels</em> a lot smaller than the entire weight vector space.</p>
 </div>
 <div class="paragraph">
@@ -591,9 +585,6 @@ W_norm = W / (tf.sqrt(tf.reduce_sum(tf.square(W), axis=[0, 1, 2], keep_dims=True
 </div>
 <div class="title">Figure 3. Test model</div>
 </div>
-<div class="paragraph">
-<p><br></p>
-</div>
 </div>
 </div>
 <div class="sect1">
@@ -637,9 +628,6 @@ W_norm = W / (tf.sqrt(tf.reduce_sum(tf.square(W), axis=[0, 1, 2], keep_dims=True
 <img src="https://raghakot.github.io/images/alt_neural1/convergence.png" alt="convergence_graphs" width="800">
 </div>
 <div class="title">Figure 4. Convergence graphs for loss and accuracy on validation set for <span class="aqua">old</span> and <span class="red">new</span> computational models</div>
-</div>
-<div class="paragraph">
-<p><br></p>
 </div>
 <div class="paragraph">
 <p>Its neat when small changes like these make a significant difference. More experimentation is required to see if this improves over base model when run all the way until convergence. It is also worth experimenting with state of the art models such as the <a href="https://arxiv.org/pdf/1412.6806.pdf">All convolutional neural network</a> to see if makes any difference there.</p>
