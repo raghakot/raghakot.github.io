@@ -38,9 +38,9 @@
     <link href="//fonts.googleapis.com/" rel="dns-prefetch">
     <link href="//fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic|Open+Sans:700,400&subset=latin,latin-ext" rel="stylesheet">
 
-    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/main.min.css?v=1484623080381"/>
-    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/custom.css?v=1484623080381"/>
-    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/asciidoctor-foundation.css?v=1484623080381"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/main.min.css?v=1484623542864"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/custom.css?v=1484623542864"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/asciidoctor-foundation.css?v=1484623542864"/>
 
 
 
@@ -70,7 +70,7 @@
       GHOSTIUM.enablePjax = typeof enable_pjax !== 'undefined' ? enable_pjax : true;
     </script>
 
-    <script src="//raghakot.github.io/themes/ghostium/assets/js/head-scripts.min.js?v=1484623080381"></script>
+    <script src="//raghakot.github.io/themes/ghostium/assets/js/head-scripts.min.js?v=1484623542864"></script>
 
     <link rel="canonical" href="https://raghakot.github.io/2017/01/09/Baking-rotational-invariance-into-a-neuron.html" />
     <meta name="referrer" content="origin" />
@@ -213,9 +213,6 @@ null
 <div class="title">Figure 1. Visual representation of \(W\) template</div>
 </div>
 <div class="paragraph">
-<p><br></p>
-</div>
-<div class="paragraph">
 <p>When a neuron tries to match this pattern in a \(3 \times 3\) input image patch, it will only output a high value if a vertical edge is found in the center of the image patch. i.e., dot product is not invariant to shifts. My first thought was to use <a href="https://en.wikipedia.org/wiki/Pearson_product-moment_correlation_coefficient">Pearson coefficient</a> as it provides shift invariance. However, this not a problem in practice as the filter is slid across all possible \(3 \times 3\) patches within the input image (see fig2).</p>
 </div>
 <div class="imageblock text-center">
@@ -223,9 +220,6 @@ null
 <img src="https://raghakot.github.io/images/alt_neural2/conv_illustration.png" alt="conv_illustration" width="400">
 </div>
 <div class="title">Figure 2. Sliding filter over input image to generate the output activation area (image borrowed from <a href="http://intellabs.github.io/RiverTrail/tutorial/">river trail documentation</a>)</div>
-</div>
-<div class="paragraph">
-<p><br></p>
 </div>
 <div class="paragraph">
 <p>In a way, the sliding window operation is quite clever as it communicates information about <em>parts of the image</em> matching filter template without increasing the number of <em>trainable</em> parameters.  As a concrete example, consider a conv-net with filters as shown in fig3<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnote_1" title="View footnote.">1</a>]</sup>. The first layer filters (green) detect eyes, nose etc., second layer filters (yellow) detect face, leg etc., by aggregating features from first layer and so on<sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnote_2" title="View footnote.">2</a>]</sup>.</p>
@@ -237,9 +231,6 @@ null
 <div class="title">Figure 3. Hypothetical conv-net filters to illustrate how a <em>human</em> might be detected. (image borrowed from quora <a href="https://www.quora.com/How-is-a-convolutional-neural-network-able-to-learn-invariant-features">post</a>)</div>
 </div>
 <div class="paragraph">
-<p><br></p>
-</div>
-<div class="paragraph">
 <p>Now suppose the face (represented by two red and one magenta point) is moved to another corner as shown in fig4. The same activations occur, leading to the same end result.</p>
 </div>
 <div class="imageblock text-center">
@@ -249,9 +240,6 @@ null
 <div class="title">Figure 4. Illustration of activations when an input object is shifted. (image borrowed from quora <a href="https://www.quora.com/How-is-a-convolutional-neural-network-able-to-learn-invariant-features">post</a>)</div>
 </div>
 <div class="paragraph">
-<p><br></p>
-</div>
-<div class="paragraph">
 <p>So far so good. How about rotational invariance? We know that a lot of learned conv filters are identical, but rotated by some non-random factor. Instead of learning rotational invariance in this manner, we will try to build it directly into the computational model. The motivation is simple - the neuron should output high value even if some rotated version of pattern is present in the input. Hopefully this eliminates redundant filters and improves test time accuracy.</p>
 </div>
 <div class="imageblock text-center">
@@ -259,9 +247,6 @@ null
 <img src="https://raghakot.github.io/images/alt_neural2/conv_filters.jpg" alt="conv_filters" width="600">
 </div>
 <div class="title">Figure 5. A few conv filters of a vggnet (image borrowed from keras <a href="https://blog.keras.io/how-convolutional-neural-networks-see-the-world.html">blog post</a>). Notice how some filters are identical but rotated.</div>
-</div>
-<div class="paragraph">
-<p><br></p>
 </div>
 </div>
 </div>
@@ -298,9 +283,6 @@ null
 <img src="https://raghakot.github.io/images/alt_neural2/rotations_L.png" alt="rotations_of_filter" width="600">
 </div>
 <div class="title">Figure 6. All 8 shifts of the <code>L</code> shaped filter. Each row contains a clockwise rolled elements from the previous.</div>
-</div>
-<div class="paragraph">
-<p><br></p>
 </div>
 <div class="paragraph">
 <p>Despite the setback, all \(90^{\circ}\) rotations are accurate and \(45^{\circ}\) rotations are only slightly skewed. Skew might be a blessing in disguise as it might endow the neuron to be <em>deform</em> invariant as well (wishful thinking). In either case, the deformations are not too bad for \(3 \times 3\) filters, and it is at-least worth experimenting with vggnet which uses all \(3 \times 3\) conv filters.</p>
@@ -404,9 +386,6 @@ def conv2d(x, W, **kwargs):
 </div>
 <div class="title">Figure 7. Test model</div>
 </div>
-<div class="paragraph">
-<p><br></p>
-</div>
 </div>
 </div>
 <div class="sect1">
@@ -451,9 +430,6 @@ def conv2d(x, W, **kwargs):
 <div class="title">Figure 8. Convergence graphs for #{8/4 rotations}_rot_{last 1, 2, 3, 4 conv with new conv layer} and the baseline model. Models in legend are ordered in descending order of accuracy.</div>
 </div>
 <div class="paragraph">
-<p><br></p>
-</div>
-<div class="paragraph">
 <p>It seems evident that using rotationally invariant convolutional layers everywhere is not a good idea (<em>4_rot_4</em> and <em>8_rot_4</em> have the lowest values). In line with hypothesis 2, the accuracy improved as we get rid of earlier rotationally invariant conv layers, with 4_rot_1 and 8_rot_1 on par/slightly better than the baseline model. The skew (according to hypothesis 3) does not seem to the issue as <em>8_rot_[4, 3, 2, 1]</em> closely followed <em>4_rot_[4, 3, 2, 1]</em> accuracies.</p>
 </div>
 <div class="paragraph">
@@ -466,9 +442,6 @@ def conv2d(x, W, **kwargs):
 <div class="title">Figure 9. Prediction probability of the correct output class as a test input image is rotated from \(\theta = \{0, 360\}\) by step of \(1^{\circ}\) across models. Legend shows the percentage correct classifications across rotations (ascending order).</div>
 </div>
 <div class="paragraph">
-<p><br></p>
-</div>
-<div class="paragraph">
 <p>Instead of checking random images, lets compute these values for 1000 random test images and use a box plot to see <em>mean, std, min, max</em> of percentage correct classifications across all rotations. Interestingly, <em>8_rot_4</em>, <em>4_rot_4</em> show the best rotational invariance (higher mean, large <em>std</em> in positive direction). It is also somewhat mysterious why <em>8_rot_2</em>, <em>4_rot_2</em> is slightly worse than <code>baseline</code> compared to 1, 3, 4.</p>
 </div>
 <div class="imageblock text-center">
@@ -476,9 +449,6 @@ def conv2d(x, W, **kwargs):
 <img src="https://raghakot.github.io/images/alt_neural2/rotations_box_all.png" alt="rotations_box_all" width="800">
 </div>
 <div class="title">Figure 10. Box plot of percentage correct classifications across all rotations for 1000 random test images (in ascending order of <em>mean</em>).</div>
-</div>
-<div class="paragraph">
-<p><br></p>
 </div>
 <div class="paragraph">
 <p>Can we get the benefits of 8/4 rot models without the slower convergence? What if we applied new conv model (8/4 rotations) to the <em>baseline</em> model weights? Fig 11. shows the results for a single image. It is very curious to note that <em>8_rot_4</em> and <em>4_rot_4</em> models yield zero accuracy. This seems to indicate that weights from the usual conv layer won&#8217;t translate well into rotated conv model (the errors across various layers add up). The error rates seem to recover as we remove rotational conv layers from the early layers, but there is a lot of noise since this is for a single test image.</p>
@@ -490,9 +460,6 @@ def conv2d(x, W, **kwargs):
 <div class="title">Figure 11. Prediction probability of the correct output class as a test input image is rotated from \(\theta = \{0, 360\}\) by step of \(1^{\circ}\) across models with <em>baseline</em> trained weights. Legend shows the percentage correct classifications across rotations (ascending order).</div>
 </div>
 <div class="paragraph">
-<p><br></p>
-</div>
-<div class="paragraph">
 <p>To get a clearer picture, lets compute the box plot by considering 1000 random test images as described earlier. Fig. 12 makes it pretty clear that we cannot just add rotation operations to a <em>regular</em> model after training. On the flip side, it provides evidence that rotational conv affects the weights.</p>
 </div>
 <div class="imageblock text-center">
@@ -500,9 +467,6 @@ def conv2d(x, W, **kwargs):
 <img src="https://raghakot.github.io/images/alt_neural2/rot_baseline_box_all.png" alt="rot_baseline_box_all" width="800">
 </div>
 <div class="title">Figure 12. Box plot of percentage correct classifications across all rotations for 1000 random test images (in ascending order of <em>mean</em>). Note that all models use trained <em>baseline</em> weights.</div>
-</div>
-<div class="paragraph">
-<p><br></p>
 </div>
 </div>
 </div>
@@ -629,7 +593,7 @@ def conv2d(x, W, **kwargs):
         hljs.initHighlightingOnLoad();
       </script>
 
-    <script src="//raghakot.github.io/themes/ghostium/assets/js/foot-scripts.min.js?v=1484623080381"></script>
+    <script src="//raghakot.github.io/themes/ghostium/assets/js/foot-scripts.min.js?v=1484623542864"></script>
 
     <script>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
