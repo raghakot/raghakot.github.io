@@ -5,20 +5,24 @@ Ever since AlexNet was introduced in 2012, neural net research landscape changed
 
 First step is to make this more concrete. Ideally, we want to learn connectivity amongst individual neurons; instead, lets simplify the problem by constraining ourselves to known layer lego blocks (by layer lego blocks, I mean general purpose computational layers such as _Convolutional Layer_, _LSTM_, _Pooling_ etc.). Given a bunch of Layer Legos \(L = \{L_{1}, L_{2}, \cdots, L_{n}\}\), our task is to learn how these should be assembled. First thing that comes to mind is evolutionary search, but that is computationally prohibive. A quicker and more elegant alternative would be to learn this by computing the gradient of _architecture_ with respect to loss. The challenge is to make _architecture_ itself differentiable.
 
+[.text-center]
+.Deep learning practioners
+image::diff_neural/legos.jpg[legos, 400]
+
 == Differentiable Architecture
 
-NOTE: This article is still a work in progress. Check back for updates.
+Let us start by considering all possible ways in which \(n\) layers can be connected. This is equivalent to the maximum number of connections (edges) in a directed graph with \(n\) vertices, which is \(n(n-1)\). The simplest way to search amongst all these possibilities is to start with a fully connected network where each layer is connected to every other layer via some _weight_ which can then be _learned_ via backprop. Ideally, \(w \in [0, 1]\) to indicate whether a connection is being used or not.
 
-Let us start by considering all possible ways in which \(n\) layers can be connected. This is equivalent to the maximum number of connections (edges) in a directed graph with \(n\) vertices, which is \(n(n-1)\). The simplest way to search amongst all these possibilities is to start with a fully connected network where each layer is connected to every other layer via some _weight_ which can then be _learned_ via backprop. Backward connections introduce cycles in the graph which are problematicfootnote:[There are ways to avoid the issue by unrolling the recurrent loops to a fixed number of time steps but lets put that off in the interest of simplicity]. Excluding backward connections, we are left with \(\frac{n(n-1)}{2}\) possible connections. This is exactly what link:https://arxiv.org/pdf/1608.06993v3.pdf[DenseNets] do!, except that we arrived at the same thing with a different motivation.
+Backward connections introduce cycles in the graph which are problematicfootnote:[There are ways to avoid the issue by unrolling the recurrent loops to a fixed number of time steps but I am putting it off for now in the interest of simplicity]. Excluding backward connections, every layer can have incomming inputs from all previous layers, which leaves us with \(\frac{n(n-1)}{2}\) possible connections. This is exactly what link:https://arxiv.org/pdf/1608.06993v3.pdf[DenseNets] do!, except that we arrived at a similar architecture with a different motivation.
 
-Unlike DenseNets, we want the connections to be gated so that they can be turned off if needed. We ideally want these weights to have _sigmoid_ like characteristics - mostly allow or disallow connectivity. This is in similar spirit to how LSTMs use the _forget gate layer_ footnote:[An excellent overview of LSTMs can be found on http://colah.github.io/posts/2015-08-Understanding-LSTMs/]. For every outgoing egde from layer \(L\), we will associate a weight \(W = [w_{1}, w_{2}, \cdots, w_{f}]\), where \(f\) is the number of feature maps for layer \(L\). For a layer with incoming edges, we can simply compute the weighted feature maps from each incomming connection. Alternatively, we can weight it with \(sigmoid(W)\) to make them "mostly allow or disallow".
+Unlike DenseNets, we want the connections to be gated so that they can be pruned if needed. To mostly allow or disllow inputs, we can use \(sigmoid(W)\) as they tend to output values closer to 0 or 1. This is in similar spirit to how LSTMs use the _forget gate layer_ footnote:[An excellent overview of LSTMs can be found on http://colah.github.io/posts/2015-08-Understanding-LSTMs/], but without a neural network. For every outgoing egde from layer \(L\), we will associate a weight \(W = [w_{1}, w_{2}, \cdots, w_{f}]\), where \(f\) is the number of feature maps for layer \(L\). For a layer with incoming edges, we can simply compute the weighted feature maps from each incomming connection.
 
 Suppose Layer \(l_{i}\) gets two feature maps \(f_{1}, f_{2}\) weighted with \(w_{1}, w_{2}\). There are a couple of options to define the computation of \(L_{i}\) in terms of input feature maps.
 
-1. DenseNet style concatenation. i.e., \(Output = F([f_{1}, f_{2}])\). This has the limitation that concatenation is not viable when the size of feature maps are different. One option is to downsample all input feature maps to the smallest feature map (since feature maps from prev layers are usually larger). Once all feature maps are of the same shape, we could try to condense them into a single feature map using avg, max or min opertation across features. Intuitively, max makes sense since it is equivalent to focusing on input patterns that matched with a filter (high output value) across various feature maps. A high value at some \((row, col)\) of the filter might indicate the presence of some heirarchical feature detected by previous convolutional layers.
+1. DenseNet style concatenation. i.e., \(Output = F([f_{1}, f_{2}])\). This has the limitation that concatenation is not viable when the size of feature maps differ. One option is to downsample all input feature maps to the smallest feature map (since feature maps from prev layers are usually larger in width and height dimension). Once all feature maps are of the same shape, we could try to condense them into a single feature map using _avg_, _max_ or _min_ opertation across filters. Intuitively, _max_ makes sense since it is equivalent to focusing on input patterns that matched with a filter (high output value) across various feature maps. A high value at some \((row, col)\) of the filter might indicate the presence of some abstract shape detected by previous convolutional layers.
 2. ResNet style summation. i.e., \(Output = F(f_{1} + f_{2})\). I somehow dislike this idea as i cannot reconcile what it means to sum activations over arbitrary feature maps. It is still worth experimenting. We can also try various forms of merging using \([+, -, \times]\).
 
-With that out setup is complete. To summarize, we start out with an fully connected network where every layer gets inputs from all the previous layers in a weighted fashion. Before weighing, we use \(sigmoid(W)\) to bias the values mostly towards 0 or 1. The entire setup when learned end-end via backprop, should, in-principle, learn to prune unwanted connections.
+That completes our setup. To summarize, the plan is to start out with an fully connected network where every layer gets inputs from all the previous layers in a weighted fashion. Before weighing, we use \(sigmoid(W)\) to bias the values mostly towards 0 or 1. When trained end-end via backprop, the network should, in-principle, learn to prune unwanted connections.
 
 == Experimental Setup
 
@@ -30,10 +34,15 @@ The model has 1,250,858 parameters and trained for 50 epochs with a batch size o
 
 **Experiments**
 
-1. Connection weights with/without sigmoid
-2. DenseNet style concat with downscaling.
-3. DenseNet style concat with downscaling followed by max/min/avg aggregation.
-4. ResNet style mwerge with \([+, -, \times]\).
+1. Connection weights with/without sigmoid.
+2. DenseNet style input aggregation
+* Concat feature maps after reshaping input filters to same shape
+* Concat followed by max/min/avg across all inputs.
+4. ResNet style merge with \([+, -, \times]\).
+5. Connection weight initalization schemes.
+* Init all weights to 1.
+* Init all weights using gaussian centered at 0.5
+* Create an initial feed forward stack by init weights between \(L_{i-1}\) and \(L_{i}\) to 1 and set everything else to 0 or gaussian centered at 0.5.
 
 == Discussion
 
