@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+    <title>Ultrasound nerve segmentation challenge on Kaggle</title>
+
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta name="description" content="">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Ultrasound nerve segmentation challenge on Kaggle">
+    <meta name="twitter:description" content="">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Ultrasound nerve segmentation challenge on Kaggle">
+    <meta property="og:description" content="">
+
+    <!-- <meta name="twitter:site" content="">
+
+<meta name="twitter:creator" content="">
+
+<meta name="google-site-verification" content="">
+
+<meta property="fb:admins" content="">
+ -->
+
+    <link href="/favicon.ico" rel="shortcut icon" type="image/x-icon">
+    <link href="/apple-touch-icon-precomposed.png" rel="apple-touch-icon">
+
+    <link href="//fonts.googleapis.com/" rel="dns-prefetch">
+    <link href="//fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic|Open+Sans:700,400&subset=latin,latin-ext" rel="stylesheet">
+
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/main.min.css?v=1484624048005"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/custom.css?v=1484624048005"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/asciidoctor-foundation.css?v=1484624048005"/>
+
+
+
+
+    <script type="text/javascript">
+      var ga_ua = 'UA-XXXXX-X';
+      
+      var disqus_shortname = 'example';
+      
+      var enable_pjax = true;
+
+      // Pace Options
+      // ==============
+      window.paceOptions = {
+        catchupTime: 100,
+        minTime: 100,
+        elements: false,
+        restartOnRequestAfter: 500,
+        startOnPageLoad: false
+      }
+
+      // Ghostium Globals
+      // ==============
+      window.GHOSTIUM = {};
+      GHOSTIUM.haveGA = typeof ga_ua !== 'undefined' && ga_ua !== 'UA-XXXXX-X';
+      GHOSTIUM.haveDisqus = typeof disqus_shortname !== 'undefined' && disqus_shortname !== 'example';
+      GHOSTIUM.enablePjax = typeof enable_pjax !== 'undefined' ? enable_pjax : true;
+    </script>
+
+    <script src="//raghakot.github.io/themes/ghostium/assets/js/head-scripts.min.js?v=1484624048005"></script>
+
+    <link rel="canonical" href="https://raghakot.github.io/2016/12/26/Ultrasound-nerve-segmentation-challenge-on-Kaggle.html" />
+    <meta name="referrer" content="origin" />
+    
+    <meta property="og:site_name" content="Ragha&#x27;s Blog" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Ultrasound nerve segmentation challenge on Kaggle" />
+    <meta property="og:description" content="A while ago, kaggle hosted the ultrasound nerve segmentation challenge, which requires partipants to predict the nerve area (brachial plexus) in a given Ultrasound image. The task is to predict the segmentation mask for the the brachial plexus. Even my own neural network (brain) finds it difficult to spot patterns" />
+    <meta property="og:url" content="https://raghakot.github.io/2016/12/26/Ultrasound-nerve-segmentation-challenge-on-Kaggle.html" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Ultrasound nerve segmentation challenge on Kaggle" />
+    <meta name="twitter:description" content="A while ago, kaggle hosted the ultrasound nerve segmentation challenge, which requires partipants to predict the nerve area (brachial plexus) in a given Ultrasound image. The task is to predict the segmentation mask for the the brachial plexus. Even my own neural network (brain) finds it difficult to spot patterns" />
+    <meta name="twitter:url" content="https://raghakot.github.io/2016/12/26/Ultrasound-nerve-segmentation-challenge-on-Kaggle.html" />
+    
+    <script type="application/ld+json">
+null
+    </script>
+
+    <meta name="generator" content="HubPress" />
+    <link rel="alternate" type="application/rss+xml" title="Ragha&#x27;s Blog" href="https://raghakot.github.io/rss/" />
+  </head>
+  <body class="post-template">
+
+    <button data-action="open-drawer" id="drawer-button" class="drawer-button"><i class="fa fa-bars"></i></button>
+    <nav tabindex="-1" class="drawer">
+      <div class="drawer-container">
+        <!--.drawer-search(role="search")-->
+        <ul role="navigation" class="drawer-list">
+          
+          <li class="drawer-list-item">
+            <a href="https://raghakot.github.io" data-pjax>
+              <i class="fa fa-home"></i>Home
+            </a>
+          </li>
+          <!-- <li class="drawer-list-item">
+            <a href="https://raghakot.github.io" title="Ragha&#x27;s Blog" data-pjax>
+              <i class="fa fa-list-alt"></i>All posts
+            </a>
+          </li> -->
+          <li class="drawer-list-item">
+            <a href="https://raghakot.github.io/rss/">
+              <i class="fa fa-rss"></i>Subscribe to Feed
+            </a>
+          </li>
+          <li class="drawer-list-divider"></li>
+          <li class="drawer-list-item drawer-list-title">
+            Follow me
+          </li>
+          
+          
+          <li class="drawer-list-item">
+            <a href="https://github.com/raghakot" title="Github" target="_blank">
+              <i class="fa fa-github"></i>Github
+            </a>
+          </li>
+          <li class="drawer-list-item">
+            <a href="https://www.facebook.com/raghavendra.kotikalapudi" title="Facebook" target="_blank">
+              <i class="fa fa-facebook"></i>Facebook
+            </a>
+          </li>
+          <li class="drawer-list-item">
+            <a href="https://www.linkedin.com/in/raghavendra-kotikalapudi-79528411" title="LinkedIn" target="_blank">
+              <i class="fa fa-linkedin"></i>LinkedIn
+            </a>
+          </li>
+          <li class="drawer-list-item">
+            <a href="mailto:ragha@outlook.com" title="Email" target="_blank">
+              <i class="fa fa-envelope-o"></i>Email
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="drawer-overlay"></div>
+    <main id="container" role="main" class="container">
+      <div class="surface">
+        <div class="surface-container">
+          <div data-pjax-container class="content">
+            
+<section class="wrapper wrapper-post">
+  <div class="wrapper-container">
+    <article itemscope itemtype="http://schema.org/BlogPosting" role="article" class="post post">
+        <section class="post-container">
+          <header class="post-header">
+            <ul class="post-meta-list">
+              <li class="post-meta-item">
+                <time datetime="2016-12-26" itemprop="datePublished">
+                  22 days ago
+                </time>
+              </li>
+              <li class="post-meta-item">
+                <a href="#disqus_thread" data-disqus-identifier="">Comments</a>
+              </li>
+            </ul>
+            <h1 itemprop="name headline" class="post-title"><a href="https://raghakot.github.io/2016/12/26/Ultrasound-nerve-segmentation-challenge-on-Kaggle.html" itemprop="url" data-pjax title="Ultrasound nerve segmentation challenge on Kaggle">Ultrasound nerve segmentation challenge on Kaggle</a></h1>
+            <!--h2 itemprop="about" class="post-subtitle"></h2-->
+          </header>
+          <aside class="post-side">
+            <div class="post-author">
+                <a href="" class="post-author-avatar">
+                  <img src="https://avatars.githubusercontent.com/u/15642444?v&#x3D;3" alt="Raghavendra Kotikalapudi">
+                </a>
+              <div class="post-author-info">
+                <a href="" class="post-author-name">
+                  Raghavendra Kotikalapudi
+                </a>
+                <p class="post-author-bio"></p>
+              </div>
+            </div>
+          </aside>
+          <div itemprop="articleBody" class="post-body">
+            <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>A while ago, kaggle hosted the <a href="https://www.kaggle.com/c/ultrasound-nerve-segmentation">ultrasound nerve segmentation challenge</a>, which requires partipants to predict the nerve area (brachial plexus) in a given Ultrasound image. The task is to predict the segmentation mask for the the brachial plexus. Even my own neural network (brain) finds it difficult to spot patterns in these images. Can you spot the pattern?</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="https://raghakot.github.io/images/ultrasound/example.jpg" alt="sample">
+</div>
+<div class="title">Figure 1. Sample ultrasound and segmentation mask</div>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="https://raghakot.github.io/images/ultrasound/contour.gif" alt="contour">
+</div>
+<div class="title">Figure 2. Various ultrasound images overlayed with segmentation contours.</div>
+</div>
+<div class="paragraph">
+<p>What makes this challenge particularly interesting is that ~60% of images do not contain the brachial plexus, i.e., segmentations mask is empty. Since the competition uses the mean of <a href="https://en.wikipedia.org/wiki/S%C3%B8rensen%E2%80%93Dice_coefficient">dice coefficient</a> across all samples as the evaluation metric, even a single pixel in segmentation mask for non-nerve images mask kills the score. Ironically, you can achieve a score of ~0.6 just by predicting zero masks; it drops to ~[0.35, 0.45] when you try to learn it using a standard <a href="https://arxiv.org/pdf/1505.04597.pdf">U-Net</a>. This, combined with nosiy ultrasound images and a lack of obvious nerve patterns, intrigued me enough to participate in the challenge.</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Unlike most kaggle posts, this article is more about the thought-process involved in coming up with a solution. I find it distasteful when folks just hand out a giant blob of code on github or just post their final complex solution that somehow gives good results.</p>
+</div>
+</blockquote>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_step1_quick_and_dirty_baseline">Step1: Quick and dirty baseline</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>My methodology is always to first start with a quick and simple baseline model and setup and end-end working code. In case of this challenge, this means:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Data related I/O - Loading, train/test splits, optional preprocessing blocks</p>
+</li>
+<li>
+<p>Baseline model: I stated with a U-Net as it seemed like the state of the art model for these kinds of data. I also retrofitted it with batch normalization, ELU activation, and dropout.</p>
+</li>
+<li>
+<p>Clean code: Try to organize code into classes. Having function blocks everywhere makes the code messy and error prone.</p>
+</li>
+<li>
+<p>Submission code: Code to generate submission file.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>As mentioned in the overview, this tends to give mean dice score of ~[0.35, 0.45], which is pretty abysmal.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_step2_data_exploration">Step2: Data exploration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Now that an end-end working code is setup. We can work on optimizing individual blocks. The most obvious strategy is to get a better understanding of dataset at hand. The idea is to leverage insights from the dataset to improve/build the conv-net architecture and perhaps use dataset specific idiosynchronicities to provide better training signal.</p>
+</div>
+<div class="paragraph">
+<p>Initial manual exploration revealed contradictory examples. i.e., two very similar images have different labels, one with a valid segmentation mask while the other doesn&#8217;t.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="https://raghakot.github.io/images/ultrasound/contradictory_samples.gif" alt="contour">
+</div>
+<div class="title">Figure 3. Contradictory samples</div>
+</div>
+<div class="paragraph">
+<p>Lets try to find all such near duplicates. High level idea is as follows:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Divide image into blocks, say (20, 20).</p>
+</li>
+<li>
+<p>Compute histogram over various blocks. The concatenated set of histograms represents the image <em>hash</em>.</p>
+</li>
+<li>
+<p>Compute pairwise cosine similarity between image hashes and find ones within some reasonable threshold.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-python" data-lang="python">import skimage.util
+import scipy.spatial.distance as spdist
+
+def compute_img_hist(img):
+    # Divide the image in blocks and compute per-block histogram
+    blocks = skimage.util.view_as_blocks(img, block_shape=(20, 20))
+    img_hists = [np.histogram(block, bins=np.linspace(0, 1, 10))[0] for block in blocks]
+    return np.concatenate(img_hists)
+
+# Compute hashes over all images
+hashes = np.array(map(compute_img_hist, imgs))
+
+# pairwise distance matrix
+dist = spdist.squareform(spdist.pdist(hashes, metric='cosine'))
+
+# find duplicates. +np.eye because we want to exclude image matching with itself.
+# 0.008 is determined after some trial and errors.
+close_pairs = dists + np.eye(dists.shape[0]) &lt; 0.008</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The number of samples with inconsistent labeling is a whooping ~40% of the training set!!! Such a large number of inconsistent samples is bound to put an upper limit on the accuracy of the model. I think part of the problem lies with how the dataset was setup. Typically, doctors use ultrasound video frames to localize the nerve. Finding the nerve with a single frame is extremely challenging, even for human experts. I think it would be more interesting if they included videos instead.</p>
+</div>
+<div class="paragraph">
+<p>The training set is small as is, just 5635 samples. After discards, we are only left with 3398 samples. This certainly doesn&#8217;t look good for training a deep model as they require lots of training data. On top of that, we cannot use transfer learning either as there are no pretrained-nets on this sort of data.</p>
+</div>
+<div class="paragraph">
+<p>Despite all this, the cleaned raining data manages to improve baseline model score to ~0.55.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_step3_real_work_begins">Step3: Real work begins&#8230;&#8203;</h2>
+<div class="sectionbody">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+This article is still a work in progress. Check back for updates.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Since the beginning, it was clear that i had to do something about the weird score evaluation. Even a single pixel predicted on the segmentation output for non-nerve images was going to hurt the score. A pretty straight forward strategy was to add a <code>Dense</code> layer towards the end of encoder an predict whether the image contains the mask or not. Lets call this value <code>has_mask</code></p>
+</div>
+<div class="paragraph">
+<p>During test/submission time, I could simply zero out all the segmentation mask values if <code>has_mask = False</code>.</p>
+</div>
+<link rel="stylesheet" type="text/css" href="../../../extras/inlineDisqussions.css" />
+
+<script type="text/javascript">
+  (function defer() {
+    if (window.jQuery) {
+      jQuery(document).ready(function() {
+          disqus_shortname = 'raghakot-github-io';
+          jQuery("p, img").inlineDisqussions();
+      });
+    } else {
+      setTimeout(function() { defer() }, 50);
+    }
+  })();
+</script>
+</div>
+</div>
+          </div>
+          <footer class="post-footer">
+            <div itemprop="author" itemscope itemtype="http://schema.org/Person" class="post-author">
+                <a href="" class="post-author-avatar">
+                  <img itemprop="image" src="https://avatars.githubusercontent.com/u/15642444?v&#x3D;3" alt="Raghavendra Kotikalapudi">
+                </a>
+              <div class="post-author-info">
+                <h4 class="post-footer-heading">Written By</h4>
+                <a href="" itemprop="url" class="post-author-name">
+                  <span itemprop="name">Raghavendra Kotikalapudi</span>
+                </a>
+                <p itemprop="description" class="post-author-bio"></p>
+                  <p class="post-author-location">Seattle WA</p>
+                <p class="post-info">
+                  <b class="post-info-title">Published on</b>
+                  <time class="post-date">December 26, 2016</time>
+                </p>
+              </div>
+            </div>
+            <div class="post-social">
+              <h4 class="post-footer-heading">Spread the word</h4>
+              <a href="#" data-action="share-twitter"><i class="fa fa-fw fa-lg fa-twitter"></i></a>
+              <a href="#" data-action="share-facebook"><i class="fa fa-fw fa-lg fa-facebook"></i></a>
+              <a href="#" data-action="share-gplus"><i class="fa fa-fw fa-lg fa-google-plus"></i></a>
+            </div>
+          </footer>
+        </section>
+      <section itemprop="comment" class="post-comments">
+        <div id="disqus_thread"></div>
+      </section>
+    </article>
+
+    <footer role="contentinfo" class="footer">
+      <p><small>Copyright &copy; <span itemprop="copyrightHolder">Ragha&#x27;s Blog</span>. 2017. All Rights Reserved.</small></p>
+      <p><small><a href="http://ghostium.oswaldoacauan.com/" target="_blank">Ghostium Theme</a> by <a href="http://twitter.com/oswaldoacauan" target="_blank">@oswaldoacauan</a></small></p>
+      <p><small>Adapted by <a href="https://twitter.com/mgreau">Maxime Gréau</a></small></p>
+      <p><small>Published with <a href="http://hubpress.io">HubPress</a></small></p>
+    </footer>
+  </div>
+</section>
+
+
+<section class="post-comments">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+  var disqus_shortname = 'raghakot-github-io'; // required: replace example with your forum shortname
+  /* * * DON'T EDIT BELOW THIS LINE * * */
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script> <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js?v="></script> <script src="https://cdn.rawgit.com/raghakot/raghakot.github.io/master/extras/footnotes.js?v="></script> <script src="https://cdn.rawgit.com/raghakot/raghakot.github.io/master/extras/inlineDisqussions.js?v="></script> <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.min.js?v="></script> <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js?v="></script> 
+      <script type="text/javascript">
+        jQuery( document ).ready(function() {
+          // change date with ago
+          jQuery('ago.ago').each(function(){
+            var element = jQuery(this).parent();
+            element.html( moment(element.text()).fromNow());
+          });
+        });
+
+        hljs.initHighlightingOnLoad();
+      </script>
+
+    <script src="//raghakot.github.io/themes/ghostium/assets/js/foot-scripts.min.js?v=1484624048005"></script>
+
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-78195880-1', 'auto');
+    ga('send', 'pageview');
+
+    </script>
+
+  </body>
+</html>
