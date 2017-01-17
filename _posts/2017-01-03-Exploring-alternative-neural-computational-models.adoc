@@ -6,7 +6,6 @@ Despite different variations of neural networks architectures, the computational
 [.text-center]
 .Computation model of a neuron
 image::alt_neural1/neuron_model.jpeg[neuron_model, 400]
-{empty} +
 
 As far as i am aware, all architectures build on this fundamental computational model. Let us examine what the computation is conceptually doing in a step by step fashion.
 
@@ -34,7 +33,6 @@ In the current computational model, the output of a neuron is different even tho
 [.text-center]
 .Similarity between vectors X and W
 image::alt_neural1/vector_similarity.png[vector_similarity, 300]
-{empty} +
 
 If we view a neuron as fundamental template matching unit, then various magnitude (length) of \(X\) and \(W\) should yield the same output. If we constrain \(W\) to be a unit vector (\(|W| = 1\)), then backprop would only need to search along points on a hypersphere of unit radius. Although the hypersphere contains infinitely many points, with sufficient discretization, the search space intuitively _feels_ a lot smaller than the entire weight vector space.
 
@@ -64,7 +62,6 @@ W_norm = W / (tf.sqrt(tf.reduce_sum(tf.square(W), axis=[0, 1, 2], keep_dims=True
 [.text-center]
 .Test model
 image::alt_neural1/model.png[test_model, 300]
-{empty} +
 
 == Discussion
 
@@ -88,7 +85,6 @@ As hypothesized, constraining weight vector to a unit hypersphere speeds up trai
 [.text-center]
 .Convergence graphs for loss and accuracy on validation set for [aqua]#old# and [red]#new# computational models
 image::alt_neural1/convergence.png[convergence_graphs, 800]
-{empty} +
 
 Its neat when small changes like these make a significant difference. More experimentation is required to see if this improves over base model when run all the way until convergence. It is also worth experimenting with state of the art models such as the link:https://arxiv.org/pdf/1412.6806.pdf[All convolutional neural network] to see if makes any difference there.
 
