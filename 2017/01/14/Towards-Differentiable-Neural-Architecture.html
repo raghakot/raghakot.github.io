@@ -38,9 +38,9 @@
     <link href="//fonts.googleapis.com/" rel="dns-prefetch">
     <link href="//fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic|Open+Sans:700,400&subset=latin,latin-ext" rel="stylesheet">
 
-    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/main.min.css?v=1484625148017"/>
-    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/custom.css?v=1484625148017"/>
-    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/asciidoctor-foundation.css?v=1484625148017"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/main.min.css?v=1484625741292"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/custom.css?v=1484625741292"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/asciidoctor-foundation.css?v=1484625741292"/>
 
 
 
@@ -70,7 +70,7 @@
       GHOSTIUM.enablePjax = typeof enable_pjax !== 'undefined' ? enable_pjax : true;
     </script>
 
-    <script src="//raghakot.github.io/themes/ghostium/assets/js/head-scripts.min.js?v=1484625148017"></script>
+    <script src="//raghakot.github.io/themes/ghostium/assets/js/head-scripts.min.js?v=1484625741292"></script>
 
     <link rel="canonical" href="https://raghakot.github.io/2017/01/14/Towards-Differentiable-Neural-Architecture.html" />
     <meta name="referrer" content="origin" />
@@ -220,7 +220,7 @@ null
 <p>Unlike DenseNets, we want the connections to be gated so that they can be pruned if needed. To mostly allow or disallow inputs, we can use \(sigmoid(W)\) as they tend to output values closer to 0 or 1. This is in similar spirit to how LSTMs use the <em>forget gate layer</em> <sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnote_2" title="View footnote.">2</a>]</sup>, but without a neural network. For every outgoing edge from layer \(L\), we will associate a weight \(W = [w_{1}, w_{2}, \cdots, w_{f}]\), where \(f\) is the number of feature maps for layer \(L\). For a layer with incoming edges, we can simply compute the weighted feature maps from each incoming connection.</p>
 </div>
 <div class="paragraph">
-<p>Suppose Layer \(l_{i}\) gets two feature maps \(f_{1}, f_{2}\) weighted with \(w_{1}, w_{2}\). There are a couple of options to define the computation of \(L_{i}\) in terms of input feature maps.</p>
+<p>Suppose Layer \(L_{i}\) gets two feature maps \(f_{1}, f_{2}\) weighted with \(w_{1}, w_{2}\). There are a couple of options to define the computation of \(L_{i}\) in terms of input feature maps.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -416,7 +416,7 @@ Experimentation is still a work in progress. Check back for updates.
         hljs.initHighlightingOnLoad();
       </script>
 
-    <script src="//raghakot.github.io/themes/ghostium/assets/js/foot-scripts.min.js?v=1484625148017"></script>
+    <script src="//raghakot.github.io/themes/ghostium/assets/js/foot-scripts.min.js?v=1484625741292"></script>
 
     <script>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
