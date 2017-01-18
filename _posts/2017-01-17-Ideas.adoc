@@ -1,4 +1,0 @@
-= Ideas
-
-* Color spaces
-* enc -> latent -> decoder, latent -> classification convnet. Hopefully this setup encourages good image representation. 
