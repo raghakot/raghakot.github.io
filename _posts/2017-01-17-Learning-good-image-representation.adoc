@@ -13,7 +13,7 @@ I really liked the idea of using an encoder-decoder architecture for learning us
 .Encoder-Decoder Architecture
 image::repr_learning/encoder-decoder.png[encoder-decoder, 500]
 
-Then came supervised conv nets, beating all sorts of records on imagenet. This is because learning a "useful representation" depends on the task. For example, a water classifier might care about learning representations that make it easy to detect blue blobs, while an animal classifier might learn to detect shapes. Of late, most unsupervised learning focus has shifted towards Generative Advererial Networksfootnote:[An excellent overview of GANs can be found at https://openai.com/blog/generative-models/] as they showed very promising results in modeling probability distributions of complex real world data.
+Then came supervised conv nets, beating all sorts of records on imagenet. This is because learning a "useful representation" depends on the task. For example, a water classifier might care about learning representations that make it easy to detect blue blobs, while an animal classifier might learn to detect shapes. Of late, most unsupervised learning focus has shifted towards Generative Adversarial Networksfootnote:[An excellent overview of GANs can be found at https://openai.com/blog/generative-models/] as they showed very promising results in modeling probability distributions of complex real world data.
 
 We possess both discriminative and generative abilities. When we look at a new object, say a bottle, we can imagine plausible variations such as rotations and deformations. Like GANs, the _hallucinated_ image is vague and not very detailed. 
 
@@ -35,7 +35,7 @@ TODO.
 <script type="text/javascript"> 
   (function defer() {
     if (window.jQuery) {      
-      jQuery(document).ready(function() {      	
+      jQuery(document).ready(function() {       
           disqus_shortname = 'raghakot-github-io';
           jQuery("p, img").inlineDisqussions();        
       });
