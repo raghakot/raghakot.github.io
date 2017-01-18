@@ -181,6 +181,10 @@ The code to reproduce all the experiments is available on link:https://github.co
 * Filter skew does not seem to be an issue.
 * All models seem to exhibit the same seasonal pattern of accuracy with respect to rotation (see fig. 9). What's with the weird dip at \(100^{\circ}\)? 
 
+**EDITs**
+
+* It might be worth experimenting by concatenating activations from rotated filters instead of _max_ operation in light of recent success with DenseNets. 
+
 ++++
 <link rel="stylesheet" type="text/css" href="../../../extras/inlineDisqussions.css" />
 
