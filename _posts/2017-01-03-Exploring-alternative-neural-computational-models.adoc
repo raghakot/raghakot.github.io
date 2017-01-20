@@ -48,9 +48,13 @@ Getting back to the topic at hand, there are several options for constraining \(
 
 == Experimental Setup
 
-I explored option 3 as it was the simplest to implement. The architecture is a simplified version of vggnet comprising of \(3 \times 3\) convolutions with ReLU activation and max pooling. I used cifar10 dataset augmented with 10% random shifts along image rows/cols along with a 50% chance of horizontal flip. `random_seed = 1337` was used to get consistent and reproducible results across trials.
+I explored option 3 as it was the simplest to implement. The setup is as follows.
 
-The model has 1,250,858 parameters and trained for 50 epochs with a batch size of 32 using categorical cross-entropy loss with Adam optimizer.
+* Mini vggnet (1,250,858 parameters) comprising of \(3 \times 3\) convolutions with ReLU activation.
+* cifar10 dataset augmented with 10% random shifts along image rows/cols along with a 50% chance of horizontal flip.
+* batch size = 32, epochs = 200 with early stopping.
+* Adam optimizer with initial learning rate of \(10^{-3}\), and reduced by a factor of \(10^{-1}\) when convergence stalls.
+* `random_seed = 1337` for reproducibility.
 
 \(W_{norm}\) is calculated as:
 [source,python]
@@ -59,11 +63,22 @@ The model has 1,250,858 parameters and trained for 50 epochs with a batch size o
 W_norm = W / (tf.sqrt(tf.reduce_sum(tf.square(W), axis=[0, 1, 2], keep_dims=True)) + 1e-8)
 ----
 
+**Experiments**
+
+Weight normalization can be applied to both `Convolutional` and `Dense` layers. I tried all four combinations.
+
+1. **baseline**: conv, dense
+2. **norm_conv**: conv_norm, dense
+3. **norm_dense**: conv dense_norm
+4. **norm_conv_dense**: conv_norm, dense_norm
+
 [.text-center]
-.Test model
+Test model
 image::alt_neural1/model.png[test_model, 300]
 
 == Discussion
+
+WARNING: Article is being updated. Expect some inconsistencies.
 
 Final loss and accuracy values on validation set are summarized in the table. 
 
