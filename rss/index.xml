@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Musings on tech, machine learning]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Wed, 18 Jan 2017 05:10:41 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Learning good image representation]]></title><description><![CDATA[<div id="preamble">
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Musings on tech, machine learning]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Fri, 20 Jan 2017 19:11:26 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Learning good image representation]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>This is a quick blog about an idea that occurred to me yesterday. I am currently working on experiments involving <a href="https://raghakot.github.io/2017/01/14/Towards-Differentiable-Neural-Architecture.html">differentiable neural architecture</a>, but the idea got me excited enough to write about it.</p>
@@ -388,21 +388,27 @@ def conv2d(x, W, **kwargs):
 <div class="sect1">
 <h2 id="_experimental_setup">Experimental Setup</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>The setup is as follows.</p>
+</div>
 <div class="ulist">
 <ul>
 <li>
-<p>Mini vggnet comprising of \(3 \times 3\) convolutions with ReLU activation.</p>
+<p>Mini vggnet (1,250,858 parameters) comprising of \(3 \times 3\) convolutions with ReLU activation.</p>
 </li>
 <li>
 <p>cifar10 dataset augmented with 10% random shifts along image rows/cols along with a 50% chance of horizontal flip.</p>
 </li>
 <li>
+<p>batch size = 32, epochs = 200 with early stopping.</p>
+</li>
+<li>
+<p>Adam optimizer with initial learning rate of \(10^{-3}\), and reduced by a factor of \(10^{-1}\) when convergence stalls.</p>
+</li>
+<li>
 <p><code>random_seed = 1337</code> for reproducibility.</p>
 </li>
 </ul>
-</div>
-<div class="paragraph">
-<p>The model has 1,250,858 parameters and trained for 50 epochs with a batch size of 32 using categorical cross-entropy loss with Adam optimizer.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
@@ -644,10 +650,26 @@ def conv2d(x, W, **kwargs):
 <h2 id="_experimental_setup">Experimental Setup</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>I explored option 3 as it was the simplest to implement. The architecture is a simplified version of vggnet comprising of \(3 \times 3\) convolutions with ReLU activation and max pooling. I used cifar10 dataset augmented with 10% random shifts along image rows/cols along with a 50% chance of horizontal flip. <code>random_seed = 1337</code> was used to get consistent and reproducible results across trials.</p>
+<p>I explored option 3 as it was the simplest to implement. The setup is as follows.</p>
 </div>
-<div class="paragraph">
-<p>The model has 1,250,858 parameters and trained for 50 epochs with a batch size of 32 using categorical cross-entropy loss with Adam optimizer.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Mini vggnet (1,250,858 parameters) comprising of \(3 \times 3\) convolutions with ReLU activation.</p>
+</li>
+<li>
+<p>cifar10 dataset augmented with 10% random shifts along image rows/cols along with a 50% chance of horizontal flip.</p>
+</li>
+<li>
+<p>batch size = 32, epochs = 200 with early stopping.</p>
+</li>
+<li>
+<p>Adam optimizer with initial learning rate of \(10^{-3}\), and reduced by a factor of \(10^{-1}\) when convergence stalls.</p>
+</li>
+<li>
+<p><code>random_seed = 1337</code> for reproducibility.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p>\(W_{norm}\) is calculated as:</p>
@@ -658,17 +680,49 @@ def conv2d(x, W, **kwargs):
 W_norm = W / (tf.sqrt(tf.reduce_sum(tf.square(W), axis=[0, 1, 2], keep_dims=True)) + 1e-8)</code></pre>
 </div>
 </div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="https://raghakot.github.io/images/alt_neural1/model.png" alt="test_model" width="300">
+<div class="paragraph">
+<p><strong>Experiments</strong></p>
 </div>
-<div class="title">Figure 3. Test model</div>
+<div class="paragraph">
+<p>Weight normalization can be applied to both <code>Convolutional</code> and <code>Dense</code> layers. I tried all four combinations.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>baseline</strong>: conv, dense</p>
+</li>
+<li>
+<p><strong>norm_conv</strong>: conv_norm, dense</p>
+</li>
+<li>
+<p><strong>norm_dense</strong>: conv dense_norm</p>
+</li>
+<li>
+<p><strong>norm_conv_dense</strong>: conv_norm, dense_norm</p>
+</li>
+</ol>
+</div>
+<div class="paragraph text-center">
+<p>Test model
+image::alt_neural1/model.png[test_model, 300]</p>
 </div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_discussion">Discussion</h2>
 <div class="sectionbody">
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Article is being updated. Expect some inconsistencies.
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
 <p>Final loss and accuracy values on validation set are summarized in the table.</p>
 </div>
@@ -706,7 +760,7 @@ W_norm = W / (tf.sqrt(tf.reduce_sum(tf.square(W), axis=[0, 1, 2], keep_dims=True
 <div class="content">
 <img src="https://raghakot.github.io/images/alt_neural1/convergence.png" alt="convergence_graphs" width="800">
 </div>
-<div class="title">Figure 4. Convergence graphs for loss and accuracy on validation set for <span class="aqua">old</span> and <span class="red">new</span> computational models</div>
+<div class="title">Figure 3. Convergence graphs for loss and accuracy on validation set for <span class="aqua">old</span> and <span class="red">new</span> computational models</div>
 </div>
 <div class="paragraph">
 <p>Its neat when small changes like these make a significant difference. More experimentation is required to see if this improves over base model when run all the way until convergence. It is also worth experimenting with state of the art models such as the <a href="https://arxiv.org/pdf/1412.6806.pdf">All convolutional neural network</a> to see if makes any difference there.</p>
