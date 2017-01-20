@@ -118,11 +118,13 @@ def conv2d(x, W, **kwargs):
 
 == Experimental Setup
 
-* Mini vggnet comprising of \(3 \times 3\) convolutions with ReLU activation.
-* cifar10 dataset augmented with 10% random shifts along image rows/cols along with a 50% chance of horizontal flip.
-* `random_seed = 1337` for reproducibility.
+The setup is as follows.
 
-The model has 1,250,858 parameters and trained for 50 epochs with a batch size of 32 using categorical cross-entropy loss with Adam optimizer.
+* Mini vggnet (1,250,858 parameters) comprising of \(3 \times 3\) convolutions with ReLU activation.
+* cifar10 dataset augmented with 10% random shifts along image rows/cols along with a 50% chance of horizontal flip.
+* batch size = 32, epochs = 200 with early stopping.
+* Adam optimizer with initial learning rate of \(10^{-3}\), and reduced by a factor of \(10^{-1}\) when convergence stalls.
+* `random_seed = 1337` for reproducibility.
 
 [.text-center]
 .Test model
