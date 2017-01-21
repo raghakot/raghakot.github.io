@@ -78,7 +78,7 @@ image::alt_neural1/model.png[test_model, 300]
 
 == Discussion
 
-Convergence graphs for all four variations are shown in fig. As hypothesized, convergence improves with internal weight normalization. Intriguingly, the benefits are lost when both 'Conv` and `Dense` layers are normalized. It is as if they 'cancel out'. I am not sure why this happens.
+Convergence graphs for all four variations are shown in fig. As hypothesized, convergence improves with internal weight normalization. More experimentation is needed to see if this holds across various models and datasets. Intriguingly, the benefits are lost when both 'Conv` and `Dense` layers are normalized. It is as if they 'cancel out'. I am not sure why this happens.
 
 [.text-center]
 .Convergence graphs on validation set for all four variants.
