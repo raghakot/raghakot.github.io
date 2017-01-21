@@ -38,9 +38,9 @@
     <link href="//fonts.googleapis.com/" rel="dns-prefetch">
     <link href="//fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic|Open+Sans:700,400&subset=latin,latin-ext" rel="stylesheet">
 
-    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/main.min.css?v=1484939486501"/>
-    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/custom.css?v=1484939486501"/>
-    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/asciidoctor-foundation.css?v=1484939486501"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/main.min.css?v=1484965618988"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/custom.css?v=1484965618988"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/asciidoctor-foundation.css?v=1484965618988"/>
 
 
 
@@ -70,7 +70,7 @@
       GHOSTIUM.enablePjax = typeof enable_pjax !== 'undefined' ? enable_pjax : true;
     </script>
 
-    <script src="//raghakot.github.io/themes/ghostium/assets/js/head-scripts.min.js?v=1484939486501"></script>
+    <script src="//raghakot.github.io/themes/ghostium/assets/js/head-scripts.min.js?v=1484965618988"></script>
 
     <link rel="canonical" href="https://raghakot.github.io/2017/01/03/Exploring-alternative-neural-computational-models.html" />
     <meta name="referrer" content="origin" />
@@ -161,7 +161,7 @@ null
             <ul class="post-meta-list">
               <li class="post-meta-item">
                 <time datetime="2017-01-03" itemprop="datePublished">
-                  17 days ago
+                  18 days ago
                 </time>
               </li>
                 <li class="post-meta-item">
@@ -346,65 +346,20 @@ image::alt_neural1/model.png[test_model, 300]</p>
 <div class="sect1">
 <h2 id="_discussion">Discussion</h2>
 <div class="sectionbody">
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-Article is being updated. Expect some inconsistencies.
-</td>
-</tr>
-</table>
-</div>
 <div class="paragraph">
-<p>Final loss and accuracy values on validation set are summarized in the table.</p>
-</div>
-<table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 1. Convergence results after 50 epochs</caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top"></th>
-<th class="tableblock halign-left valign-top">Old Model</th>
-<th class="tableblock halign-left valign-top">New Model</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">val_loss</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">0.8257</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">0.6156</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">val_accuracy</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">0.7165</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">0.7935</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>As hypothesized, constraining weight vector to a unit hypersphere speeds up training (see convergence graphs).</p>
+<p>Convergence graphs for all four variations are shown in fig. As hypothesized, convergence improves with internal weight normalization. Intriguingly, the benefits are lost when both 'Conv` and <code>Dense</code> layers are normalized. It is as if they 'cancel out'. I am not sure why this happens.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
 <img src="https://raghakot.github.io/images/alt_neural1/convergence.png" alt="convergence_graphs" width="800">
 </div>
-<div class="title">Figure 3. Convergence graphs for loss and accuracy on validation set for <span class="aqua">old</span> and <span class="red">new</span> computational models</div>
+<div class="title">Figure 3. Convergence graphs on validation set for all four variants.</div>
 </div>
 <div class="paragraph">
-<p>Its neat when small changes like these make a significant difference. More experimentation is required to see if this improves over base model when run all the way until convergence. It is also worth experimenting with state of the art models such as the <a href="https://arxiv.org/pdf/1412.6806.pdf">All convolutional neural network</a> to see if makes any difference there.</p>
+<p>Additionally, the use of <code>ReLU</code> which effectively attenuates negative values. This limits the neuron to only communicate information when the angle between \(X\) and \(W\) lies between \([-\frac{\pi}{2}, \frac{\pi}{2}]\). Perhaps it is useful if a neuron could also communicate the <em>lack of</em> similarity or the <em>inverse</em> of weight template information. For example, the lack of a specific stripe pattern might increase the networks confidence that the output is more likely to be one cat species over another.</p>
 </div>
 <div class="paragraph">
-<p>We used <code>ReLU</code> which effectively attenuates negative values. This limits the neuron to only communicate information when the angle between \(X\) and \(W\) lies between \([-\frac{\pi}{2}, \frac{\pi}{2}]\). Perhaps it is useful if a neuron could also communicate the <em>lack of</em> similarity or the <em>inverse</em> of weight template information. For example, the lack of a specific stripe pattern might increase the networks confidence that the output is more likely to be one cat species over another.</p>
-</div>
-<div class="paragraph">
-<p>One way to remedy this problem might be to use an activation function that allows negative values. A quick experiment with <code>ELU</code> activation, however, did not yield any significant improvement.</p>
+<p>One way to remedy this problem might be to use an activation function that allows negative values. A quick experiment with <code>ELU</code> activation, however, did not result in significant improvement.</p>
 </div>
 </div>
 </div>
@@ -521,7 +476,7 @@ Article is being updated. Expect some inconsistencies.
         hljs.initHighlightingOnLoad();
       </script>
 
-    <script src="//raghakot.github.io/themes/ghostium/assets/js/foot-scripts.min.js?v=1484939486501"></script>
+    <script src="//raghakot.github.io/themes/ghostium/assets/js/foot-scripts.min.js?v=1484965618988"></script>
 
     <script>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
