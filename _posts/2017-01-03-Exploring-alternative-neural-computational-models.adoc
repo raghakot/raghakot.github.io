@@ -78,34 +78,15 @@ image::alt_neural1/model.png[test_model, 300]
 
 == Discussion
 
-WARNING: Article is being updated. Expect some inconsistencies.
-
-Final loss and accuracy values on validation set are summarized in the table. 
-
-.Convergence results after 50 epochs
-|===
-| |Old Model |New Model
-
-|val_loss
-|0.8257
-|0.6156
-
-|val_accuracy
-|0.7165
-|0.7935
-|===
-
-As hypothesized, constraining weight vector to a unit hypersphere speeds up training (see convergence graphs).
+Convergence graphs for all four variations are shown in fig. As hypothesized, convergence improves with internal weight normalization. Intriguingly, the benefits are lost when both 'Conv` and `Dense` layers are normalized. It is as if they 'cancel out'. I am not sure why this happens.
 
 [.text-center]
-.Convergence graphs for loss and accuracy on validation set for [aqua]#old# and [red]#new# computational models
+.Convergence graphs on validation set for all four variants.
 image::alt_neural1/convergence.png[convergence_graphs, 800]
 
-Its neat when small changes like these make a significant difference. More experimentation is required to see if this improves over base model when run all the way until convergence. It is also worth experimenting with state of the art models such as the link:https://arxiv.org/pdf/1412.6806.pdf[All convolutional neural network] to see if makes any difference there.
+Additionally, the use of `ReLU` which effectively attenuates negative values. This limits the neuron to only communicate information when the angle between \(X\) and \(W\) lies between \([-\frac{\pi}{2}, \frac{\pi}{2}]\). Perhaps it is useful if a neuron could also communicate the _lack of_ similarity or the _inverse_ of weight template information. For example, the lack of a specific stripe pattern might increase the networks confidence that the output is more likely to be one cat species over another. 
 
-We used `ReLU` which effectively attenuates negative values. This limits the neuron to only communicate information when the angle between \(X\) and \(W\) lies between \([-\frac{\pi}{2}, \frac{\pi}{2}]\). Perhaps it is useful if a neuron could also communicate the _lack of_ similarity or the _inverse_ of weight template information. For example, the lack of a specific stripe pattern might increase the networks confidence that the output is more likely to be one cat species over another. 
-
-One way to remedy this problem might be to use an activation function that allows negative values. A quick experiment with `ELU` activation, however, did not yield any significant improvement.
+One way to remedy this problem might be to use an activation function that allows negative values. A quick experiment with `ELU` activation, however, did not result in significant improvement.
 
 == Reproducibility
 
