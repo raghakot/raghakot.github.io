@@ -114,6 +114,8 @@ Lets look at this step by step.
 
 == Discussion
 
+The code to reproduce all the experiments is available on link:https://github.com/raghakot/deep-learning-experiments/tree/master/exp3[Github]. Feel free to reuse or improve.
+
 NOTE: Experimentation is still a work in progress. Check back for updates.
 
 ++++
