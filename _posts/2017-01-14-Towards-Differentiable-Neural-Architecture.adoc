@@ -57,11 +57,11 @@ def make_fully_connected(x, layers):
     for layer in layers:
         x = layer(x)
         inputs.append(x)
-        #This is the part where we resize inputs to be of same shape and merge them in resnet or densenet style
+        # This is the part where we resize inputs to be of same shape and merge them in resnet or densenet style        
     return x
 ----
 
-* **Merging**. i.e., resizing prev layer outputs to be of the same shape and concatenating them in densenet or resnet style. We also want to weigh merged outputs so that those weights can be learned during backprop. The easiest way to do this in keras is to create a custom layerfootnote:[Lambda layer can be used, but that doesnt allow for trainable weights. With tensorflow optimizer we dont have to specify trainable weights.].
+* **Merging**. i.e., resizing prev layer outputs to be of the same shape and concatenating them in densenet or resnet style. We also want to weigh merged outputs so that those weights can be learned during backprop. The easiest way to do this in keras is to create a custom layerfootnote:[link:https://keras.io/layers/core/#lambda[Lambda layer] can be used, but that doesn't allow for trainable weights. This is not an issue if tensorflow optimizer was directly used.].
 
 [source,python]
 ----
@@ -112,11 +112,22 @@ Lets look at this step by step.
 2. We have to define trainable weights in `build` per keras custom layer link:https://keras.io/layers/writing-your-own-keras-layers/[docs]. We need as many weights and number of inputs.
 3. `call` computes sigmoid weighted inputs (I tested without sigmoid, and as expected, sigmoid weighing which mostly "allows or disallows inputs" worked a lot better), merged with defined merge strategy. We can tweak `init_value` and `merge_mode` to try various init strategies for weights and different merge strategies.
 
-== Discussion
+The fully connected net using 
 
+== Discussion
+NOTE: Experimentation is still a work in progress. Check back for updates.
+
+==== Insights from initial exploration
+
+* Connection weight initialization scheme (init to 0, 1, 0.5) has no effect on convergence.
+* Downsampling interpolation scheme (inter_area, inter_nn, inter_bilinear, inter_bicubic) doesnt affect the convergence significantlyfootnote:[inter_bilinear, inter_bicubic work slightly better initially but they all converge to the same final value).
+
+== Reproducability
 The code to reproduce all the experiments is available on link:https://github.com/raghakot/deep-learning-experiments/tree/master/exp3[Github]. Feel free to reuse or improve.
 
-NOTE: Experimentation is still a work in progress. Check back for updates.
+
+
+
 
 ++++
 <link rel="stylesheet" type="text/css" href="../../../extras/inlineDisqussions.css" />
