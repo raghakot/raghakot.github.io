@@ -44,6 +44,73 @@ The model has 1,250,858 parameters and trained for 50 epochs with a batch size o
 * Init all weights using gaussian centered at 0.5
 * Create an initial feed forward stack by init weights between \(L_{i-1}\) and \(L_{i}\) to 1 and set everything else to 0 or Gaussian centered at 0.5.
 
+== Implementation
+
+A quick summary of these ideas are translated into concrete implementation. A complete implementation can be found on my link:https://github.com/raghakot/deep-learning-experiments/tree/master/exp3[github].
+
+* Creating fully connected net. i.e, a layer is connected to all prev layer outputs. This is not as hard as it appears.
+
+[source,python]
+----
+def make_fully_connected(x, layers):
+    inputs = [x]
+    for layer in layers:
+        x = layer(x)
+        inputs.append(x)
+        x = // This is the part where we resize all inputs to be of same shape and merge them in resnet or densenet style
+    return x
+----
+
+* Merging. i.e., resizing prev layer outputs to be of the same shape and concatenating them in densenet or resnet style. We also want to weigh merged outputs so that those weights can be learned during backprop. The easiest way to do this in keras is to create a custom layerfootnote:[Lambda layer can be used, but that doesnt allow for trainable weights. With tensorflow optimizer we dont have to specify trainable weights.].
+
+[source,python]
+----
+class Connection(Layer):
+    """Takes a list of inputs, resizes them to the same shape, and outputs a weighted merge.
+    """
+    def __init__(self, nb_layer_inputs, init_value=0.5, merge_mode='concat', **kwargs):
+        self.init_value = init_value
+        self.merge_mode = merge_mode
+        self.nb_layer_inputs = nb_layer_inputs
+        super(Connection, self).__init__(**kwargs)
+
+    def _ensure_same_size(self, inputs):
+        """Ensures that all inputs match last input size.
+        """
+        # Find min (row, col) value and resize all inputs to that value.
+        rows = min([K.int_shape(x)[1] for x in inputs])
+        cols = min([K.int_shape(x)[2] for x in inputs])
+        return [tf.image.resize_bilinear(x, [rows, cols]) for x in inputs]
+
+    def build(self, input_shape):
+        # Create a trainable weight variable for this connection
+        self.W = [K.variable(np.ones(shape=1) * self.init_value) for _ in range(self.nb_layer_inputs)]
+        self._trainable_weights.extend(self.W)
+        super(Connection, self).build(input_shape)
+
+    def call(self, layer_inputs, mask=None):
+        # Resize all inputs to same size.
+        resized_inputs = self._ensure_same_size(layer_inputs)
+
+        # Compute sigmoid weighted inputs
+        weighted_inputs = [resized_inputs[i] * K.sigmoid(self.W[i]) for i in range(self.nb_layer_inputs)]
+
+        # Merge according to provided merge strategy.
+        merged = merge(weighted_inputs, mode=self.merge_mode, concat_axis=-1)
+
+        # Cache this for use in `get_output_shape_for`
+        self._out_shape = K.int_shape(merged)
+        return merged
+
+    def get_output_shape_for(self, input_shape):
+        return self._out_shape
+----
+
+Lets look at this step by step. 
+1. `_ensure_same_size` computes smallest \((rows, cols)\) amongst all inputs and uses it to resize all inputs to be the same shape. 
+2. We have to define trainable weights in `build` per keras custom layer link:https://keras.io/layers/writing-your-own-keras-layers/[docs]. We need as many weights and number of inputs.
+3. `call` computes sigmoid weighted inputs, merged with defined merge strategy. We can tweak `init_value` and `merge_mode` to try various init strategies for weights and different merge strategies.
+
 == Discussion
 
 NOTE: Experimentation is still a work in progress. Check back for updates.
