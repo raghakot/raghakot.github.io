@@ -48,7 +48,7 @@ The model has 1,250,858 parameters and trained for 50 epochs with a batch size o
 
 A quick summary of these ideas are translated into concrete implementation. A complete implementation can be found on my link:https://github.com/raghakot/deep-learning-experiments/tree/master/exp3[github].
 
-* Creating fully connected net. i.e, a layer is connected to all prev layer outputs. This is not as hard as it appears.
+* **Creating fully connected net**. i.e, a layer is connected to all prev layer outputs. This is not as hard as it appears.
 
 [source,python]
 ----
@@ -61,7 +61,7 @@ def make_fully_connected(x, layers):
     return x
 ----
 
-* Merging. i.e., resizing prev layer outputs to be of the same shape and concatenating them in densenet or resnet style. We also want to weigh merged outputs so that those weights can be learned during backprop. The easiest way to do this in keras is to create a custom layerfootnote:[Lambda layer can be used, but that doesnt allow for trainable weights. With tensorflow optimizer we dont have to specify trainable weights.].
+* **Merging**. i.e., resizing prev layer outputs to be of the same shape and concatenating them in densenet or resnet style. We also want to weigh merged outputs so that those weights can be learned during backprop. The easiest way to do this in keras is to create a custom layerfootnote:[Lambda layer can be used, but that doesnt allow for trainable weights. With tensorflow optimizer we dont have to specify trainable weights.].
 
 [source,python]
 ----
@@ -107,6 +107,7 @@ class Connection(Layer):
 ----
 
 Lets look at this step by step. 
+
 1. `_ensure_same_size` computes smallest \((rows, cols)\) amongst all inputs and uses it to resize all inputs to be the same shape. 
 2. We have to define trainable weights in `build` per keras custom layer link:https://keras.io/layers/writing-your-own-keras-layers/[docs]. We need as many weights and number of inputs.
 3. `call` computes sigmoid weighted inputs (I tested without sigmoid, and as expected, sigmoid weighing which mostly "allows or disallows inputs" worked a lot better), merged with defined merge strategy. We can tweak `init_value` and `merge_mode` to try various init strategies for weights and different merge strategies.
