@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Musings on tech, machine learning]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Sun, 22 Jan 2017 05:35:20 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Learning good image representation]]></title><description><![CDATA[<div id="preamble">
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Musings on tech, machine learning]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Sun, 22 Jan 2017 18:59:21 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Learning good image representation]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>This is a quick blog about an idea that occurred to me yesterday. I am currently working on experiments involving <a href="https://raghakot.github.io/2017/01/14/Towards-Differentiable-Neural-Architecture.html">differentiable neural architecture</a>, but the idea got me excited enough to write about it.</p>
@@ -196,7 +196,7 @@
     for layer in layers:
         x = layer(x)
         inputs.append(x)
-        #This is the part where we resize inputs to be of same shape and merge them in resnet or densenet style
+        # This is the part where we resize inputs to be of same shape and merge them in resnet or densenet style
     return x</code></pre>
 </div>
 </div>
@@ -266,14 +266,14 @@
 </li>
 </ol>
 </div>
+<div class="paragraph">
+<p>The fully connected net using</p>
+</div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_discussion">Discussion</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>The code to reproduce all the experiments is available on <a href="https://github.com/raghakot/deep-learning-experiments/tree/master/exp3">Github</a>. Feel free to reuse or improve.</p>
-</div>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -285,6 +285,27 @@ Experimentation is still a work in progress. Check back for updates.
 </td>
 </tr>
 </table>
+</div>
+<div class="sect3">
+<h4 id="_insights_from_initial_exploration">Insights from initial exploration</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Connection weight initialization scheme (init to 0, 1, 0.5) has no effect on convergence.</p>
+</li>
+<li>
+<p>Downsampling interpolation scheme (inter_area, inter_nn, inter_bilinear, inter_bicubic) doesnt affect the convergence significantlyfootnote:[inter_bilinear, inter_bicubic work slightly better initially but they all converge to the same final value).</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_reproducability">Reproducability</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The code to reproduce all the experiments is available on <a href="https://github.com/raghakot/deep-learning-experiments/tree/master/exp3">Github</a>. Feel free to reuse or improve.</p>
 </div>
 <link rel="stylesheet" type="text/css" href="../../../extras/inlineDisqussions.css" />
 
@@ -311,7 +332,7 @@ Experimentation is still a work in progress. Check back for updates.
 <a href="#_footnoteref_2">2</a>. An excellent overview of LSTMs can be found on <a href="http://colah.github.io/posts/2015-08-Understanding-LSTMs/" class="bare">http://colah.github.io/posts/2015-08-Understanding-LSTMs/</a>
 </div>
 <div class="footnote" id="_footnote_3">
-<a href="#_footnoteref_3">3</a>. Lambda layer can be used, but that doesnt allow for trainable weights. With tensorflow optimizer we dont have to specify trainable weights.
+<a href="#_footnoteref_3">3</a>. <a href="https://keras.io/layers/core/#lambda">Lambda layer</a> can be used, but that doesn&#8217;t allow for trainable weights. This is not an issue if tensorflow optimizer was directly used.
 </div>
 </div>]]></description><link>https://raghakot.github.io/2017/01/14/Towards-Differentiable-Neural-Architecture.html</link><guid isPermaLink="true">https://raghakot.github.io/2017/01/14/Towards-Differentiable-Neural-Architecture.html</guid><category><![CDATA[deep learning]]></category><dc:creator><![CDATA[Raghavendra Kotikalapudi]]></dc:creator><pubDate>Sat, 14 Jan 2017 00:00:00 GMT</pubDate></item><item><title><![CDATA[Baking rotational invariance into a neuron]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
