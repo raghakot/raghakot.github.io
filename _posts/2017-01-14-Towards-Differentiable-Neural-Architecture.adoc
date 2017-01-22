@@ -109,7 +109,7 @@ class Connection(Layer):
 Lets look at this step by step. 
 1. `_ensure_same_size` computes smallest \((rows, cols)\) amongst all inputs and uses it to resize all inputs to be the same shape. 
 2. We have to define trainable weights in `build` per keras custom layer link:https://keras.io/layers/writing-your-own-keras-layers/[docs]. We need as many weights and number of inputs.
-3. `call` computes sigmoid weighted inputs, merged with defined merge strategy. We can tweak `init_value` and `merge_mode` to try various init strategies for weights and different merge strategies.
+3. `call` computes sigmoid weighted inputs (I tested without sigmoid, and as expected, sigmoid weighing which mostly "allows or disallows inputs" worked a lot better), merged with defined merge strategy. We can tweak `init_value` and `merge_mode` to try various init strategies for weights and different merge strategies.
 
 == Discussion
 
