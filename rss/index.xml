@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Musings on tech, machine learning]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Sun, 22 Jan 2017 05:05:08 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Learning good image representation]]></title><description><![CDATA[<div id="preamble">
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Musings on tech, machine learning]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Sun, 22 Jan 2017 05:07:36 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Learning good image representation]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>This is a quick blog about an idea that occurred to me yesterday. I am currently working on experiments involving <a href="https://raghakot.github.io/2017/01/14/Towards-Differentiable-Neural-Architecture.html">differentiable neural architecture</a>, but the idea got me excited enough to write about it.</p>
@@ -185,7 +185,7 @@
 <div class="ulist">
 <ul>
 <li>
-<p>Creating fully connected net. i.e, a layer is connected to all prev layer outputs. This is not as hard as it appears.</p>
+<p><strong>Creating fully connected net</strong>. i.e, a layer is connected to all prev layer outputs. This is not as hard as it appears.</p>
 </li>
 </ul>
 </div>
@@ -203,7 +203,7 @@
 <div class="ulist">
 <ul>
 <li>
-<p>Merging. i.e., resizing prev layer outputs to be of the same shape and concatenating them in densenet or resnet style. We also want to weigh merged outputs so that those weights can be learned during backprop. The easiest way to do this in keras is to create a custom layer<sup class="footnote">[<a id="_footnoteref_3" class="footnote" href="#_footnote_3" title="View footnote.">3</a>]</sup>.</p>
+<p><strong>Merging</strong>. i.e., resizing prev layer outputs to be of the same shape and concatenating them in densenet or resnet style. We also want to weigh merged outputs so that those weights can be learned during backprop. The easiest way to do this in keras is to create a custom layer<sup class="footnote">[<a id="_footnoteref_3" class="footnote" href="#_footnote_3" title="View footnote.">3</a>]</sup>.</p>
 </li>
 </ul>
 </div>
@@ -251,10 +251,20 @@
 </div>
 </div>
 <div class="paragraph">
-<p>Lets look at this step by step.
-1. <code>_ensure_same_size</code> computes smallest \((rows, cols)\) amongst all inputs and uses it to resize all inputs to be the same shape.
-2. We have to define trainable weights in <code>build</code> per keras custom layer <a href="https://keras.io/layers/writing-your-own-keras-layers/">docs</a>. We need as many weights and number of inputs.
-3. <code>call</code> computes sigmoid weighted inputs (I tested without sigmoid, and as expected, sigmoid weighing which mostly "allows or disallows inputs" worked a lot better), merged with defined merge strategy. We can tweak <code>init_value</code> and <code>merge_mode</code> to try various init strategies for weights and different merge strategies.</p>
+<p>Lets look at this step by step.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><code>_ensure_same_size</code> computes smallest \((rows, cols)\) amongst all inputs and uses it to resize all inputs to be the same shape.</p>
+</li>
+<li>
+<p>We have to define trainable weights in <code>build</code> per keras custom layer <a href="https://keras.io/layers/writing-your-own-keras-layers/">docs</a>. We need as many weights and number of inputs.</p>
+</li>
+<li>
+<p><code>call</code> computes sigmoid weighted inputs (I tested without sigmoid, and as expected, sigmoid weighing which mostly "allows or disallows inputs" worked a lot better), merged with defined merge strategy. We can tweak <code>init_value</code> and <code>merge_mode</code> to try various init strategies for weights and different merge strategies.</p>
+</li>
+</ol>
 </div>
 </div>
 </div>
