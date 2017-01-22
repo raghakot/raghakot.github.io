@@ -6,7 +6,7 @@ Ever since AlexNet was introduced in 2012, neural net research landscape fundame
 First step is to make this more concrete. Ideally, we want to learn connectivity amongst individual neurons; instead, lets simplify the problem by constraining ourselves to known layer Lego blocks (by layer Lego blocks, I mean general purpose computational layers such as _Convolutional Layer_, _LSTM_, _Pooling_ etc.). Given a bunch of Layer Legos \(L = \{L_{1}, L_{2}, \cdots, L_{n}\}\), our task is to learn how these should be assembled. First thing that comes to mind is evolutionary search, but that is computationally prohibitive. A quicker and more elegant alternative would be to learn this by computing the gradient of _architecture_ with respect to loss. The challenge is to make _architecture_ itself differentiable.
 
 [.text-center]
-.Deep learning practioners
+.Deep learning practitioners
 image::diff_neural/legos.jpg[legos, 400]
 
 == Differentiable Architecture
@@ -121,7 +121,7 @@ NOTE: Experimentation is still a work in progress. Check back for updates.
 <script type="text/javascript"> 
   (function defer() {
     if (window.jQuery) {      
-      jQuery(document).ready(function() {      	
+      jQuery(document).ready(function() {       
           disqus_shortname = 'raghakot-github-io';
           jQuery("p, img").inlineDisqussions();        
       });
