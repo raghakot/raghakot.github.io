@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Musings on tech, machine learning]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Sat, 21 Jan 2017 02:28:38 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Learning good image representation]]></title><description><![CDATA[<div id="preamble">
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Musings on tech, machine learning]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Sun, 22 Jan 2017 04:07:20 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Learning good image representation]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>This is a quick blog about an idea that occurred to me yesterday. I am currently working on experiments involving <a href="https://raghakot.github.io/2017/01/14/Towards-Differentiable-Neural-Architecture.html">differentiable neural architecture</a>, but the idea got me excited enough to write about it.</p>
@@ -177,6 +177,88 @@
 </div>
 </div>
 <div class="sect1">
+<h2 id="_implementation">Implementation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A quick summary of these ideas are translated into concrete implementation. A complete implementation can be found on my <a href="https://github.com/raghakot/deep-learning-experiments/tree/master/exp3">github</a>.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Creating fully connected net. i.e, a layer is connected to all prev layer outputs. This is not as hard as it appears.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-python" data-lang="python">def make_fully_connected(x, layers):
+    inputs = [x]
+    for layer in layers:
+        x = layer(x)
+        inputs.append(x)
+        x = // This is the part where we resize all inputs to be of same shape and merge them in resnet or densenet style
+    return x</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Merging. i.e., resizing prev layer outputs to be of the same shape and concatenating them in densenet or resnet style. We also want to weigh merged outputs so that those weights can be learned during backprop. The easiest way to do this in keras is to create a custom layer<sup class="footnote">[<a id="_footnoteref_3" class="footnote" href="#_footnote_3" title="View footnote.">3</a>]</sup>.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-python" data-lang="python">class Connection(Layer):
+    """Takes a list of inputs, resizes them to the same shape, and outputs a weighted merge.
+    """
+    def __init__(self, nb_layer_inputs, init_value=0.5, merge_mode='concat', **kwargs):
+        self.init_value = init_value
+        self.merge_mode = merge_mode
+        self.nb_layer_inputs = nb_layer_inputs
+        super(Connection, self).__init__(**kwargs)
+
+    def _ensure_same_size(self, inputs):
+        """Ensures that all inputs match last input size.
+        """
+        # Find min (row, col) value and resize all inputs to that value.
+        rows = min([K.int_shape(x)[1] for x in inputs])
+        cols = min([K.int_shape(x)[2] for x in inputs])
+        return [tf.image.resize_bilinear(x, [rows, cols]) for x in inputs]
+
+    def build(self, input_shape):
+        # Create a trainable weight variable for this connection
+        self.W = [K.variable(np.ones(shape=1) * self.init_value) for _ in range(self.nb_layer_inputs)]
+        self._trainable_weights.extend(self.W)
+        super(Connection, self).build(input_shape)
+
+    def call(self, layer_inputs, mask=None):
+        # Resize all inputs to same size.
+        resized_inputs = self._ensure_same_size(layer_inputs)
+
+        # Compute sigmoid weighted inputs
+        weighted_inputs = [resized_inputs[i] * K.sigmoid(self.W[i]) for i in range(self.nb_layer_inputs)]
+
+        # Merge according to provided merge strategy.
+        merged = merge(weighted_inputs, mode=self.merge_mode, concat_axis=-1)
+
+        # Cache this for use in `get_output_shape_for`
+        self._out_shape = K.int_shape(merged)
+        return merged
+
+    def get_output_shape_for(self, input_shape):
+        return self._out_shape</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Lets look at this step by step.
+1. <code>_ensure_same_size</code> computes smallest \((rows, cols)\) amongst all inputs and uses it to resize all inputs to be the same shape.
+2. We have to define trainable weights in <code>build</code> per keras custom layer <a href="https://keras.io/layers/writing-your-own-keras-layers/">docs</a>. We need as many weights and number of inputs.
+3. <code>call</code> computes sigmoid weighted inputs, merged with defined merge strategy. We can tweak <code>init_value</code> and <code>merge_mode</code> to try various init strategies for weights and different merge strategies.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="_discussion">Discussion</h2>
 <div class="sectionbody">
 <div class="admonitionblock note">
@@ -214,6 +296,9 @@ Experimentation is still a work in progress. Check back for updates.
 </div>
 <div class="footnote" id="_footnote_2">
 <a href="#_footnoteref_2">2</a>. An excellent overview of LSTMs can be found on <a href="http://colah.github.io/posts/2015-08-Understanding-LSTMs/" class="bare">http://colah.github.io/posts/2015-08-Understanding-LSTMs/</a>
+</div>
+<div class="footnote" id="_footnote_3">
+<a href="#_footnoteref_3">3</a>. Lambda layer can be used, but that doesnt allow for trainable weights. With tensorflow optimizer we dont have to specify trainable weights.
 </div>
 </div>]]></description><link>https://raghakot.github.io/2017/01/14/Towards-Differentiable-Neural-Architecture.html</link><guid isPermaLink="true">https://raghakot.github.io/2017/01/14/Towards-Differentiable-Neural-Architecture.html</guid><category><![CDATA[deep learning]]></category><dc:creator><![CDATA[Raghavendra Kotikalapudi]]></dc:creator><pubDate>Sat, 14 Jan 2017 00:00:00 GMT</pubDate></item><item><title><![CDATA[Baking rotational invariance into a neuron]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
