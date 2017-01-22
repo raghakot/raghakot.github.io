@@ -65,13 +65,18 @@ def make_fully_connected(x, layers):
 
 [source,python]
 ----
+import numpy as np
+import tensorflow as tf
+
+from keras import backend as K
+from keras.layers import merge, Lambda, Layer
+
 class Connection(Layer):
     """Takes a list of inputs, resizes them to the same shape, and outputs a weighted merge.
     """
-    def __init__(self, nb_layer_inputs, init_value=0.5, merge_mode='concat', **kwargs):
+    def __init__(self, init_value=0.5, merge_mode='concat', **kwargs):
         self.init_value = init_value
         self.merge_mode = merge_mode
-        self.nb_layer_inputs = nb_layer_inputs
         super(Connection, self).__init__(**kwargs)
 
     def _ensure_same_size(self, inputs):
@@ -82,9 +87,17 @@ class Connection(Layer):
         cols = min([K.int_shape(x)[2] for x in inputs])
         return [tf.image.resize_bilinear(x, [rows, cols]) for x in inputs]
 
+    def _merge(self, inputs):
+        """Define other merge ops like [+, X, avg] here.
+        """
+        if self.merge_mode == 'concat':
+            return merge(inputs, mode=self.merge_mode, concat_axis=-1)
+        else:
+            raise RuntimeError('mode {} is invalid'.format(self.merge_mode))
+
     def build(self, input_shape):
         # Create a trainable weight variable for this connection
-        self.W = [K.variable(np.ones(shape=1) * self.init_value) for _ in range(self.nb_layer_inputs)]
+        self.W = [K.variable(np.ones(shape=1) * self.init_value) for _ in range(len(input_shape))]
         self._trainable_weights.extend(self.W)
         super(Connection, self).build(input_shape)
 
@@ -93,10 +106,10 @@ class Connection(Layer):
         resized_inputs = self._ensure_same_size(layer_inputs)
 
         # Compute sigmoid weighted inputs
-        weighted_inputs = [resized_inputs[i] * K.sigmoid(self.W[i]) for i in range(self.nb_layer_inputs)]
+        weighted_inputs = [resized_inputs[i] * K.sigmoid(self.W[i]) for i in range(len(layer_inputs))]
 
         # Merge according to provided merge strategy.
-        merged = merge(weighted_inputs, mode=self.merge_mode, concat_axis=-1)
+        merged = self._merge(weighted_inputs)
 
         # Cache this for use in `get_output_shape_for`
         self._out_shape = K.int_shape(merged)
@@ -112,7 +125,26 @@ Lets look at this step by step.
 2. We have to define trainable weights in `build` per keras custom layer link:https://keras.io/layers/writing-your-own-keras-layers/[docs]. We need as many weights and number of inputs.
 3. `call` computes sigmoid weighted inputs (I tested without sigmoid, and as expected, sigmoid weighing which mostly "allows or disallows inputs" worked a lot better), merged with defined merge strategy. We can tweak `init_value` and `merge_mode` to try various init strategies for weights and different merge strategies.
 
-The fully connected net using 
+The fully connected net using layers defined below, followed by sequential `Dense` layers using the above code is shown in fig.
+
+[source,python]
+----
+layers = [
+	Convolution2D(32, 3, 3, border_mode='same', activation='relu', bias=False),
+	Convolution2D(32, 3, 3, bias=False, activation='relu'),
+	MaxPooling2D(pool_size=(2, 2)),
+	Dropout(0.25),
+
+	Convolution2D(64, 3, 3, bias=False, activation='relu', border_mode='same'),
+	Convolution2D(64, 3, 3, bias=False, activation='relu'),
+	MaxPooling2D(pool_size=(2, 2)),
+	Dropout(0.25)
+]
+----
+
+[.text-center]
+.Fully connected network, except for `Dense` layers.
+image::diff_neural/model.jpg[model]
 
 == Discussion
 NOTE: Experimentation is still a work in progress. Check back for updates.
