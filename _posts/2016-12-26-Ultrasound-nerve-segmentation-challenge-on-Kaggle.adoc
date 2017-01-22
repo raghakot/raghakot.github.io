@@ -33,7 +33,7 @@ Initial manual exploration revealed contradictory examples. i.e., two very simil
 
 [.text-center]
 .Contradictory samples
-image::ultrasound/contradictory_samples.gif[contour]
+image::ultrasound/contradictory_samples.png[contour, 600]
 
 Lets try to find all such near duplicates. High level idea is as follows:
 
