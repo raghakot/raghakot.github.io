@@ -38,9 +38,9 @@
     <link href="//fonts.googleapis.com/" rel="dns-prefetch">
     <link href="//fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic|Open+Sans:700,400&subset=latin,latin-ext" rel="stylesheet">
 
-    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/main.min.css?v=1485061508362"/>
-    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/custom.css?v=1485061508362"/>
-    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/asciidoctor-foundation.css?v=1485061508362"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/main.min.css?v=1485061656792"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/custom.css?v=1485061656792"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/asciidoctor-foundation.css?v=1485061656792"/>
 
 
 
@@ -70,7 +70,7 @@
       GHOSTIUM.enablePjax = typeof enable_pjax !== 'undefined' ? enable_pjax : true;
     </script>
 
-    <script src="//raghakot.github.io/themes/ghostium/assets/js/head-scripts.min.js?v=1485061508362"></script>
+    <script src="//raghakot.github.io/themes/ghostium/assets/js/head-scripts.min.js?v=1485061656792"></script>
 
     <link rel="canonical" href="https://raghakot.github.io/2017/01/14/Towards-Differentiable-Neural-Architecture.html" />
     <meta name="referrer" content="origin" />
@@ -309,7 +309,7 @@ null
 <div class="ulist">
 <ul>
 <li>
-<p>Creating fully connected net. i.e, a layer is connected to all prev layer outputs. This is not as hard as it appears.</p>
+<p><strong>Creating fully connected net</strong>. i.e, a layer is connected to all prev layer outputs. This is not as hard as it appears.</p>
 </li>
 </ul>
 </div>
@@ -327,7 +327,7 @@ null
 <div class="ulist">
 <ul>
 <li>
-<p>Merging. i.e., resizing prev layer outputs to be of the same shape and concatenating them in densenet or resnet style. We also want to weigh merged outputs so that those weights can be learned during backprop. The easiest way to do this in keras is to create a custom layer<sup class="footnote">[<a id="_footnoteref_3" class="footnote" href="#_footnote_3" title="View footnote.">3</a>]</sup>.</p>
+<p><strong>Merging</strong>. i.e., resizing prev layer outputs to be of the same shape and concatenating them in densenet or resnet style. We also want to weigh merged outputs so that those weights can be learned during backprop. The easiest way to do this in keras is to create a custom layer<sup class="footnote">[<a id="_footnoteref_3" class="footnote" href="#_footnote_3" title="View footnote.">3</a>]</sup>.</p>
 </li>
 </ul>
 </div>
@@ -375,10 +375,20 @@ null
 </div>
 </div>
 <div class="paragraph">
-<p>Lets look at this step by step.
-1. <code>_ensure_same_size</code> computes smallest \((rows, cols)\) amongst all inputs and uses it to resize all inputs to be the same shape.
-2. We have to define trainable weights in <code>build</code> per keras custom layer <a href="https://keras.io/layers/writing-your-own-keras-layers/">docs</a>. We need as many weights and number of inputs.
-3. <code>call</code> computes sigmoid weighted inputs (I tested without sigmoid, and as expected, sigmoid weighing which mostly "allows or disallows inputs" worked a lot better), merged with defined merge strategy. We can tweak <code>init_value</code> and <code>merge_mode</code> to try various init strategies for weights and different merge strategies.</p>
+<p>Lets look at this step by step.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><code>_ensure_same_size</code> computes smallest \((rows, cols)\) amongst all inputs and uses it to resize all inputs to be the same shape.</p>
+</li>
+<li>
+<p>We have to define trainable weights in <code>build</code> per keras custom layer <a href="https://keras.io/layers/writing-your-own-keras-layers/">docs</a>. We need as many weights and number of inputs.</p>
+</li>
+<li>
+<p><code>call</code> computes sigmoid weighted inputs (I tested without sigmoid, and as expected, sigmoid weighing which mostly "allows or disallows inputs" worked a lot better), merged with defined merge strategy. We can tweak <code>init_value</code> and <code>merge_mode</code> to try various init strategies for weights and different merge strategies.</p>
+</li>
+</ol>
 </div>
 </div>
 </div>
@@ -504,7 +514,7 @@ Experimentation is still a work in progress. Check back for updates.
         hljs.initHighlightingOnLoad();
       </script>
 
-    <script src="//raghakot.github.io/themes/ghostium/assets/js/foot-scripts.min.js?v=1485061508362"></script>
+    <script src="//raghakot.github.io/themes/ghostium/assets/js/foot-scripts.min.js?v=1485061656792"></script>
 
     <script>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
