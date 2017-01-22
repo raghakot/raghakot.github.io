@@ -57,7 +57,7 @@ def make_fully_connected(x, layers):
     for layer in layers:
         x = layer(x)
         inputs.append(x)
-        x = // This is the part where we resize all inputs to be of same shape and merge them in resnet or densenet style
+        #This is the part where we resize inputs to be of same shape and merge them in resnet or densenet style
     return x
 ----
 
