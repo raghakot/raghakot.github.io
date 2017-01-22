@@ -142,7 +142,7 @@ layers = [
 ----
 
 [.text-center]
-.Fully connected network, except for `Dense` layers (Open in new tab or download to zoom in).
+.Fully connected network from `layers` followed by sequential `Dense` layers (open in new tab or download to zoom in).
 image::diff_neural/model.png[model]
 
 == Discussion
