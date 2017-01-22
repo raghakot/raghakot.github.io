@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Musings on tech, machine learning]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Sun, 22 Jan 2017 18:59:21 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Learning good image representation]]></title><description><![CDATA[<div id="preamble">
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Musings on tech, machine learning]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Sun, 22 Jan 2017 21:30:44 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Learning good image representation]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>This is a quick blog about an idea that occurred to me yesterday. I am currently working on experiments involving <a href="https://raghakot.github.io/2017/01/14/Towards-Differentiable-Neural-Architecture.html">differentiable neural architecture</a>, but the idea got me excited enough to write about it.</p>
@@ -209,13 +209,18 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-python" data-lang="python">class Connection(Layer):
+<pre class="highlight"><code class="language-python" data-lang="python">import numpy as np
+import tensorflow as tf
+
+from keras import backend as K
+from keras.layers import merge, Lambda, Layer
+
+class Connection(Layer):
     """Takes a list of inputs, resizes them to the same shape, and outputs a weighted merge.
     """
-    def __init__(self, nb_layer_inputs, init_value=0.5, merge_mode='concat', **kwargs):
+    def __init__(self, init_value=0.5, merge_mode='concat', **kwargs):
         self.init_value = init_value
         self.merge_mode = merge_mode
-        self.nb_layer_inputs = nb_layer_inputs
         super(Connection, self).__init__(**kwargs)
 
     def _ensure_same_size(self, inputs):
@@ -226,9 +231,17 @@
         cols = min([K.int_shape(x)[2] for x in inputs])
         return [tf.image.resize_bilinear(x, [rows, cols]) for x in inputs]
 
+    def _merge(self, inputs):
+        """Define other merge ops like [+, X, avg] here.
+        """
+        if self.merge_mode == 'concat':
+            return merge(inputs, mode=self.merge_mode, concat_axis=-1)
+        else:
+            raise RuntimeError('mode {} is invalid'.format(self.merge_mode))
+
     def build(self, input_shape):
         # Create a trainable weight variable for this connection
-        self.W = [K.variable(np.ones(shape=1) * self.init_value) for _ in range(self.nb_layer_inputs)]
+        self.W = [K.variable(np.ones(shape=1) * self.init_value) for _ in range(len(input_shape))]
         self._trainable_weights.extend(self.W)
         super(Connection, self).build(input_shape)
 
@@ -237,10 +250,10 @@
         resized_inputs = self._ensure_same_size(layer_inputs)
 
         # Compute sigmoid weighted inputs
-        weighted_inputs = [resized_inputs[i] * K.sigmoid(self.W[i]) for i in range(self.nb_layer_inputs)]
+        weighted_inputs = [resized_inputs[i] * K.sigmoid(self.W[i]) for i in range(len(layer_inputs))]
 
         # Merge according to provided merge strategy.
-        merged = merge(weighted_inputs, mode=self.merge_mode, concat_axis=-1)
+        merged = self._merge(weighted_inputs)
 
         # Cache this for use in `get_output_shape_for`
         self._out_shape = K.int_shape(merged)
@@ -267,7 +280,28 @@
 </ol>
 </div>
 <div class="paragraph">
-<p>The fully connected net using</p>
+<p>The fully connected net using layers defined below, followed by sequential <code>Dense</code> layers using the above code is shown in fig.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-python" data-lang="python">layers = [
+	Convolution2D(32, 3, 3, border_mode='same', activation='relu', bias=False),
+	Convolution2D(32, 3, 3, bias=False, activation='relu'),
+	MaxPooling2D(pool_size=(2, 2)),
+	Dropout(0.25),
+
+	Convolution2D(64, 3, 3, bias=False, activation='relu', border_mode='same'),
+	Convolution2D(64, 3, 3, bias=False, activation='relu'),
+	MaxPooling2D(pool_size=(2, 2)),
+	Dropout(0.25)
+]</code></pre>
+</div>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="https://raghakot.github.io/images/diff_neural/model.jpg" alt="model">
+</div>
+<div class="title">Figure 2. Fully connected network, except for <code>Dense</code> layers.</div>
 </div>
 </div>
 </div>
