@@ -139,12 +139,11 @@ layers = [
 	Convolution2D(64, 3, 3, bias=False, activation='relu'),
 	MaxPooling2D(pool_size=(2, 2)),
 	Dropout(0.25)
-]
 ----
 
 [.text-center]
-.Fully connected network, except for `Dense` layers.
-image::diff_neural/model.jpg[model]
+.Fully connected network, except for `Dense` layers (Open in new tab or download to zoom in).
+image::diff_neural/model.png[model]
 
 == Discussion
 NOTE: Experimentation is still a work in progress. Check back for updates.
