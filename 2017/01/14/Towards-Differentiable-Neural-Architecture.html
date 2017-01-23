@@ -38,9 +38,9 @@
     <link href="//fonts.googleapis.com/" rel="dns-prefetch">
     <link href="//fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic|Open+Sans:700,400&subset=latin,latin-ext" rel="stylesheet">
 
-    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/main.min.css?v=1485157205091"/>
-    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/custom.css?v=1485157205091"/>
-    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/asciidoctor-foundation.css?v=1485157205091"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/main.min.css?v=1485157443797"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/custom.css?v=1485157443797"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/asciidoctor-foundation.css?v=1485157443797"/>
 
 
 
@@ -70,7 +70,7 @@
       GHOSTIUM.enablePjax = typeof enable_pjax !== 'undefined' ? enable_pjax : true;
     </script>
 
-    <script src="//raghakot.github.io/themes/ghostium/assets/js/head-scripts.min.js?v=1485157205091"></script>
+    <script src="//raghakot.github.io/themes/ghostium/assets/js/head-scripts.min.js?v=1485157443797"></script>
 
     <link rel="canonical" href="https://raghakot.github.io/2017/01/14/Towards-Differentiable-Neural-Architecture.html" />
     <meta name="referrer" content="origin" />
@@ -78,13 +78,13 @@
     <meta property="og:site_name" content="Ragha&#x27;s Blog" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Towards Differentiable Neural Architecture" />
-    <meta property="og:description" content="Ever since AlexNet was introduced in 2012, neural net research landscape fundamentally changed. With deep computational graphs, the possibilities are endless. We quickly iterated through a dizzying number of architectures such as AlexNet, VGGNet, Inception, ResNets, FractalNet, Xception, DenseNets and so on. With deep learning, architecture engine" />
+    <meta property="og:description" content="Ever since AlexNet was introduced in 2012, neural net research landscape fundamentally changed. With deep computational graphs, the possibilities are endless. We quickly iterated through a dizzying number of architectures such as AlexNet, VGGNet, NIN, Inception, ResNets, FractalNet, Xception, DenseNets and so on. With deep learning, architecture e" />
     <meta property="og:url" content="https://raghakot.github.io/2017/01/14/Towards-Differentiable-Neural-Architecture.html" />
     <meta property="article:tag" content="deep learning" />
     
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="Towards Differentiable Neural Architecture" />
-    <meta name="twitter:description" content="Ever since AlexNet was introduced in 2012, neural net research landscape fundamentally changed. With deep computational graphs, the possibilities are endless. We quickly iterated through a dizzying number of architectures such as AlexNet, VGGNet, Inception, ResNets, FractalNet, Xception, DenseNets and so on. With deep learning, architecture engine" />
+    <meta name="twitter:description" content="Ever since AlexNet was introduced in 2012, neural net research landscape fundamentally changed. With deep computational graphs, the possibilities are endless. We quickly iterated through a dizzying number of architectures such as AlexNet, VGGNet, NIN, Inception, ResNets, FractalNet, Xception, DenseNets and so on. With deep learning, architecture e" />
     <meta name="twitter:url" content="https://raghakot.github.io/2017/01/14/Towards-Differentiable-Neural-Architecture.html" />
     
     <script type="application/ld+json">
@@ -194,7 +194,7 @@ null
             <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Ever since AlexNet was introduced in 2012, neural net research landscape fundamentally changed. With deep computational graphs, the possibilities are endless. We quickly iterated through a dizzying number of architectures such as AlexNet, VGGNet, Inception, ResNets, FractalNet, Xception, DenseNets and so on. With deep learning, architecture engineering is the new feature engineering and it clearly plays an important role in advancing the state of the art. Instead of making incremental improvements, is there a way to <em>learn</em> the connectivity pattern itself?</p>
+<p>Ever since AlexNet was introduced in 2012, neural net research landscape fundamentally changed. With deep computational graphs, the possibilities are endless. We quickly iterated through a dizzying number of architectures such as AlexNet, VGGNet, NIN, Inception, ResNets, FractalNet, Xception, DenseNets and so on. With deep learning, architecture engineering is the new feature engineering and it clearly plays an important role in advancing the state of the art. Instead of making incremental improvements, is there a way to <em>learn</em> the connectivity pattern itself?</p>
 </div>
 <div class="paragraph">
 <p>First step is to make this more concrete. Ideally, we want to learn connectivity amongst individual neurons; instead, lets simplify the problem by constraining ourselves to known layer Lego blocks (by layer Lego blocks, I mean general purpose computational layers such as <em>Convolutional Layer</em>, <em>LSTM</em>, <em>Pooling</em> etc.). Given a bunch of Layer Legos \(L = \{L_{1}, L_{2}, \cdots, L_{n}\}\), our task is to learn how these should be assembled. First thing that comes to mind is evolutionary search, but that is computationally prohibitive. A quicker and more elegant alternative would be to learn this by computing the gradient of <em>architecture</em> with respect to loss. The challenge is to make <em>architecture</em> itself differentiable.</p>
@@ -475,7 +475,7 @@ Experimentation is still a work in progress. Check back for updates.
 </table>
 </div>
 <div class="paragraph">
-<p>Withsout \(sigmoid\) weighing which mostly "allows or disallows inputs", the convergence was horribly slow. All subsequent results described here used \(sigmoid\) connection weights.</p>
+<p>Without \(sigmoid\) weighing which mostly "allows or disallows inputs", the convergence was horribly slow. All subsequent results described here used \(sigmoid\) connection weights.</p>
 </div>
 <div class="sect2">
 <h3 id="_experiment1_densenet_style_merge">Experiment1: DenseNet Style merge</h3>
@@ -490,7 +490,7 @@ Experimentation is still a work in progress. Check back for updates.
 <p>Connection weight initialization scheme (init to 0, 1, 0.5) has no effect on convergence.</p>
 </li>
 <li>
-<p>Downsampling interpolation scheme (inter_area, inter_nn, inter_bilinear, inter_bicubic) doesnt affect the convergence significantlyfootnote:[inter_bilinear, inter_bicubic work slightly better initially but they all converge to the same final value).</p>
+<p>Down sampling interpolation scheme (inter_area, inter_nn, inter_bilinear, inter_bicubic) doesn&#8217;t affect the convergence significantlyfootnote:[inter_bilinear, inter_bicubic work slightly better initially but they all converge to the same final value).</p>
 </li>
 </ul>
 </div>
@@ -520,7 +520,7 @@ Experimentation is still a work in progress. Check back for updates.
 </div>
 </div>
 <div class="sect1">
-<h2 id="_reproducability">Reproducability</h2>
+<h2 id="_reproducibility">Reproducibility</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The code to reproduce all the experiments is available on <a href="https://github.com/raghakot/deep-learning-experiments/tree/master/exp3">Github</a>. Feel free to reuse or improve.</p>
@@ -632,7 +632,7 @@ Experimentation is still a work in progress. Check back for updates.
         hljs.initHighlightingOnLoad();
       </script>
 
-    <script src="//raghakot.github.io/themes/ghostium/assets/js/foot-scripts.min.js?v=1485157205091"></script>
+    <script src="//raghakot.github.io/themes/ghostium/assets/js/foot-scripts.min.js?v=1485157443797"></script>
 
     <script>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
