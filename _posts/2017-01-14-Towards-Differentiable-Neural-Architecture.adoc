@@ -155,7 +155,7 @@ NOTE: Experimentation is still a work in progress. Check back for updates.
 
 ==== Evolution of connection weights
 
-It is definitely interesting to track how connection weights between layers evolved with training epochs. Fig 3 shows the connection weight evolution for connection_o through connection_7 (Refer to fig2 to see what connection_i corresponds to).
+It is definitely interesting to track how connection weights between layers evolved with training epochs. Fig 3 shows the connection weight evolution for connection_o through connection_7 (connection 0 weight 0 corresponds to input->conv2, connection 0 weight 1 corresponds to conv1->input2, and so on. Refer to fig 2 to get a complete picture).
 
 [.text-center]
 .Evolution of various connection weights during training
