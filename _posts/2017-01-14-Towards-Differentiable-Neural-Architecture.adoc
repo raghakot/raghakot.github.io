@@ -153,12 +153,16 @@ NOTE: Experimentation is still a work in progress. Check back for updates.
 * Connection weight initialization scheme (init to 0, 1, 0.5) has no effect on convergence.
 * Downsampling interpolation scheme (inter_area, inter_nn, inter_bilinear, inter_bicubic) doesnt affect the convergence significantlyfootnote:[inter_bilinear, inter_bicubic work slightly better initially but they all converge to the same final value).
 
+==== Evolution of connection weights
+
+It is definitely interesting to track how connection weights between layers evolved with training epochs. Fig 3 shows the connection weight evolution for connection_o through connection_7 (Refer to fig2 to see what connection_i corresponds to).
+
+[.text-center]
+.Evolution of various connection weights during training
+image::diff_neural/connection_evolution.png[connection_evolution]
+
 == Reproducability
 The code to reproduce all the experiments is available on link:https://github.com/raghakot/deep-learning-experiments/tree/master/exp3[Github]. Feel free to reuse or improve.
-
-
-
-
 
 ++++
 <link rel="stylesheet" type="text/css" href="../../../extras/inlineDisqussions.css" />
