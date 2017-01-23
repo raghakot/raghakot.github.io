@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Musings on tech, machine learning]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Mon, 23 Jan 2017 05:23:51 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Learning good image representation]]></title><description><![CDATA[<div id="preamble">
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Musings on tech, machine learning]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Mon, 23 Jan 2017 07:31:30 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Learning good image representation]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>This is a quick blog about an idea that occurred to me yesterday. I am currently working on experiments involving <a href="https://raghakot.github.io/2017/01/14/Towards-Differentiable-Neural-Architecture.html">differentiable neural architecture</a>, but the idea got me excited enough to write about it.</p>
@@ -213,15 +213,28 @@
 import tensorflow as tf
 
 from keras import backend as K
-from keras.layers import merge, Lambda, Layer
+from keras.layers import Lambda, Layer
 
 class Connection(Layer):
     """Takes a list of inputs, resizes them to the same shape, and outputs a weighted merge.
     """
-    def __init__(self, init_value=0.5, merge_mode='concat', **kwargs):
+    def __init__(self, init_value=0.5, merge_mode='concat',
+                 resize_interpolation=tf.image.ResizeMethod.BILINEAR,
+                 shared_weights=True):
+        """Creates a connection that encapsulates weighted connection of input feature maps.
+
+        :param init_value: The init value for connection weight
+        :param merge_mode: Defines how feature maps from inputs are aggregated.
+        :param resize_interpolation: The downscaling interpolation to use. Instance of `tf.image.ResizeMethod`.
+            Note that ResizeMethod.AREA will fail as its gradient is not yet implemented.
+        :param shared_weights: True to share the same weight for all feature maps from inputs[i].
+        False creates a separate weight per feature map.
+        """
         self.init_value = init_value
         self.merge_mode = merge_mode
-        super(Connection, self).__init__(**kwargs)
+        self.resize_interpolation = resize_interpolation
+        self.shared_weights = shared_weights
+        super(Connection, self).__init__()
 
     def _ensure_same_size(self, inputs):
         """Ensures that all inputs match last input size.
@@ -229,20 +242,36 @@ class Connection(Layer):
         # Find min (row, col) value and resize all inputs to that value.
         rows = min([K.int_shape(x)[1] for x in inputs])
         cols = min([K.int_shape(x)[2] for x in inputs])
-        return [tf.image.resize_bilinear(x, [rows, cols]) for x in inputs]
+        return [tf.image.resize_images(x, [rows, cols], self.resize_interpolation) for x in inputs]
 
     def _merge(self, inputs):
-        """Define other merge ops like [+, X, avg] here.
+        """Define other merge ops like [+, X, Avg] here.
         """
         if self.merge_mode == 'concat':
-            return merge(inputs, mode=self.merge_mode, concat_axis=-1)
+            # inputs are already stacked.
+            return inputs
         else:
             raise RuntimeError('mode {} is invalid'.format(self.merge_mode))
 
     def build(self, input_shape):
-        # Create a trainable weight variable for this connection
-        self.W = [K.variable(np.ones(shape=1) * self.init_value) for _ in range(len(input_shape))]
-        self._trainable_weights.extend(self.W)
+        """ Create trainable weights for this connection
+        """
+        # Number of trainable weights = sum of all filters in `input_shape`
+        nb_filters = sum([s[3] for s in input_shape])
+
+        # Create shared weights for all filters within an input layer.
+        if self.shared_weights:
+            weights = []
+            for shape in input_shape:
+                # Create shared weight, make nb_filter number of clones.
+                shared_w = K.variable(self.init_value)
+                for _ in range(shape[3]):
+                    weights.append(shared_w)
+            self.W = K.concatenate(weights, axis=-1)
+        else:
+            self.W = K.variable(np.ones(shape=nb_filters) * self.init_value)
+
+        self._trainable_weights.append(self.W)
         super(Connection, self).build(input_shape)
 
     def call(self, layer_inputs, mask=None):
@@ -250,10 +279,11 @@ class Connection(Layer):
         resized_inputs = self._ensure_same_size(layer_inputs)
 
         # Compute sigmoid weighted inputs
-        weighted_inputs = [resized_inputs[i] * K.sigmoid(self.W[i]) for i in range(len(layer_inputs))]
+        stacked = K.concatenate(resized_inputs, axis=-1)
+        weighted = stacked * K.sigmoid(self.W)
 
         # Merge according to provided merge strategy.
-        merged = self._merge(weighted_inputs)
+        merged = self._merge(weighted)
 
         # Cache this for use in `get_output_shape_for`
         self._out_shape = K.int_shape(merged)
@@ -264,15 +294,15 @@ class Connection(Layer):
 </div>
 </div>
 <div class="paragraph">
-<p>Lets look at this step by step. Note that this implementation only illustrates shared weights for all features of <code>layer_inputs[i]</code> for simplicity. Se e the full implementation on <a href="https://github.com/raghakot/deep-learning-experiments/blob/master/exp3/architecture.py#L8">github</a> for creating a unique weight per feature map from previous layers.</p>
+<p>Lets look at this step by step.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p><code>_ensure_same_size</code> computes smallest \((rows, cols)\) amongst all inputs and uses it to resize all inputs to be the same shape.</p>
+<p><code>_ensure_same_size</code> computes smallest \((rows, cols)\) amongst all inputs and uses it to resize all inputs to be the same shape using the provided resize interpolation scheme.</p>
 </li>
 <li>
-<p>We have to define trainable weights in <code>build</code> per keras custom layer <a href="https://keras.io/layers/writing-your-own-keras-layers/">docs</a>. We need as many weights and number of inputs.</p>
+<p>We have to define trainable weights in <code>build</code> per keras custom layer <a href="https://keras.io/layers/writing-your-own-keras-layers/">docs</a>. We need as many weights as sum of filters across all inputs to the <code>Connection</code> layer. Weight sharing across all filters of an incoming layer can be achieved by concatenating same weight variable for all filters.</p>
 </li>
 <li>
 <p><code>call</code> computes sigmoid weighted inputs (I tested without sigmoid, and as expected, sigmoid weighing which mostly "allows or disallows inputs" worked a lot better), merged with defined merge strategy. We can tweak <code>init_value</code> and <code>merge_mode</code> to try various init strategies for weights and different merge strategies.</p>
@@ -318,6 +348,9 @@ Experimentation is still a work in progress. Check back for updates.
 </td>
 </tr>
 </table>
+</div>
+<div class="paragraph">
+<p>Withsout \(sigmoid\) weighing which mostly "allows or disallows inputs", the convergence was horribly slow. All subsequent results described here used \(sigmoid\) connection weights.</p>
 </div>
 <div class="sect2">
 <h3 id="_experiment1_densenet_style_merge">Experiment1: DenseNet Style merge</h3>
