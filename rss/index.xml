@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Musings on tech, machine learning]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Mon, 23 Jan 2017 02:42:29 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Learning good image representation]]></title><description><![CDATA[<div id="preamble">
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Musings on tech, machine learning]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Mon, 23 Jan 2017 04:43:37 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Learning good image representation]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>This is a quick blog about an idea that occurred to me yesterday. I am currently working on experiments involving <a href="https://raghakot.github.io/2017/01/14/Towards-Differentiable-Neural-Architecture.html">differentiable neural architecture</a>, but the idea got me excited enough to write about it.</p>
@@ -319,6 +319,11 @@ Experimentation is still a work in progress. Check back for updates.
 </tr>
 </table>
 </div>
+<div class="sect2">
+<h3 id="_experiment1_densenet_style_merge">Experiment1: DenseNet Style merge</h3>
+<div class="paragraph">
+<p>In these set of experiments, activation maps from prev layers are <em>concatenated</em>. All filters from previous layer share the same weight.</p>
+</div>
 <div class="sect3">
 <h4 id="_insights_from_initial_exploration">Insights from initial exploration</h4>
 <div class="ulist">
@@ -342,6 +347,7 @@ Experimentation is still a work in progress. Check back for updates.
 <img src="https://raghakot.github.io/images/diff_neural/connection_evolution.png" alt="connection_evolution">
 </div>
 <div class="title">Figure 3. Evolution of various connection weights during training</div>
+</div>
 </div>
 </div>
 </div>
