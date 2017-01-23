@@ -169,6 +169,7 @@ layers = [
 	Convolution2D(64, 3, 3, bias=False, activation='relu'),
 	MaxPooling2D(pool_size=(2, 2)),
 	Dropout(0.25)
+]
 ----
 
 [.text-center]
