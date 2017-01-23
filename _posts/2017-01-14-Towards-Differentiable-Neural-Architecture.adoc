@@ -148,6 +148,10 @@ image::diff_neural/model.png[model]
 == Discussion
 NOTE: Experimentation is still a work in progress. Check back for updates.
 
+=== Experiment1: DenseNet Style merge
+
+In these set of experiments, activation maps from prev layers are _concatenated_. All filters from previous layer share the same weight.
+
 ==== Insights from initial exploration
 
 * Connection weight initialization scheme (init to 0, 1, 0.5) has no effect on convergence.
