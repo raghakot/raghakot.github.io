@@ -38,9 +38,9 @@
     <link href="//fonts.googleapis.com/" rel="dns-prefetch">
     <link href="//fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic|Open+Sans:700,400&subset=latin,latin-ext" rel="stylesheet">
 
-    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/main.min.css?v=1485146617976"/>
-    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/custom.css?v=1485146617976"/>
-    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/asciidoctor-foundation.css?v=1485146617976"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/main.min.css?v=1485149031565"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/custom.css?v=1485149031565"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/asciidoctor-foundation.css?v=1485149031565"/>
 
 
 
@@ -70,7 +70,7 @@
       GHOSTIUM.enablePjax = typeof enable_pjax !== 'undefined' ? enable_pjax : true;
     </script>
 
-    <script src="//raghakot.github.io/themes/ghostium/assets/js/head-scripts.min.js?v=1485146617976"></script>
+    <script src="//raghakot.github.io/themes/ghostium/assets/js/head-scripts.min.js?v=1485149031565"></script>
 
     <link rel="canonical" href="https://raghakot.github.io/2017/01/14/Towards-Differentiable-Neural-Architecture.html" />
     <meta name="referrer" content="origin" />
@@ -388,7 +388,7 @@ class Connection(Layer):
 </div>
 </div>
 <div class="paragraph">
-<p>Lets look at this step by step.</p>
+<p>Lets look at this step by step. Note that this implementation only illustrates shared weights for all features of <code>layer_inputs[i]</code> for simplicity. Se e the full implementation on <a href="https://github.com/raghakot/deep-learning-experiments/blob/master/exp3/architecture.py#L8">github</a> for creating a unique weight per feature map from previous layers.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -446,7 +446,7 @@ Experimentation is still a work in progress. Check back for updates.
 <div class="sect2">
 <h3 id="_experiment1_densenet_style_merge">Experiment1: DenseNet Style merge</h3>
 <div class="paragraph">
-<p>In these set of experiments, activation maps from prev layers are <em>concatenated</em>. All filters from previous layer share the same weight.</p>
+<p>In these set of experiments, activation maps from prev layers are <em>concatenated</em>.</p>
 </div>
 <div class="sect3">
 <h4 id="_insights_from_initial_exploration">Insights from initial exploration</h4>
@@ -462,7 +462,7 @@ Experimentation is still a work in progress. Check back for updates.
 </div>
 </div>
 <div class="sect3">
-<h4 id="_evolution_of_connection_weights">Evolution of connection weights</h4>
+<h4 id="_evolution_of_connection_weights_shared_feature_map_weights">Evolution of connection weights (shared feature map weights)</h4>
 <div class="paragraph">
 <p>It is definitely interesting to track how connection weights between layers evolved with training epochs. Fig 3 shows the connection weight evolution for connection_o through connection_7 (connection 0 weight 0 corresponds to input&#8594;conv2, connection 0 weight 1 corresponds to conv1&#8594;input2, and so on. Refer to fig 2 to get a complete picture).</p>
 </div>
@@ -471,6 +471,15 @@ Experimentation is still a work in progress. Check back for updates.
 <img src="https://raghakot.github.io/images/diff_neural/connection_evolution.png" alt="connection_evolution">
 </div>
 <div class="title">Figure 3. Evolution of various connection weights during training</div>
+</div>
+<div class="paragraph">
+<p>TODO: Discussion.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_evolution_of_connection_weights_unique_feature_map_weights">Evolution of connection weights (unique feature map weights)</h4>
+<div class="paragraph">
+<p>WIP..</p>
 </div>
 </div>
 </div>
@@ -589,7 +598,7 @@ Experimentation is still a work in progress. Check back for updates.
         hljs.initHighlightingOnLoad();
       </script>
 
-    <script src="//raghakot.github.io/themes/ghostium/assets/js/foot-scripts.min.js?v=1485146617976"></script>
+    <script src="//raghakot.github.io/themes/ghostium/assets/js/foot-scripts.min.js?v=1485149031565"></script>
 
     <script>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
