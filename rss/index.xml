@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Musings on tech, machine learning]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Mon, 23 Jan 2017 04:43:37 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Learning good image representation]]></title><description><![CDATA[<div id="preamble">
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Musings on tech, machine learning]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Mon, 23 Jan 2017 05:23:51 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Learning good image representation]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>This is a quick blog about an idea that occurred to me yesterday. I am currently working on experiments involving <a href="https://raghakot.github.io/2017/01/14/Towards-Differentiable-Neural-Architecture.html">differentiable neural architecture</a>, but the idea got me excited enough to write about it.</p>
@@ -264,7 +264,7 @@ class Connection(Layer):
 </div>
 </div>
 <div class="paragraph">
-<p>Lets look at this step by step.</p>
+<p>Lets look at this step by step. Note that this implementation only illustrates shared weights for all features of <code>layer_inputs[i]</code> for simplicity. Se e the full implementation on <a href="https://github.com/raghakot/deep-learning-experiments/blob/master/exp3/architecture.py#L8">github</a> for creating a unique weight per feature map from previous layers.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -322,7 +322,7 @@ Experimentation is still a work in progress. Check back for updates.
 <div class="sect2">
 <h3 id="_experiment1_densenet_style_merge">Experiment1: DenseNet Style merge</h3>
 <div class="paragraph">
-<p>In these set of experiments, activation maps from prev layers are <em>concatenated</em>. All filters from previous layer share the same weight.</p>
+<p>In these set of experiments, activation maps from prev layers are <em>concatenated</em>.</p>
 </div>
 <div class="sect3">
 <h4 id="_insights_from_initial_exploration">Insights from initial exploration</h4>
@@ -338,7 +338,7 @@ Experimentation is still a work in progress. Check back for updates.
 </div>
 </div>
 <div class="sect3">
-<h4 id="_evolution_of_connection_weights">Evolution of connection weights</h4>
+<h4 id="_evolution_of_connection_weights_shared_feature_map_weights">Evolution of connection weights (shared feature map weights)</h4>
 <div class="paragraph">
 <p>It is definitely interesting to track how connection weights between layers evolved with training epochs. Fig 3 shows the connection weight evolution for connection_o through connection_7 (connection 0 weight 0 corresponds to input&#8594;conv2, connection 0 weight 1 corresponds to conv1&#8594;input2, and so on. Refer to fig 2 to get a complete picture).</p>
 </div>
@@ -347,6 +347,15 @@ Experimentation is still a work in progress. Check back for updates.
 <img src="https://raghakot.github.io/images/diff_neural/connection_evolution.png" alt="connection_evolution">
 </div>
 <div class="title">Figure 3. Evolution of various connection weights during training</div>
+</div>
+<div class="paragraph">
+<p>TODO: Discussion.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_evolution_of_connection_weights_unique_feature_map_weights">Evolution of connection weights (unique feature map weights)</h4>
+<div class="paragraph">
+<p>WIP..</p>
 </div>
 </div>
 </div>
