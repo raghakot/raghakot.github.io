@@ -1,7 +1,7 @@
 = Towards Differentiable Neural Architecture
 :hp-tags: deep learning
 
-Ever since AlexNet was introduced in 2012, neural net research landscape fundamentally changed. With deep computational graphs, the possibilities are endless. We quickly iterated through a dizzying number of architectures such as AlexNet, VGGNet, Inception, ResNets, FractalNet, Xception, DenseNets and so on. With deep learning, architecture engineering is the new feature engineering and it clearly plays an important role in advancing the state of the art. Instead of making incremental improvements, is there a way to _learn_ the connectivity pattern itself?
+Ever since AlexNet was introduced in 2012, neural net research landscape fundamentally changed. With deep computational graphs, the possibilities are endless. We quickly iterated through a dizzying number of architectures such as AlexNet, VGGNet, NIN, Inception, ResNets, FractalNet, Xception, DenseNets and so on. With deep learning, architecture engineering is the new feature engineering and it clearly plays an important role in advancing the state of the art. Instead of making incremental improvements, is there a way to _learn_ the connectivity pattern itself?
 
 First step is to make this more concrete. Ideally, we want to learn connectivity amongst individual neurons; instead, lets simplify the problem by constraining ourselves to known layer Lego blocks (by layer Lego blocks, I mean general purpose computational layers such as _Convolutional Layer_, _LSTM_, _Pooling_ etc.). Given a bunch of Layer Legos \(L = \{L_{1}, L_{2}, \cdots, L_{n}\}\), our task is to learn how these should be assembled. First thing that comes to mind is evolutionary search, but that is computationally prohibitive. A quicker and more elegant alternative would be to learn this by computing the gradient of _architecture_ with respect to loss. The challenge is to make _architecture_ itself differentiable.
 
@@ -179,7 +179,7 @@ image::diff_neural/model.png[model]
 == Discussion
 NOTE: Experimentation is still a work in progress. Check back for updates.
 
-Withsout \(sigmoid\) weighing which mostly "allows or disallows inputs", the convergence was horribly slow. All subsequent results described here used \(sigmoid\) connection weights.
+Without \(sigmoid\) weighing which mostly "allows or disallows inputs", the convergence was horribly slow. All subsequent results described here used \(sigmoid\) connection weights.
 
 === Experiment1: DenseNet Style merge
 
@@ -188,7 +188,7 @@ In these set of experiments, activation maps from prev layers are _concatenated_
 ==== Insights from initial exploration
 
 * Connection weight initialization scheme (init to 0, 1, 0.5) has no effect on convergence.
-* Downsampling interpolation scheme (inter_area, inter_nn, inter_bilinear, inter_bicubic) doesnt affect the convergence significantlyfootnote:[inter_bilinear, inter_bicubic work slightly better initially but they all converge to the same final value).
+* Down sampling interpolation scheme (inter_area, inter_nn, inter_bilinear, inter_bicubic) doesn't affect the convergence significantlyfootnote:[inter_bilinear, inter_bicubic work slightly better initially but they all converge to the same final value).
 
 ==== Evolution of connection weights (shared feature map weights)
 
@@ -204,7 +204,7 @@ TODO: Discussion.
 
 WIP..
 
-== Reproducability
+== Reproducibility
 The code to reproduce all the experiments is available on link:https://github.com/raghakot/deep-learning-experiments/tree/master/exp3[Github]. Feel free to reuse or improve.
 
 ++++
