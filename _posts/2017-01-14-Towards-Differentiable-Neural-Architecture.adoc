@@ -119,7 +119,7 @@ class Connection(Layer):
         return self._out_shape
 ----
 
-Lets look at this step by step. 
+Lets look at this step by step. Note that this implementation only illustrates shared weights for all features of `layer_inputs[i]` for simplicity. Se e the full implementation on link:https://github.com/raghakot/deep-learning-experiments/blob/master/exp3/architecture.py#L8[github] for creating a unique weight per feature map from previous layers.
 
 1. `_ensure_same_size` computes smallest \((rows, cols)\) amongst all inputs and uses it to resize all inputs to be the same shape. 
 2. We have to define trainable weights in `build` per keras custom layer link:https://keras.io/layers/writing-your-own-keras-layers/[docs]. We need as many weights and number of inputs.
@@ -150,20 +150,26 @@ NOTE: Experimentation is still a work in progress. Check back for updates.
 
 === Experiment1: DenseNet Style merge
 
-In these set of experiments, activation maps from prev layers are _concatenated_. All filters from previous layer share the same weight.
+In these set of experiments, activation maps from prev layers are _concatenated_.
 
 ==== Insights from initial exploration
 
 * Connection weight initialization scheme (init to 0, 1, 0.5) has no effect on convergence.
 * Downsampling interpolation scheme (inter_area, inter_nn, inter_bilinear, inter_bicubic) doesnt affect the convergence significantlyfootnote:[inter_bilinear, inter_bicubic work slightly better initially but they all converge to the same final value).
 
-==== Evolution of connection weights
+==== Evolution of connection weights (shared feature map weights)
 
 It is definitely interesting to track how connection weights between layers evolved with training epochs. Fig 3 shows the connection weight evolution for connection_o through connection_7 (connection 0 weight 0 corresponds to input->conv2, connection 0 weight 1 corresponds to conv1->input2, and so on. Refer to fig 2 to get a complete picture).
 
 [.text-center]
 .Evolution of various connection weights during training
 image::diff_neural/connection_evolution.png[connection_evolution]
+
+TODO: Discussion.
+
+==== Evolution of connection weights (unique feature map weights)
+
+WIP..
 
 == Reproducability
 The code to reproduce all the experiments is available on link:https://github.com/raghakot/deep-learning-experiments/tree/master/exp3[Github]. Feel free to reuse or improve.
