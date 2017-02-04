@@ -11,38 +11,37 @@ image::diff_neural/legos.jpg[legos, 400]
 
 == Differentiable Architecture
 
-Let us start by considering all possible ways in which \(n\) layers can be connected. This is equivalent to the maximum number of connections (edges) in a directed graph with \(n\) vertices, which is \(n(n-1)\). The simplest way to search amongst all these possibilities is to start with a fully connected network where each layer is connected to every other layer via some _weight_ which can then be _learned_ via backprop. Ideally, \(w \in [0, 1]\) to indicate whether a connection is being used or not.
+Architecture can mean a lot of things. For now, let us constrain ourselves to connectivity patterns. Given some \(n\) layers, what is the optimal connectivity amongst them? The naive way of approaching this problem would be to try out all \(n(n-1)\) possible connection configurationsfootnote:[If this was an interview, i would have totally bombed it, lol]. There is a resnet, densenet or some other future net hidden in there.
 
-Backward connections introduce cycles in the graph which are problematicfootnote:[There are ways to avoid the issue by unrolling the recurrent loops to a fixed number of time steps but I am putting it off for now in the interest of simplicity]. Excluding backward connections, every layer can have incoming inputs from all previous layers, which leaves us with \(\frac{n(n-1)}{2}\) possible connections. This is exactly what link:https://arxiv.org/pdf/1608.06993v3.pdf[DenseNets] do!, except that we arrived at a similar architecture with a different motivation.
+Bruteforce search is not such a bad option. Cifar10/100 networks are quite short (relatively speaking). If you have access to huge compute, it might take a month to try out all possible connectivities. Hopefully we can extrapolate the recurring blocks and apply it to imagenet and get a new SOTA results (wishful thinking). While practical, this is a rather boring way to solve the problem. What if we can learn the connections via gradient descent? For this to work, we need a way to compute \(\frac{\partial (connection)}{\partial (loss)}\). 
 
-Unlike DenseNets, we want the connections to be gated so that they can be pruned if needed. To mostly allow or disallow inputs, we can use \(sigmoid(W)\) as they tend to output values closer to 0 or 1. This is in similar spirit to how LSTMs use the _forget gate layer_ footnote:[An excellent overview of LSTMs can be found on http://colah.github.io/posts/2015-08-Understanding-LSTMs/], but without a neural network. For every outgoing edge from layer \(L\), we will associate a weight \(W = [w_{1}, w_{2}, \cdots, w_{f}]\), where \(f\) is the number of feature maps for layer \(L\). For a layer with incoming edges, we can simply compute the weighted feature maps from each incoming connection.
+Connectivity is inherently binary. This is problematic for applying gradient descent because of the discontinuity. Notice the similarities with attention? We can employ reinforcement learning like hard attention or try soft attention strategy. In order to make connectivity _continuous_, we can make it weighted, similar to _forget gate_ in LSTMsfootnote:[An excellent overview of LSTMs can be found on http://colah.github.io/posts/2015-08-Understanding-LSTMs/]. To bias the connectivity mostly towards 0 or 1, we can apply use sigmoid weighted connectivity. To recap, the strategy is to start out with a fully connected net where evry layer is connected to every other layer via sigmoid weighted param. The weights can be learned via backprop.
 
-Suppose Layer \(L_{i}\) gets two feature maps \(f_{1}, f_{2}\) weighted with \(w_{1}, w_{2}\). There are a couple of options to define the computation of \(L_{i}\) in terms of input feature maps.
+Cool. There is one slight technicality. Backward connections introduce cycles in the graphfootnote:[There are ways to avoid the issue by unrolling the recurrent loops to a fixed number of time steps but lets put that off for now in the interest of simplicity]. Excluding backward connections, every layer can have incoming inputs from all previous layers, which leaves us with \(\frac{n(n-1)}{2}\) possible connections. This is exactly what link:https://arxiv.org/pdf/1608.06993v3.pdf[DenseNets] do!, except that we arrived at a similar architecture with a different motivation.
 
-1. DenseNet style concatenation. i.e., \(Output = F([f_{1}, f_{2}])\). This has the limitation that concatenation is not viable when the size of feature maps differ. One option is to down sample all input feature maps to the smallest feature map (since feature maps from prev layers are usually larger in width and height dimension). Once all feature maps are of the same shape, we could try to condense them into a single feature map using _avg_, _max_ or _min_ operation across filters. Intuitively, _max_ makes sense since it is equivalent to focusing on input patterns that matched with a filter (high output value) across various feature maps. A high value at some \((row, col)\) of the filter might indicate the presence of some abstract shape detected by previous convolutional layers.
-2. ResNet style summation. i.e., \(Output = F(f_{1} + f_{2})\). I somehow dislike this idea as i cannot reconcile what it means to sum activations over arbitrary feature maps. It is still worth experimenting. We can also try various forms of merging using \([+, -, \times]\).
+Unlike DenseNets, we want the connections to be gated so that they can be pruned if needed. There are a couple of possibilities for how \(L_{i}\) is connected to \(L_{j}\).
 
-That completes our setup. To summarize, the plan is to start out with an fully connected network where every layer gets inputs from all the previous layers in a weighted fashion. Before weighing, we use \(sigmoid(W)\) to bias the values mostly towards 0 or 1. When trained end-end via backprop, the network should, in-principle, learn to prune unwanted connections.
+1. *Shared/Unique feature weights*: We can either associate weights \(W = [w_{1}, w_{2}, \cdots, w_{f}]\) for \(L_{i}\) with \(f\) feature maps or use a single weight for all feature maps of an incoming input. Lets call this _shared_/_unique_ feature weight scheme.
+2. *Input aggregation*: For layer \(L_{j}\), we need a way to aggregate weight feature maps from previous layers. Some possibilities include:
+* *DenseNet style concat*: i.e, simply concatenate previous layer weighted feature maps. This has the limitation that concatenation is not viable when the size of feature maps differ. For this we can either try to pad smaller feature maps 
+with 0's to make them all the same size as the largest feature map or resize all feature maps to the smallest feature map by pooling/interpolation/some other form of down sampling. Both approaches have their own pros and cons. The first is computationally expensive (since convnets have to slide over larger feature maps), while the second one is lossy. I have a feeling that lossy would end up being the winner.
+* *ResNet style concat*: i.e., squish weighted input feature maps via _max_ or _sum_. _avg_, _prod_, _min_ dont seem like good ideas for obvious reasons. I like _max_ better than resnet style _sum_, since it is equivalent to focusing on input patterns that matched with a filter (high output value) across various feature maps. A high value at some \((row, col)\) of the filter might indicate the presence of some abstract shape detected by previous convolutional layers.
+* *Squeeze net style concat*: Lastly, we can also try squeeze net strategy of squishing \(n\) concatenated input feature maps (after reshaping to same size via padding or downsampling) down to \(m\) feature maps where \(m < n\).
+
+Phew! That completes our setup. The idea is super simple. Start out with an fully connected network where every layer gets inputs from all the previous layers in a weighted fashion. Before weighing, we use \(sigmoid(W)\) to bias the values mostly towards 0 or 1. When trained end-end via backprop, the network should, in-principle, learn to prune unwanted connections.
+
+We can also try doing couple of other things.
+
+1. Take the converged connectivity pattern and try it exclusively by removing connections with small weights. If \(w = 0.002\) or something like that, we know that the network uis trying really hard to get rid of that connection. So might as well see if the performance is better when we start out by removing it.
+2. Examine the evolution of weights during training. Do they always converge in the same manner? If they don't, that would be concerning.
+3. Try different connection weight initialization schemes. \(w = 1\) would mean everything starts out fully connected. Alternatively we can set \(w\) from a gaussian distribution centered around 0.5. We can try other funky things like setting initial feed forward stack \(L_{i-1}\) -> \(L_{i}\) weight to 1 and rest to 0.5. 
 
 == Experimental Setup
 
-* Mini vggnet comprising of \(3 \times 3\) convolutions with ReLU activation.
+* Layers = [Conv, Conv, MaxPool, Droupout] \(\times\) 2-3 blocks of variable feature sizes.
 * cifar10 dataset augmented with 10% random shifts along image rows/cols along with a 50% chance of horizontal flip.
 * `random_seed = 1337` for reproducibility.
-
-The model has 1,250,858 parameters and trained for 50 epochs with a batch size of 32 using categorical cross-entropy loss with Adam optimizer.
-
-**Experiments**
-
-1. Connection weights with/without sigmoid.
-2. DenseNet style input aggregation
-* Concat feature maps after reshaping input filters to same shape
-* Concat followed by max/min/avg across all inputs.
-4. ResNet style merge with \([+, -, \times]\).
-5. Connection weight initialization schemes.
-* Init all weights to 1.
-* Init all weights using gaussian centered at 0.5
-* Create an initial feed forward stack by init weights between \(L_{i-1}\) and \(L_{i}\) to 1 and set everything else to 0 or Gaussian centered at 0.5.
+* Training for 200 epochs, batch size of 32 using categorical cross-entropy loss with Adam optimizer.
 
 == Implementation
 
