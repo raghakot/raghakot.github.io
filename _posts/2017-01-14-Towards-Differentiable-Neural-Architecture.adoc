@@ -11,7 +11,7 @@ image::diff_neural/legos.jpg[legos, 400]
 
 == Differentiable Architecture
 
-Architecture can mean a lot of things. For now, let us constrain ourselves to connectivity patterns. Given some \(n\) layers, what is the optimal connectivity amongst them? The naive way of approaching this problem would be to try out all \(n(n-1)\) possible connection configurationsfootnote:[If this was an interview, i would have totally bombed it, lol]. There is a resnet, densenet or some other future net hidden in there.
+Architecture can mean a lot of things. For now, let us constrain ourselves to connectivity patterns. Given some \(n\) layers, what is the optimal connectivity amongst them? The naive way of approaching this problem would be to try out all \(n(n-1)\) possible connection configurationsfootnote:[Don't give such answers in interviews, lol]. There is a resnet, densenet or some other future net hidden in there.
 
 Bruteforce search is not such a bad option. Cifar10/100 networks are quite short (relatively speaking). If you have access to huge compute, it might take a month to try out all possible connectivities. Hopefully we can extrapolate the recurring blocks and apply it to imagenet and get a new SOTA results (wishful thinking). While practical, this is a rather boring way to solve the problem. What if we can learn the connections via gradient descent? For this to work, we need a way to compute \(\frac{\partial (loss)}{\partial (connection)}\). 
 
