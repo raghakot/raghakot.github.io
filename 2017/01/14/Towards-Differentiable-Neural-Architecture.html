@@ -38,9 +38,9 @@
     <link href="//fonts.googleapis.com/" rel="dns-prefetch">
     <link href="//fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic|Open+Sans:700,400&subset=latin,latin-ext" rel="stylesheet">
 
-    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/main.min.css?v=1486180943361"/>
-    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/custom.css?v=1486180943361"/>
-    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/asciidoctor-foundation.css?v=1486180943361"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/main.min.css?v=1486186649862"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/custom.css?v=1486186649862"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/asciidoctor-foundation.css?v=1486186649862"/>
 
 
 
@@ -70,7 +70,7 @@
       GHOSTIUM.enablePjax = typeof enable_pjax !== 'undefined' ? enable_pjax : true;
     </script>
 
-    <script src="//raghakot.github.io/themes/ghostium/assets/js/head-scripts.min.js?v=1486180943361"></script>
+    <script src="//raghakot.github.io/themes/ghostium/assets/js/head-scripts.min.js?v=1486186649862"></script>
 
     <link rel="canonical" href="https://raghakot.github.io/2017/01/14/Towards-Differentiable-Neural-Architecture.html" />
     <meta name="referrer" content="origin" />
@@ -481,7 +481,7 @@ Experimentation is still a work in progress. Check back for updates.
 <p>Connection weight initialization scheme (init to 0, 1, 0.5) has no effect on convergence.</p>
 </li>
 <li>
-<p>Down sampling interpolation scheme (inter_area, inter_nn, inter_bilinear, inter_bicubic) doesn&#8217;t affect the convergence significantlyfootnote:[inter_bilinear, inter_bicubic work slightly better initially but they all converge to the same final value).</p>
+<p>Down sampling interpolation scheme (inter_area, inter_nn, inter_bilinear, inter_bicubic) doesn&#8217;t affect the convergence significantly<sup class="footnote">[<a id="_footnoteref_5" class="footnote" href="#_footnote_5" title="View footnote.">5</a>]</sup>.</p>
 </li>
 </ul>
 </div>
@@ -545,6 +545,9 @@ Experimentation is still a work in progress. Check back for updates.
 </div>
 <div class="footnote" id="_footnote_4">
 <a href="#_footnoteref_4">4</a>. <a href="https://keras.io/layers/core/#lambda">Lambda layer</a> can be used, but that doesn&#8217;t allow for trainable weights. This is not an issue if tensorflow optimizer was directly used.
+</div>
+<div class="footnote" id="_footnote_5">
+<a href="#_footnoteref_5">5</a>. inter_bilinear, inter_bicubic work slightly better initially but they all converge to the same final value
 </div>
 </div>
           </div>
@@ -626,7 +629,7 @@ Experimentation is still a work in progress. Check back for updates.
         hljs.initHighlightingOnLoad();
       </script>
 
-    <script src="//raghakot.github.io/themes/ghostium/assets/js/foot-scripts.min.js?v=1486180943361"></script>
+    <script src="//raghakot.github.io/themes/ghostium/assets/js/foot-scripts.min.js?v=1486186649862"></script>
 
     <script>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
