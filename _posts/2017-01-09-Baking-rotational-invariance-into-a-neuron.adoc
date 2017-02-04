@@ -186,6 +186,7 @@ The code to reproduce all the experiments is available on link:https://github.co
 **EDITs**
 
 * It might be worth experimenting by concatenating activations from rotated filters instead of _max_ operation in light of recent success with DenseNets. 
+* Try out squeeze net style feature compression following concatenation of rotated filters.
 
 ++++
 <link rel="stylesheet" type="text/css" href="../../../extras/inlineDisqussions.css" />
