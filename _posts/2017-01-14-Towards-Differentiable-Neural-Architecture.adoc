@@ -187,7 +187,7 @@ In these set of experiments, activation maps from prev layers are _concatenated_
 ==== Insights from initial exploration
 
 * Connection weight initialization scheme (init to 0, 1, 0.5) has no effect on convergence.
-* Down sampling interpolation scheme (inter_area, inter_nn, inter_bilinear, inter_bicubic) doesn't affect the convergence significantlyfootnote:[inter_bilinear, inter_bicubic work slightly better initially but they all converge to the same final value).
+* Down sampling interpolation scheme (inter_area, inter_nn, inter_bilinear, inter_bicubic) doesn't affect the convergence significantlyfootnote:[inter_bilinear, inter_bicubic work slightly better initially but they all converge to the same final value].
 
 ==== Evolution of connection weights (shared feature map weights)
 
