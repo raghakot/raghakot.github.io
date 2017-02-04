@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Musings on tech, machine learning]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Mon, 23 Jan 2017 07:44:03 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Learning good image representation]]></title><description><![CDATA[<div id="preamble">
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Ragha's Blog]]></title><description><![CDATA[Musings on tech, machine learning]]></description><link>https://raghakot.github.io</link><image><url>images/cover.jpg</url><title>Ragha&apos;s Blog</title><link>https://raghakot.github.io</link></image><generator>RSS for Node</generator><lastBuildDate>Sat, 04 Feb 2017 03:55:59 GMT</lastBuildDate><atom:link href="https://raghakot.github.io/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Learning good image representation]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>This is a quick blog about an idea that occurred to me yesterday. I am currently working on experiments involving <a href="https://raghakot.github.io/2017/01/14/Towards-Differentiable-Neural-Architecture.html">differentiable neural architecture</a>, but the idea got me excited enough to write about it.</p>
@@ -87,29 +87,62 @@
 <h2 id="_differentiable_architecture">Differentiable Architecture</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Let us start by considering all possible ways in which \(n\) layers can be connected. This is equivalent to the maximum number of connections (edges) in a directed graph with \(n\) vertices, which is \(n(n-1)\). The simplest way to search amongst all these possibilities is to start with a fully connected network where each layer is connected to every other layer via some <em>weight</em> which can then be <em>learned</em> via backprop. Ideally, \(w \in [0, 1]\) to indicate whether a connection is being used or not.</p>
+<p>Architecture can mean a lot of things. For now, let us constrain ourselves to connectivity patterns. Given some \(n\) layers, what is the optimal connectivity amongst them? The naive way of approaching this problem would be to try out all \(n(n-1)\) possible connection configurations<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnote_1" title="View footnote.">1</a>]</sup>. There is a resnet, densenet or some other future net hidden in there.</p>
 </div>
 <div class="paragraph">
-<p>Backward connections introduce cycles in the graph which are problematic<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnote_1" title="View footnote.">1</a>]</sup>. Excluding backward connections, every layer can have incoming inputs from all previous layers, which leaves us with \(\frac{n(n-1)}{2}\) possible connections. This is exactly what <a href="https://arxiv.org/pdf/1608.06993v3.pdf">DenseNets</a> do!, except that we arrived at a similar architecture with a different motivation.</p>
+<p>Bruteforce search is not such a bad option. Cifar10/100 networks are quite short (relatively speaking). If you have access to huge compute, it might take a month to try out all possible connectivities. Hopefully we can extrapolate the recurring blocks and apply it to imagenet and get a new SOTA results (wishful thinking). While practical, this is a rather boring way to solve the problem. What if we can learn the connections via gradient descent? For this to work, we need a way to compute \(\frac{\partial (connection)}{\partial (loss)}\).</p>
 </div>
 <div class="paragraph">
-<p>Unlike DenseNets, we want the connections to be gated so that they can be pruned if needed. To mostly allow or disallow inputs, we can use \(sigmoid(W)\) as they tend to output values closer to 0 or 1. This is in similar spirit to how LSTMs use the <em>forget gate layer</em> <sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnote_2" title="View footnote.">2</a>]</sup>, but without a neural network. For every outgoing edge from layer \(L\), we will associate a weight \(W = [w_{1}, w_{2}, \cdots, w_{f}]\), where \(f\) is the number of feature maps for layer \(L\). For a layer with incoming edges, we can simply compute the weighted feature maps from each incoming connection.</p>
+<p>Connectivity is inherently binary. This is problematic for applying gradient descent because of the discontinuity. Notice the similarities with attention? We can employ reinforcement learning like hard attention or try soft attention strategy. In order to make connectivity <em>continuous</em>, we can make it weighted, similar to <em>forget gate</em> in LSTMs<sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnote_2" title="View footnote.">2</a>]</sup>. To bias the connectivity mostly towards 0 or 1, we can apply use sigmoid weighted connectivity. To recap, the strategy is to start out with a fully connected net where evry layer is connected to every other layer via sigmoid weighted param. The weights can be learned via backprop.</p>
 </div>
 <div class="paragraph">
-<p>Suppose Layer \(L_{i}\) gets two feature maps \(f_{1}, f_{2}\) weighted with \(w_{1}, w_{2}\). There are a couple of options to define the computation of \(L_{i}\) in terms of input feature maps.</p>
+<p>Cool. There is one slight technicality. Backward connections introduce cycles in the graph<sup class="footnote">[<a id="_footnoteref_3" class="footnote" href="#_footnote_3" title="View footnote.">3</a>]</sup>. Excluding backward connections, every layer can have incoming inputs from all previous layers, which leaves us with \(\frac{n(n-1)}{2}\) possible connections. This is exactly what <a href="https://arxiv.org/pdf/1608.06993v3.pdf">DenseNets</a> do!, except that we arrived at a similar architecture with a different motivation.</p>
+</div>
+<div class="paragraph">
+<p>Unlike DenseNets, we want the connections to be gated so that they can be pruned if needed. There are a couple of possibilities for how \(L_{i}\) is connected to \(L_{j}\).</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>DenseNet style concatenation. i.e., \(Output = F([f_{1}, f_{2}])\). This has the limitation that concatenation is not viable when the size of feature maps differ. One option is to down sample all input feature maps to the smallest feature map (since feature maps from prev layers are usually larger in width and height dimension). Once all feature maps are of the same shape, we could try to condense them into a single feature map using <em>avg</em>, <em>max</em> or <em>min</em> operation across filters. Intuitively, <em>max</em> makes sense since it is equivalent to focusing on input patterns that matched with a filter (high output value) across various feature maps. A high value at some \((row, col)\) of the filter might indicate the presence of some abstract shape detected by previous convolutional layers.</p>
+<p><strong>Shared/Unique feature weights</strong>: We can either associate weights \(W = [w_{1}, w_{2}, \cdots, w_{f}]\) for \(L_{i}\) with \(f\) feature maps or use a single weight for all feature maps of an incoming input. Lets call this <em>shared</em>/<em>unique</em> feature weight scheme.</p>
 </li>
 <li>
-<p>ResNet style summation. i.e., \(Output = F(f_{1} + f_{2})\). I somehow dislike this idea as i cannot reconcile what it means to sum activations over arbitrary feature maps. It is still worth experimenting. We can also try various forms of merging using \([+, -, \times]\).</p>
+<p><strong>Input aggregation</strong>: For layer \(L_{j}\), we need a way to aggregate weight feature maps from previous layers. Some possibilities include:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>DenseNet style concat</strong>: i.e, simply concatenate previous layer weighted feature maps. This has the limitation that concatenation is not viable when the size of feature maps differ. For this we can either try to pad smaller feature maps
+with 0&#8217;s to make them all the same size as the largest feature map or resize all feature maps to the smallest feature map by pooling/interpolation/some other form of down sampling. Both approaches have their own pros and cons. The first is computationally expensive (since convnets have to slide over larger feature maps), while the second one is lossy. I have a feeling that lossy would end up being the winner.</p>
+</li>
+<li>
+<p><strong>ResNet style concat</strong>: i.e., squish weighted input feature maps via <em>max</em> or <em>sum</em>. <em>avg</em>, <em>prod</em>, <em>min</em> dont seem like good ideas for obvious reasons. I like <em>max</em> better than resnet style <em>sum</em>, since it is equivalent to focusing on input patterns that matched with a filter (high output value) across various feature maps. A high value at some \((row, col)\) of the filter might indicate the presence of some abstract shape detected by previous convolutional layers.</p>
+</li>
+<li>
+<p><strong>Squeeze net style concat</strong>: Lastly, we can also try squeeze net strategy of squishing \(n\) concatenated input feature maps (after reshaping to same size via padding or downsampling) down to \(m\) feature maps where \(m &lt; n\).</p>
+</li>
+</ul>
+</div>
 </li>
 </ol>
 </div>
 <div class="paragraph">
-<p>That completes our setup. To summarize, the plan is to start out with an fully connected network where every layer gets inputs from all the previous layers in a weighted fashion. Before weighing, we use \(sigmoid(W)\) to bias the values mostly towards 0 or 1. When trained end-end via backprop, the network should, in-principle, learn to prune unwanted connections.</p>
+<p>Phew! That completes our setup. The idea is super simple. Start out with an fully connected network where every layer gets inputs from all the previous layers in a weighted fashion. Before weighing, we use \(sigmoid(W)\) to bias the values mostly towards 0 or 1. When trained end-end via backprop, the network should, in-principle, learn to prune unwanted connections.</p>
+</div>
+<div class="paragraph">
+<p>We can also try doing couple of other things.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Take the converged connectivity pattern and try it exclusively by removing connections with small weights. If \(w = 0.002\) or something like that, we know that the network uis trying really hard to get rid of that connection. So might as well see if the performance is better when we start out by removing it.</p>
+</li>
+<li>
+<p>Examine the evolution of weights during training. Do they always converge in the same manner? If they don&#8217;t, that would be concerning.</p>
+</li>
+<li>
+<p>Try different connection weight initialization schemes. \(w = 1\) would mean everything starts out fully connected. Alternatively we can set \(w\) from a gaussian distribution centered around 0.5. We can try other funky things like setting initial feed forward stack \(L_{i-1}\) &#8594; \(L_{i}\) weight to 1 and rest to 0.5.</p>
+</li>
+</ol>
 </div>
 </div>
 </div>
@@ -119,7 +152,7 @@
 <div class="ulist">
 <ul>
 <li>
-<p>Mini vggnet comprising of \(3 \times 3\) convolutions with ReLU activation.</p>
+<p>Layers = [Conv, Conv, MaxPool, Droupout] \(\times\) 2-3 blocks of variable feature sizes.</p>
 </li>
 <li>
 <p>cifar10 dataset augmented with 10% random shifts along image rows/cols along with a 50% chance of horizontal flip.</p>
@@ -127,52 +160,10 @@
 <li>
 <p><code>random_seed = 1337</code> for reproducibility.</p>
 </li>
-</ul>
-</div>
-<div class="paragraph">
-<p>The model has 1,250,858 parameters and trained for 50 epochs with a batch size of 32 using categorical cross-entropy loss with Adam optimizer.</p>
-</div>
-<div class="paragraph">
-<p><strong>Experiments</strong></p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
 <li>
-<p>Connection weights with/without sigmoid.</p>
-</li>
-<li>
-<p>DenseNet style input aggregation</p>
-<div class="ulist">
-<ul>
-<li>
-<p>Concat feature maps after reshaping input filters to same shape</p>
-</li>
-<li>
-<p>Concat followed by max/min/avg across all inputs.</p>
+<p>Training for 200 epochs, batch size of 32 using categorical cross-entropy loss with Adam optimizer.</p>
 </li>
 </ul>
-</div>
-</li>
-<li>
-<p>ResNet style merge with \([+, -, \times]\).</p>
-</li>
-<li>
-<p>Connection weight initialization schemes.</p>
-<div class="ulist">
-<ul>
-<li>
-<p>Init all weights to 1.</p>
-</li>
-<li>
-<p>Init all weights using gaussian centered at 0.5</p>
-</li>
-<li>
-<p>Create an initial feed forward stack by init weights between \(L_{i-1}\) and \(L_{i}\) to 1 and set everything else to 0 or Gaussian centered at 0.5.</p>
-</li>
-</ul>
-</div>
-</li>
-</ol>
 </div>
 </div>
 </div>
@@ -203,7 +194,7 @@
 <div class="ulist">
 <ul>
 <li>
-<p><strong>Merging</strong>. i.e., resizing prev layer outputs to be of the same shape and concatenating them in densenet or resnet style. We also want to weigh merged outputs so that those weights can be learned during backprop. The easiest way to do this in keras is to create a custom layer<sup class="footnote">[<a id="_footnoteref_3" class="footnote" href="#_footnote_3" title="View footnote.">3</a>]</sup>.</p>
+<p><strong>Merging</strong>. i.e., resizing prev layer outputs to be of the same shape and concatenating them in densenet or resnet style. We also want to weigh merged outputs so that those weights can be learned during backprop. The easiest way to do this in keras is to create a custom layer<sup class="footnote">[<a id="_footnoteref_4" class="footnote" href="#_footnote_4" title="View footnote.">4</a>]</sup>.</p>
 </li>
 </ul>
 </div>
@@ -420,13 +411,16 @@ Experimentation is still a work in progress. Check back for updates.
 <div id="footnotes">
 <hr>
 <div class="footnote" id="_footnote_1">
-<a href="#_footnoteref_1">1</a>. There are ways to avoid the issue by unrolling the recurrent loops to a fixed number of time steps but I am putting it off for now in the interest of simplicity
+<a href="#_footnoteref_1">1</a>. If this was an interview, i would have totally bombed it, lol
 </div>
 <div class="footnote" id="_footnote_2">
 <a href="#_footnoteref_2">2</a>. An excellent overview of LSTMs can be found on <a href="http://colah.github.io/posts/2015-08-Understanding-LSTMs/" class="bare">http://colah.github.io/posts/2015-08-Understanding-LSTMs/</a>
 </div>
 <div class="footnote" id="_footnote_3">
-<a href="#_footnoteref_3">3</a>. <a href="https://keras.io/layers/core/#lambda">Lambda layer</a> can be used, but that doesn&#8217;t allow for trainable weights. This is not an issue if tensorflow optimizer was directly used.
+<a href="#_footnoteref_3">3</a>. There are ways to avoid the issue by unrolling the recurrent loops to a fixed number of time steps but lets put that off for now in the interest of simplicity
+</div>
+<div class="footnote" id="_footnote_4">
+<a href="#_footnoteref_4">4</a>. <a href="https://keras.io/layers/core/#lambda">Lambda layer</a> can be used, but that doesn&#8217;t allow for trainable weights. This is not an issue if tensorflow optimizer was directly used.
 </div>
 </div>]]></description><link>https://raghakot.github.io/2017/01/14/Towards-Differentiable-Neural-Architecture.html</link><guid isPermaLink="true">https://raghakot.github.io/2017/01/14/Towards-Differentiable-Neural-Architecture.html</guid><category><![CDATA[deep learning]]></category><dc:creator><![CDATA[Raghavendra Kotikalapudi]]></dc:creator><pubDate>Sat, 14 Jan 2017 00:00:00 GMT</pubDate></item><item><title><![CDATA[Baking rotational invariance into a neuron]]></title><description><![CDATA[<div id="preamble">
 <div class="sectionbody">
