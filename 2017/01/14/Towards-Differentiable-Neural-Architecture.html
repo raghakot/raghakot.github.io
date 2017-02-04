@@ -38,9 +38,9 @@
     <link href="//fonts.googleapis.com/" rel="dns-prefetch">
     <link href="//fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic|Open+Sans:700,400&subset=latin,latin-ext" rel="stylesheet">
 
-    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/main.min.css?v=1486180559680"/>
-    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/custom.css?v=1486180559680"/>
-    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/asciidoctor-foundation.css?v=1486180559680"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/main.min.css?v=1486180834598"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/custom.css?v=1486180834598"/>
+    <link rel="stylesheet" href="//raghakot.github.io/themes/ghostium/assets/css/asciidoctor-foundation.css?v=1486180834598"/>
 
 
 
@@ -70,7 +70,7 @@
       GHOSTIUM.enablePjax = typeof enable_pjax !== 'undefined' ? enable_pjax : true;
     </script>
 
-    <script src="//raghakot.github.io/themes/ghostium/assets/js/head-scripts.min.js?v=1486180559680"></script>
+    <script src="//raghakot.github.io/themes/ghostium/assets/js/head-scripts.min.js?v=1486180834598"></script>
 
     <link rel="canonical" href="https://raghakot.github.io/2017/01/14/Towards-Differentiable-Neural-Architecture.html" />
     <meta name="referrer" content="origin" />
@@ -214,7 +214,7 @@ null
 <p>Architecture can mean a lot of things. For now, let us constrain ourselves to connectivity patterns. Given some \(n\) layers, what is the optimal connectivity amongst them? The naive way of approaching this problem would be to try out all \(n(n-1)\) possible connection configurations<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnote_1" title="View footnote.">1</a>]</sup>. There is a resnet, densenet or some other future net hidden in there.</p>
 </div>
 <div class="paragraph">
-<p>Bruteforce search is not such a bad option. Cifar10/100 networks are quite short (relatively speaking). If you have access to huge compute, it might take a month to try out all possible connectivities. Hopefully we can extrapolate the recurring blocks and apply it to imagenet and get a new SOTA results (wishful thinking). While practical, this is a rather boring way to solve the problem. What if we can learn the connections via gradient descent? For this to work, we need a way to compute \(\frac{\partial (connection)}{\partial (loss)}\).</p>
+<p>Bruteforce search is not such a bad option. Cifar10/100 networks are quite short (relatively speaking). If you have access to huge compute, it might take a month to try out all possible connectivities. Hopefully we can extrapolate the recurring blocks and apply it to imagenet and get a new SOTA results (wishful thinking). While practical, this is a rather boring way to solve the problem. What if we can learn the connections via gradient descent? For this to work, we need a way to compute \(\frac{\partial (loss)}{\partial (connection)}\).</p>
 </div>
 <div class="paragraph">
 <p>Connectivity is inherently binary. This is problematic for applying gradient descent because of the discontinuity. Notice the similarities with attention? We can employ reinforcement learning like hard attention or try soft attention strategy. In order to make connectivity <em>continuous</em>, we can make it weighted, similar to <em>forget gate</em> in LSTMs<sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnote_2" title="View footnote.">2</a>]</sup>. To bias the connectivity mostly towards 0 or 1, we can apply use sigmoid weighted connectivity. To recap, the strategy is to start out with a fully connected net where evry layer is connected to every other layer via sigmoid weighted param. The weights can be learned via backprop.</p>
@@ -242,7 +242,7 @@ with 0&#8217;s to make them all the same size as the largest feature map or resi
 <p><strong>ResNet style concat</strong>: i.e., squish weighted input feature maps via <em>max</em> or <em>sum</em>. <em>avg</em>, <em>prod</em>, <em>min</em> dont seem like good ideas for obvious reasons. I like <em>max</em> better than resnet style <em>sum</em>, since it is equivalent to focusing on input patterns that matched with a filter (high output value) across various feature maps. A high value at some \((row, col)\) of the filter might indicate the presence of some abstract shape detected by previous convolutional layers.</p>
 </li>
 <li>
-<p><strong>Squeeze net style concat</strong>: Lastly, we can also try squeeze net strategy of squishing \(n\) concatenated input feature maps (after reshaping to same size via padding or downsampling) down to \(m\) feature maps where \(m &lt; n\).</p>
+<p><strong>Squeeze net style concat</strong>: Lastly, we can also try squeeze net strategy of squishing \(n\) concatenated input feature maps (after reshaping to same size via padding or down sampling) down to \(m\) feature maps where \(m \le n\).</p>
 </li>
 </ul>
 </div>
@@ -258,13 +258,13 @@ with 0&#8217;s to make them all the same size as the largest feature map or resi
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Take the converged connectivity pattern and try it exclusively by removing connections with small weights. If \(w = 0.002\) or something like that, we know that the network uis trying really hard to get rid of that connection. So might as well see if the performance is better when we start out by removing it.</p>
+<p>Take the converged connectivity pattern and try it exclusively by removing connections with small weights. If \(w = 0.002\) or something like that, we know that the network is trying really hard to get rid of that connection. So might as well see if the performance is better when we start out by removing it.</p>
 </li>
 <li>
 <p>Examine the evolution of weights during training. Do they always converge in the same manner? If they don&#8217;t, that would be concerning.</p>
 </li>
 <li>
-<p>Try different connection weight initialization schemes. \(w = 1\) would mean everything starts out fully connected. Alternatively we can set \(w\) from a gaussian distribution centered around 0.5. We can try other funky things like setting initial feed forward stack \(L_{i-1}\) &#8594; \(L_{i}\) weight to 1 and rest to 0.5.</p>
+<p>Try different connection weight initialization schemes. \(w = 1\) would mean everything starts out fully connected. Alternatively we can set \(w\) from a Gaussian distribution centered around 0.5. We can try other funky things like setting initial feed forward stack \(L_{i-1}\) &#8594; \(L_{i}\) weight to 1 and rest to 0.5.</p>
 </li>
 </ol>
 </div>
@@ -276,7 +276,7 @@ with 0&#8217;s to make them all the same size as the largest feature map or resi
 <div class="ulist">
 <ul>
 <li>
-<p>Layers = [Conv, Conv, MaxPool, Droupout] \(\times\) 2-3 blocks of variable feature sizes.</p>
+<p>Layers = [Conv, Conv, MaxPool, Dropout] \(\times\) 2-3 blocks of variable feature sizes.</p>
 </li>
 <li>
 <p>cifar10 dataset augmented with 10% random shifts along image rows/cols along with a 50% chance of horizontal flip.</p>
@@ -626,7 +626,7 @@ Experimentation is still a work in progress. Check back for updates.
         hljs.initHighlightingOnLoad();
       </script>
 
-    <script src="//raghakot.github.io/themes/ghostium/assets/js/foot-scripts.min.js?v=1486180559680"></script>
+    <script src="//raghakot.github.io/themes/ghostium/assets/js/foot-scripts.min.js?v=1486180834598"></script>
 
     <script>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
